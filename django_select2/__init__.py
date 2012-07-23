@@ -1,0 +1,3 @@
+from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget
+from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, HeavySelect2MultipleChoiceField
+from .views import Select2View
