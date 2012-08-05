@@ -17,9 +17,9 @@ class AutoViewFieldMixin(object):
 import copy
 
 from django import forms
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_unicode
-from django.db.models import Q
 from django.core.validators import EMPTY_VALUES
 
 from .widgets import Select2Widget, Select2MultipleWidget,\
@@ -43,7 +43,7 @@ class ModelResultJsonMixin(object):
     def label_from_instance(self, obj):
         return smart_unicode(obj)
 
-    def prepare_qs_params(self, request, search_term, search_fields):
+    def prepare_qs_params(self, request, search_term, search_fields):        
         q = None
         for field in search_fields:
             kwargs = {}
