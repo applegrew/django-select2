@@ -96,7 +96,7 @@ class Select2Mixin(object):
         return '$("#%s").select2(%s);' % (id_, options)
 
     def render(self, name, value, attrs=None):
-        s = str(super(Select2Mixin, self).render(name, value, attrs))
+        s = unicode(super(Select2Mixin, self).render(name, value, attrs)) # Thanks to @ouhouhsami Issue#1
         s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
