@@ -104,7 +104,7 @@ class Select2View(JSONResponseMixin, View):
         When everything is fine then the `err` must be 'nil'.
         `has_more` should be true if there are more rows.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class AutoResponseView(Select2View):

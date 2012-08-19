@@ -1,3 +1,17 @@
+def convert_to_js_string_arr(lst):
+    lst = ['"%s"' % l for l in lst]
+    return u"[%s]" % (",".join(lst))
+
+def render_js_script(inner_code):
+    return u"""
+    <script>
+        $(function () {
+            %s
+        });
+    </script>""" % inner_code
+
+### Auto view helper utils ###
+
 import re
 import threading
 import datetime

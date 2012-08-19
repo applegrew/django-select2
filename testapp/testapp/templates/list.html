@@ -1,0 +1,8 @@
+{% load url from future %}
+<h2>{{title}}</h2>
+<ul>
+    {% for e in object_list %}
+        <li><a href="{% url href e.id %}">{{ e }}</a></li>
+    {% endfor %}
+</ul>
+

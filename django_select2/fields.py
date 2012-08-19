@@ -12,11 +12,12 @@ class AutoViewFieldMixin(object):
         return True
 
     def get_results(self, request, term, page, context):
-        raise NotImplemented
+        raise NotImplementedError
 
 import copy
 
 from django import forms
+from django.forms.models import ModelChoiceIterator
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_unicode
@@ -28,8 +29,8 @@ from .views import NO_ERR_RESP
 
 class ModelResultJsonMixin(object):
 
-    def __init__(self, **kwargs):
-        if self.queryset is None:
+    def __init__(self, *args, **kwargs):
+        if self.queryset is None and not kwargs.has_key('queryset'):
             raise ValueError('queryset is required.')
 
         if not self.search_fields:
@@ -38,7 +39,7 @@ class ModelResultJsonMixin(object):
         self.max_results = getattr(self, 'max_results', None)
         self.to_field_name = getattr(self, 'to_field_name', 'pk')
 
-        super(ModelResultJsonMixin, self).__init__(**kwargs)
+        super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
 
     def label_from_instance(self, obj):
         return smart_unicode(obj)
@@ -72,54 +73,116 @@ class ModelResultJsonMixin(object):
         res = [ (getattr(obj, self.to_field_name), self.label_from_instance(obj), ) for obj in res ]
         return (NO_ERR_RESP, has_more, res, )
 
-class ModelValueMixin(object):
-    default_error_messages = {
-        'invalid_choice': _(u'Select a valid choice. That choice is not one of'
-                            u' the available choices.'),
-    }
+class UnhideableQuerysetType(type):
 
-    def __init__(self, **kwargs):
-        if self.queryset is None:
-            raise ValueError('queryset is required.')
+    def __new__(cls, name, bases, dct):
+        _q = dct.get('queryset', None)
+        if _q is not None and not isinstance(_q, property):
+            # This hack is needed since users are allowed to
+            # provide queryset in sub-classes by declaring
+            # class variable named - queryset, which will
+            # effectively hide the queryset declared in this
+            # mixin.
+            dct.pop('queryset') # Throwing away the sub-class queryset
+            dct['_subclass_queryset'] = _q
 
-        self.to_field_name = getattr(self, 'to_field_name', 'pk')
+        return type.__new__(cls, name, bases, dct)
 
-        super(ModelValueMixin, self).__init__(**kwargs)
+    def __call__(cls, *args, **kwargs):
+        queryset = kwargs.get('queryset', None)
+        if not queryset and hasattr(cls, '_subclass_queryset'):
+            kwargs['queryset'] = getattr(cls, '_subclass_queryset')
+        return type.__call__(cls, *args, **kwargs)
 
-    def to_python(self, value):
-        if value in EMPTY_VALUES:
-            return None
-        try:
-            key = self.to_field_name
-            value = self.queryset.get(**{key: value})
-        except (ValueError, self.queryset.model.DoesNotExist):
-            raise ValidationError(self.error_messages['invalid_choice'])
-        return value
+class ChoiceMixin(object):
+    def _get_choices(self):
+        if hasattr(self, '_choices'):
+            return self._choices
+
+    def _set_choices(self, value):
+        # Setting choices also sets the choices on the widget.
+        # choices can be any iterable, but we call list() on it because
+        # it will be consumed more than once.
+        self._choices = self.widget.choices = list(value)
+
+    choices = property(_get_choices, _set_choices)
+
+class QuerysetChoiceMixin(ChoiceMixin):
+    def _get_choices(self):
+        # If self._choices is set, then somebody must have manually set
+        # the property self.choices. In this case, just return self._choices.
+        if hasattr(self, '_choices'):
+            return self._choices
+
+        # Otherwise, execute the QuerySet in self.queryset to determine the
+        # choices dynamically. Return a fresh ModelChoiceIterator that has not been
+        # consumed. Note that we're instantiating a new ModelChoiceIterator *each*
+        # time _get_choices() is called (and, thus, each time self.choices is
+        # accessed) so that we can ensure the QuerySet has not been consumed. This
+        # construct might look complicated but it allows for lazy evaluation of
+        # the queryset.
+        return ModelChoiceIterator(self)
+
+    choices = property(_get_choices, ChoiceMixin._set_choices)
+
+class ModelChoiceField(forms.ModelChoiceField):
+    def __init__(self, *args, **kwargs):
+        queryset = kwargs.pop('queryset', None)
+        empty_label = kwargs.pop('empty_label', u"---------")
+        cache_choices = kwargs.pop('cache_choices', False)
+        required = kwargs.pop('required', True)
+        widget = kwargs.pop('widget', getattr(self, 'widget', None))
+        label = kwargs.pop('label', None)
+        initial = kwargs.pop('initial', None)
+        help_text = kwargs.pop('help_text', None)
+        to_field_name = kwargs.pop('to_field_name', 'pk')
+
+        if hasattr(self, '_choices'): # If it exists then probably it is set by HeavySelect2FieldBase.
+                                      # We are not gonna use that anyway.
+            del self._choices
+
+        super(ModelChoiceField, self).__init__(queryset, empty_label, cache_choices, required,
+            widget, label, initial, help_text, to_field_name)
+
+        if hasattr(self, 'set_placeholder'):
+            self.widget.set_placeholder(self.empty_label)
+
+    def _get_queryset(self):
+        if hasattr(self, '_queryset'):
+            return self._queryset
+
+    queryset = property(_get_queryset, forms.ModelChoiceField._set_queryset)
 
 class Select2ChoiceField(forms.ChoiceField):
     widget = Select2Widget
 
-class Select2MultipleChoiceField(forms.ChoiceField):
+class Select2MultipleChoiceField(forms.MultipleChoiceField):
     widget = Select2MultipleWidget
 
-class HeavySelect2FieldBase(forms.Field):
-    def __init__(self, **kwargs):
+class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
+    def __init__(self, *args, **kwargs):
         data_view = kwargs.pop('data_view', None)
-        kargs = {}
+        self.choices = kwargs.pop('choices', [])
 
+        kargs = {}
         if data_view is not None:
             kargs['widget'] = self.widget(data_view=data_view)
         elif kwargs.get('widget', None) is None:
             raise ValueError('data_view is required else you need to provide your own widget instance.')
 
         kargs.update(kwargs)
-        super(HeavySelect2FieldBase, self).__init__(**kargs)
+        super(HeavySelect2FieldBase, self).__init__(*args, **kargs)
 
 class HeavySelect2ChoiceField(HeavySelect2FieldBase):
     widget = HeavySelect2Widget
 
 class HeavySelect2MultipleChoiceField(HeavySelect2FieldBase):
     widget = HeavySelect2MultipleWidget
+
+class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2ChoiceField, ModelChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('choices', None)
+        super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
 
 class AutoSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavySelect2ChoiceField):
     """
@@ -129,45 +192,26 @@ class AutoSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavySelect2Cho
 
     widget = AutoHeavySelect2Widget
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
-        super(AutoSelect2Field, self).__init__(**kwargs)
+        super(AutoSelect2Field, self).__init__(*args, **kwargs)
 
-class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, ModelValueMixin, HeavySelect2ChoiceField):
+class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField):
     """
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
+    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2Widget
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
-        super(AutoModelSelect2Field, self).__init__(**kwargs)
+        super(AutoModelSelect2Field, self).__init__(*args, **kwargs)
 
-class ModelSelect2Field(ModelValueMixin, Select2ChoiceField):
-    def __init__(self, **kwargs):
-        self.queryset = kwargs.pop('queryset', None)
-        self.to_field_name = kwargs.pop('to_field_name', 'pk')
-        
-        choices = kwargs.pop('choices', None)
-        if choices is None:
-            choices = []
-            for obj in self.queryset.all():
-                choices.append((getattr(obj, self.to_field_name), smart_unicode(obj), ))
+class ModelSelect2Field(ModelChoiceField) :
+    "Light Model Select2 field"
+    widget = Select2Widget
 
-        kwargs['choices'] = choices
-
-        super(ModelSelect2Field, self).__init__(**kwargs)
-
-    def valid_value(self, value):
-        val = getattr(value, self.to_field_name)
-        for k, v in self.choices:
-            if k == val:
-                return True
-        return False
-
-
-    

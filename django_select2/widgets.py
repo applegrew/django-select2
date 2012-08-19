@@ -1,17 +1,24 @@
 import types
+from itertools import chain
 
 from django import forms
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 
-class JSFunction(str):
+from .util import render_js_script, convert_to_js_string_arr
+
+class JSVar(unicode):
+    "Denotes a JS variable name, so it must not be quoted while rendering."
+    pass
+
+class JSFunction(JSVar):
     """
     Flags that the string is the name of a JS function. Used by Select2Mixin.render_options()
     to make sure that this string is not quoted like other strings.
     """
     pass
 
-class JSFunctionInContext(str):
+class JSFunctionInContext(JSVar):
     """
     Like JSFunction, this too flags the string as JS function, but with a special requirement.
     The JS function needs to be invoked in the context of the current Select2 Html DOM,
@@ -23,10 +30,10 @@ class Select2Mixin(object):
     # For details on these options refer: http://ivaynberg.github.com/select2/#documentation
     options = {
         'minimumResultsForSearch': 6, # Only applicable for single value select.
-        'placeholder': '',
+        'placeholder': '', # Empty text label
         'allowClear': True, # Not allowed when field is multiple since there each value has a clear button.
         'multiple': False, # Not allowed when attached to <select>
-        'closeOnSelect': False
+        'closeOnSelect': False,
     }
 
     def __init__(self, **kwargs):
@@ -44,63 +51,64 @@ class Select2Mixin(object):
     def init_options(self):
         pass
 
+    def set_placeholder(self, val):
+        self.options['placeholder'] = val
+
     def get_options(self):
         options = dict(self.options)
         if options.get('allowClear', None) is not None:
             options['allowClear'] = not self.is_required
         return options
 
-    def render_options_code(self, options, id_):
+    def render_select2_options_code(self, options, id_):
         out = '{'
         is_first = True
         for name in options:
             if not is_first:
-                out += ", "
+                out += u", "
             else:
                 is_first = False
 
-            out += "'%s': " % name
+            out += u"'%s': " % name
             val = options[name]
             if type(val) == types.BooleanType:
-                out += 'true' if val else 'false'
+                out += u'true' if val else u'false'
             elif type(val) in [types.IntType, types.LongType, types.FloatType]:
-                out += str(val)
+                out += unicode(val)
             elif isinstance(val, JSFunctionInContext):
-                out += """function () {
+                out += u"""function () {
                         var args = Array.prototype.slice.call(arguments);
                         return %s.apply($('#%s').get(0), args);
                     }""" % (val, id_)
-            elif isinstance(val, JSFunction):
+            elif isinstance(val, JSVar):
                 out += val # No quotes here
             elif isinstance(val, dict):
-                out += self.render_options_code(val, id_)
+                out += self.render_select2_options_code(val, id_)
             else:
-                out += "'%s'" % val
+                out += u"'%s'" % val
 
-        return out + '}'
+        return out + u'}'
 
-    def render_js_code(self, id_):
+    def render_js_code(self, id_, *args):
         if id_:
-            return u"""
-            <script>
-                $(function () {
-                    %s
-                });
-            </script>""" % self.render_inner_js_code(id_);
+            return render_js_script(self.render_inner_js_code(id_, *args))
         return u''
 
-    def render_inner_js_code(self, id_):
+    def render_inner_js_code(self, id_, *args):
         options = dict(self.get_options())
-        options = self.render_options_code(options, id_)
+        options = self.render_select2_options_code(options, id_)
 
-        return '$("#%s").select2(%s);' % (id_, options)
+        return u'$("#%s").select2(%s);' % (id_, options)
 
-    def render(self, name, value, attrs=None):
-        s = unicode(super(Select2Mixin, self).render(name, value, attrs)) # Thanks to @ouhouhsami Issue#1
+    def render(self, name, value, attrs=None, choices=()):
+        args = [name, value, attrs]
+        if choices: args.append(choices)
+
+        s = unicode(super(Select2Mixin, self).render(*args)) # Thanks to @ouhouhsami Issue#1
         s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
-        s += self.render_js_code(id_)
+        s += self.render_js_code(id_, name, value, attrs, choices)
         return mark_safe(s)
 
     class Media:
@@ -112,6 +120,8 @@ class HeavySelect2Mixin(Select2Mixin):
         self.options = dict(self.options) # Making an instance specific copy
         self.view = kwargs.pop('data_view', None)
         self.url = kwargs.pop('data_url', None)
+        self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', u'null')
+        self.choices = kwargs.pop('choices', [])
         if not self.view and not self.url:
             raise ValueError('data_view or data_url is required')
         self.url = None
@@ -125,6 +135,15 @@ class HeavySelect2Mixin(Select2Mixin):
         self.options['initSelection'] = JSFunction('django_select2.onInit')
         super(HeavySelect2Mixin, self).__init__(**kwargs)
 
+    def render_texts(self, selected_choices, choices):
+        txts = []
+        all_choices = choices if choices else []
+        for val, txt in chain(self.choices, all_choices):
+            if val in selected_choices:
+                txts.append(txt)
+        if txts:
+            return convert_to_js_string_arr(txts)
+
     def get_options(self):
         if self.url is None:
             self.url = reverse(self.view) # We lazy resolve the view. By this time Url conf would been loaded fully.
@@ -132,19 +151,40 @@ class HeavySelect2Mixin(Select2Mixin):
             self.options['ajax']['url'] = self.url
         return super(HeavySelect2Mixin, self).get_options()
 
-    def render_inner_js_code(self, id_):
-        js = super(HeavySelect2Mixin, self).render_inner_js_code(id_)
-        js += "$('#%s').change(django_select2.onValChange);" % id_
+    def render_texts_for_value(self, id_, value, choices):
+        if value is not None:
+            values = [value] # Just like forms.Select.render() it assumes that value will be single valued.
+            texts = self.render_texts(values, choices)
+            if texts:
+                return u"$('#%s').attr('txt', %s);" % (id_, texts)
+
+    def render_inner_js_code(self, id_, name, value, attrs=None, choices=(), *args):
+        js = u"$('#%s').change(django_select2.onValChange).data('userGetValText', %s);" \
+            % (id_, self.userGetValTextFuncName)
+        texts = self.render_texts_for_value(id_, value, choices)
+        if texts:
+            js += texts
+        js += super(HeavySelect2Mixin, self).render_inner_js_code(id_, name, value, attrs, choices, *args)
         return js
 
     class Media:
         js = ('js/select2.min.js', 'js/heavy_data.js', )
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
+class MultipleSelect2HiddenInput(forms.TextInput):
+    input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
+    def render(self, name, value, attrs=None, choices=()):
+        attrs = self.build_attrs(attrs, multiple='multiple')
+        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, value, attrs, choices))
+        id_ = attrs.get('id', None)
+        if id_:
+            s += render_js_script(u"django_select2.initMultipleHidden($('#%s'));" % id_)
+        return s
+
 class AutoHeavySelect2Mixin(HeavySelect2Mixin):
-    def render_inner_js_code(self, id_):
-        js = super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_)
-        js += "$('#%s').data('field_id', '%s');" % (id_, self.field_id)
+    def render_inner_js_code(self, id_, *args):
+        js = super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
+        js += u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
         return js
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -168,12 +208,18 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
     def init_options(self):
         self.options['multiple'] = False
 
-class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.TextInput):
-    input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
+class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
     def init_options(self):
         self.options['multiple'] = True
         self.options.pop('allowClear', None)
         self.options.pop('minimumResultsForSearch', None)
+        self.options['separator'] = JSVar('django_select2.MULTISEPARATOR')
+
+    def render_texts_for_value(self, id_, value, choices): # value is expected to be a list of values
+        if value: # Just like forms.SelectMultiple.render() it assumes that value will be multi-valued (list).
+            texts = self.render_texts(value, choices)
+            if texts:
+                return render_js_script(u"$('#%s').attr('txt', %s);" % (id_, texts))
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
     pass
