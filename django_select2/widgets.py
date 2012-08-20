@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 
 from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext
 
+### Light mixin and widgets ###
+
 class Select2Mixin(object):
     # For details on these options refer: http://ivaynberg.github.com/select2/#documentation
     options = {
@@ -96,6 +98,45 @@ class Select2Mixin(object):
         js = ('js/select2.min.js', )
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
+class Select2Widget(Select2Mixin, forms.Select):
+    def init_options(self):
+        self.options.pop('multiple', None)
+
+    def render_options(self, choices, selected_choices):
+        if not self.is_required:
+            choices = list(choices)
+            choices.append(('', '', )) # Adding an empty choice
+        return super(Select2Widget, self).render_options(choices, selected_choices)
+
+class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
+    def init_options(self):
+        self.options.pop('multiple', None)
+        self.options.pop('allowClear', None)
+        self.options.pop('minimumResultsForSearch', None)
+
+### Specialized Multiple Hidden Input Widget ###
+class MultipleSelect2HiddenInput(forms.TextInput):
+    """
+    This is a specialized multiple Hidden Input widget. This includes a special
+    JS component which renders multiple Hidden Input boxes as there are values.
+    So, if user suppose chooses values 1,4,9 then Select2 would would write them
+    to the hidden input. The JS component of this widget will read that value and
+    will render three more hidden input boxes each with values 1, 4 and 9 respectively.
+    They will all share the name of this field, and the name of the primary source
+    hidden input would be removed. This way, when submitted all the selected values
+    would be available was would have been for a <select> multiple field.
+    """
+    input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
+    def render(self, name, value, attrs=None, choices=()):
+        attrs = self.build_attrs(attrs, multiple='multiple')
+        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, value, attrs, choices))
+        id_ = attrs.get('id', None)
+        if id_:
+            s += render_js_script(u"django_select2.initMultipleHidden($('#%s'));" % id_)
+        return s
+
+### Heavy mixins and widgets ###
+
 class HeavySelect2Mixin(Select2Mixin):
     def __init__(self, **kwargs):
         self.options = dict(self.options) # Making an instance specific copy
@@ -152,38 +193,6 @@ class HeavySelect2Mixin(Select2Mixin):
         js = ('js/select2.min.js', 'js/heavy_data.js', )
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
-class MultipleSelect2HiddenInput(forms.TextInput):
-    input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
-    def render(self, name, value, attrs=None, choices=()):
-        attrs = self.build_attrs(attrs, multiple='multiple')
-        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, value, attrs, choices))
-        id_ = attrs.get('id', None)
-        if id_:
-            s += render_js_script(u"django_select2.initMultipleHidden($('#%s'));" % id_)
-        return s
-
-class AutoHeavySelect2Mixin(HeavySelect2Mixin):
-    def render_inner_js_code(self, id_, *args):
-        js = super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
-        js += u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
-        return js
-
-class Select2Widget(Select2Mixin, forms.Select):
-    def init_options(self):
-        self.options.pop('multiple', None)
-
-    def render_options(self, choices, selected_choices):
-        if not self.is_required:
-            choices = list(choices)
-            choices.append(('', '', )) # Adding an empty choice
-        return super(Select2Widget, self).render_options(choices, selected_choices)
-
-class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
-    def init_options(self):
-        self.options.pop('multiple', None)
-        self.options.pop('allowClear', None)
-        self.options.pop('minimumResultsForSearch', None)
-
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
     input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
     def init_options(self):
@@ -201,6 +210,14 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             texts = self.render_texts(value, choices)
             if texts:
                 return render_js_script(u"$('#%s').attr('txt', %s);" % (id_, texts))
+
+### Auto Heavy widgets ###
+
+class AutoHeavySelect2Mixin(HeavySelect2Mixin):
+    def render_inner_js_code(self, id_, *args):
+        js = super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
+        js += u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
+        return js
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
     pass

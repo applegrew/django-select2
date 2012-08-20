@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
-from .forms import EmployeeForm #, DeptForm
+from .forms import EmployeeForm, DeptForm
 from .models import Employee, Dept
 
 def test_single_value_model_field(request):

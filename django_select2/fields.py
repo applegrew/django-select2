@@ -26,6 +26,17 @@ from django.core.validators import EMPTY_VALUES
 from .widgets import Select2Widget, Select2MultipleWidget,\
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget
 from .views import NO_ERR_RESP
+from .util import extract_some_key_val
+
+### Light general fields ###
+
+class Select2ChoiceField(forms.ChoiceField):
+    widget = Select2Widget
+
+class Select2MultipleChoiceField(forms.MultipleChoiceField):
+    widget = Select2MultipleWidget
+
+### Model fields related mixins ###
 
 class ModelResultJsonMixin(object):
 
@@ -126,25 +137,20 @@ class QuerysetChoiceMixin(ChoiceMixin):
     choices = property(_get_choices, ChoiceMixin._set_choices)
 
 class ModelChoiceFieldMixin(object):
-#class ModelChoiceField(forms.ModelChoiceField):
 
     def __init__(self, *args, **kwargs):
         queryset = kwargs.pop('queryset', None)
-        empty_label = kwargs.pop('empty_label', u"---------")
-        cache_choices = kwargs.pop('cache_choices', False)
-        required = kwargs.pop('required', True)
-        widget = kwargs.pop('widget', getattr(self, 'widget', None))
-        label = kwargs.pop('label', None)
-        initial = kwargs.pop('initial', None)
-        help_text = kwargs.pop('help_text', None)
-        to_field_name = kwargs.pop('to_field_name', 'pk')
+        kargs = extract_some_key_val(kwargs, [
+            'empty_label', 'cache_choices', 'required', 'label', 'initial', 'help_text',
+            ])
+        kargs['widget'] = kwargs.pop('widget', getattr(self, 'widget', None))
+        kargs['to_field_name'] = kwargs.pop('to_field_name', 'pk')        
 
         if hasattr(self, '_choices'): # If it exists then probably it is set by HeavySelect2FieldBase.
                                       # We are not gonna use that anyway.
             del self._choices
 
-        super(ModelChoiceField, self).__init__(queryset, empty_label, cache_choices, required,
-            widget, label, initial, help_text, to_field_name)
+        super(ModelChoiceFieldMixin, self).__init__(queryset, **kargs)
 
         if hasattr(self, 'set_placeholder'):
             self.widget.set_placeholder(self.empty_label)
@@ -153,19 +159,25 @@ class ModelChoiceFieldMixin(object):
         if hasattr(self, '_queryset'):
             return self._queryset
 
-#    queryset = property(_get_queryset, forms.ModelChoiceField._set_queryset)
+### Slightly altered versions of the Django counterparts with the same name in forms module. ###
 
 class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
 
-#class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
-#    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
+class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
+    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
 
-class Select2ChoiceField(forms.ChoiceField):
+### Light Fileds specialized for Models ###
+
+class ModelSelect2Field(ModelChoiceField) :
+    "Light Model Select2 field"
     widget = Select2Widget
 
-class Select2MultipleChoiceField(forms.MultipleChoiceField):
+class ModelMultipleSelect2Field(ModelMultipleChoiceField) :
+    "Light multiple-value Model Select2 field"
     widget = Select2MultipleWidget
+
+### Heavy fields ###
 
 class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
     def __init__(self, *args, **kwargs):
@@ -187,10 +199,14 @@ class HeavySelect2ChoiceField(HeavySelect2FieldBase):
 class HeavySelect2MultipleChoiceField(HeavySelect2FieldBase):
     widget = HeavySelect2MultipleWidget
 
+### Heavy field specialized for Models (Single valued) ###
+
 class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2ChoiceField, ModelChoiceField):
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
+
+### Heavy general field that uses central AutoView ###
 
 class AutoSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavySelect2ChoiceField):
     """
@@ -205,12 +221,15 @@ class AutoSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavySelect2Cho
         kwargs['data_view'] = self.data_view
         super(AutoSelect2Field, self).__init__(*args, **kwargs)
 
+### Heavy field, specialized for Model, that uses central AutoView ###
+
 class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField):
     """
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    __metaclass__ = UnhideableQuerysetType
+    __metaclass__ = UnhideableQuerysetType # Makes sure that user defined queryset class variable is replaced by
+                                           # queryset property (as it is needed by super classes).
 
     widget = AutoHeavySelect2Widget
 
@@ -218,11 +237,3 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
         super(AutoModelSelect2Field, self).__init__(*args, **kwargs)
-
-class ModelSelect2Field(ModelChoiceField) :
-    "Light Model Select2 field"
-    widget = Select2Widget
-
-#class ModelMultipleSelect2Field(ModelMultipleChoiceField) :
-#    "Light multiple-value Model Select2 field"
-#    widget = Select2MultipleWidget

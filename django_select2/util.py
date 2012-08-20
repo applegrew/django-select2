@@ -29,6 +29,14 @@ class JSFunctionInContext(JSVar):
     """
     pass
 
+def extract_some_key_val(dct, keys):
+    edct = {}
+    for k in keys:
+        v = dct.get(k, None)
+        if v is not None:
+            edct[k] = v
+    return edct
+
 ### Auto view helper utils ###
 
 import re
