@@ -13,6 +13,7 @@ External dependencies
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.
 
+=================
 Changelog Summary
 =================
 
