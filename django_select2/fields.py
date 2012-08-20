@@ -3,7 +3,7 @@ class AutoViewFieldMixin(object):
     def __init__(self, *args, **kwargs):
         name = self.__class__.__name__
         from .util import register_field
-        if name not in ['AutoViewFieldMixin', 'AutoModelSelect2Field']:
+        if name not in ['AutoViewFieldMixin', 'AutoSelect2Field', 'AutoModelSelect2Field']:
             id_ = register_field("%s.%s" % (self.__module__, name), self)
             self.widget.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
