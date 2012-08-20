@@ -5,26 +5,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 
-from .util import render_js_script, convert_to_js_string_arr
-
-class JSVar(unicode):
-    "Denotes a JS variable name, so it must not be quoted while rendering."
-    pass
-
-class JSFunction(JSVar):
-    """
-    Flags that the string is the name of a JS function. Used by Select2Mixin.render_options()
-    to make sure that this string is not quoted like other strings.
-    """
-    pass
-
-class JSFunctionInContext(JSVar):
-    """
-    Like JSFunction, this too flags the string as JS function, but with a special requirement.
-    The JS function needs to be invoked in the context of the current Select2 Html DOM,
-    such that 'this' inside the function refers to the source Select2 DOM.
-    """
-    pass
+from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext
 
 class Select2Mixin(object):
     # For details on these options refer: http://ivaynberg.github.com/select2/#documentation

@@ -10,6 +10,25 @@ def render_js_script(inner_code):
         });
     </script>""" % inner_code
 
+class JSVar(unicode):
+    "Denotes a JS variable name, so it must not be quoted while rendering."
+    pass
+
+class JSFunction(JSVar):
+    """
+    Flags that the string is the name of a JS function. Used by Select2Mixin.render_options()
+    to make sure that this string is not quoted like other strings.
+    """
+    pass
+
+class JSFunctionInContext(JSVar):
+    """
+    Like JSFunction, this too flags the string as JS function, but with a special requirement.
+    The JS function needs to be invoked in the context of the current Select2 Html DOM,
+    such that 'this' inside the function refers to the source Select2 DOM.
+    """
+    pass
+
 ### Auto view helper utils ###
 
 import re

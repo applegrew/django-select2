@@ -125,7 +125,9 @@ class QuerysetChoiceMixin(ChoiceMixin):
 
     choices = property(_get_choices, ChoiceMixin._set_choices)
 
-class ModelChoiceField(forms.ModelChoiceField):
+class ModelChoiceFieldMixin(object):
+#class ModelChoiceField(forms.ModelChoiceField):
+
     def __init__(self, *args, **kwargs):
         queryset = kwargs.pop('queryset', None)
         empty_label = kwargs.pop('empty_label', u"---------")
@@ -151,7 +153,13 @@ class ModelChoiceField(forms.ModelChoiceField):
         if hasattr(self, '_queryset'):
             return self._queryset
 
-    queryset = property(_get_queryset, forms.ModelChoiceField._set_queryset)
+#    queryset = property(_get_queryset, forms.ModelChoiceField._set_queryset)
+
+class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
+    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
+
+#class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
+#    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
 
 class Select2ChoiceField(forms.ChoiceField):
     widget = Select2Widget
@@ -215,3 +223,6 @@ class ModelSelect2Field(ModelChoiceField) :
     "Light Model Select2 field"
     widget = Select2Widget
 
+#class ModelMultipleSelect2Field(ModelMultipleChoiceField) :
+#    "Light multiple-value Model Select2 field"
+#    widget = Select2MultipleWidget
