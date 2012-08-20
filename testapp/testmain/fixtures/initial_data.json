@@ -1,23 +1,61 @@
 [
     {
         "pk": 1, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "100"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "200"
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "203"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "203A"
+        }
+    },
+    {
+        "pk": 5, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "500"
+        }
+    },
+    {
+        "pk": 1, 
         "model": "testmain.dept", 
         "fields": {
-            "name": "Chemistry"
+            "name": "Chemistry",
+            "allotted_rooms": [1, 2, 3]
         }
     },
     {
         "pk": 2, 
         "model": "testmain.dept", 
         "fields": {
-            "name": "Biology"
+            "name": "Biology",
+            "allotted_rooms": [3, 4]
         }
     },
     {
         "pk": 3, 
         "model": "testmain.dept", 
         "fields": {
-            "name": "Physics"
+            "name": "Physics",
+            "allotted_rooms": [1, 2, 5]
         }
     },
     {
