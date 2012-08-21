@@ -2,7 +2,7 @@ class AutoViewFieldMixin(object):
     """Registers itself with AutoResponseView."""
     def __init__(self, *args, **kwargs):
         name = self.__class__.__name__
-        print '<><><><><><>', self.__module__, ' :::: ', name, 
+        print '<><><><><><>', self.__module__, '.', name, '\n'
         from .util import register_field
         if name not in ['AutoViewFieldMixin', 'AutoSelect2Field', 'AutoModelSelect2Field',
                         'AutoSelect2MultipleField', 'AutoModelSelect2MultipleField']:
