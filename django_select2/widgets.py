@@ -1,11 +1,12 @@
-import types
 from itertools import chain
 
 from django import forms
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
+from django.utils.datastructures import MultiValueDict, MergeDict
 
-from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext
+from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext, \
+    convert_dict_to_js_map, convert_to_js_arr
 
 ### Light mixin and widgets ###
 
@@ -44,33 +45,7 @@ class Select2Mixin(object):
         return options
 
     def render_select2_options_code(self, options, id_):
-        out = '{'
-        is_first = True
-        for name in options:
-            if not is_first:
-                out += u", "
-            else:
-                is_first = False
-
-            out += u"'%s': " % name
-            val = options[name]
-            if type(val) == types.BooleanType:
-                out += u'true' if val else u'false'
-            elif type(val) in [types.IntType, types.LongType, types.FloatType]:
-                out += unicode(val)
-            elif isinstance(val, JSFunctionInContext):
-                out += u"""function () {
-                        var args = Array.prototype.slice.call(arguments);
-                        return %s.apply($('#%s').get(0), args);
-                    }""" % (val, id_)
-            elif isinstance(val, JSVar):
-                out += val # No quotes here
-            elif isinstance(val, dict):
-                out += self.render_select2_options_code(val, id_)
-            else:
-                out += u"'%s'" % val
-
-        return out + u'}'
+        return convert_dict_to_js_map(options, id_)
 
     def render_js_code(self, id_, *args):
         if id_:
@@ -129,11 +104,21 @@ class MultipleSelect2HiddenInput(forms.TextInput):
     input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
     def render(self, name, value, attrs=None, choices=()):
         attrs = self.build_attrs(attrs, multiple='multiple')
-        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, value, attrs, choices))
+        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, u"", attrs))
         id_ = attrs.get('id', None)
         if id_:
-            s += render_js_script(u"django_select2.initMultipleHidden($('#%s'));" % id_)
+            jscode = u''
+            if value:
+                jscode = u"$('#%s').val(django_select2.convertArrToStr(%s));" \
+                    % (id_, convert_to_js_arr(value, id_))
+            jscode += u"django_select2.initMultipleHidden($('#%s'));" % id_
+            s += render_js_script(jscode)
         return s
+
+    def value_from_datadict(self, data, files, name):
+        if isinstance(data, (MultiValueDict, MergeDict)):
+            return data.getlist(name)
+        return data.get(name, None)
 
 ### Heavy mixins and widgets ###
 
@@ -146,7 +131,6 @@ class HeavySelect2Mixin(Select2Mixin):
         self.choices = kwargs.pop('choices', [])
         if not self.view and not self.url:
             raise ValueError('data_view or data_url is required')
-        self.url = None
         self.options['ajax'] = {
             'dataType': 'json',
             'quietMillis': 100,
@@ -209,15 +193,18 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
         if value: # Just like forms.SelectMultiple.render() it assumes that value will be multi-valued (list).
             texts = self.render_texts(value, choices)
             if texts:
-                return render_js_script(u"$('#%s').attr('txt', %s);" % (id_, texts))
+                return u"$('#%s').txt(%s);" % (id_, texts)
 
 ### Auto Heavy widgets ###
 
 class AutoHeavySelect2Mixin(HeavySelect2Mixin):
     def render_inner_js_code(self, id_, *args):
-        js = super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
-        js += u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
+        js = u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
+        js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
         return js
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
+    pass
+
+class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     pass

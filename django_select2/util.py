@@ -1,6 +1,4 @@
-def convert_to_js_string_arr(lst):
-    lst = ['"%s"' % l for l in lst]
-    return u"[%s]" % (",".join(lst))
+import types
 
 def render_js_script(inner_code):
     return u"""
@@ -36,6 +34,53 @@ def extract_some_key_val(dct, keys):
         if v is not None:
             edct[k] = v
     return edct
+
+def convert_py_to_js_data(val, id_):
+    if type(val) == types.BooleanType:
+        return u'true' if val else u'false'
+    elif type(val) in [types.IntType, types.LongType, types.FloatType]:
+        return unicode(val)
+    elif isinstance(val, JSFunctionInContext):
+        return u"django_select2.runInContextHelper(%s, '%s')" % (val, id_)
+    elif isinstance(val, JSVar):
+        return val # No quotes here
+    elif isinstance(val, dict):
+        return convert_dict_to_js_map(val, id_)
+    elif isinstance(val, list):
+        return convert_to_js_arr(val, id_)
+    else:
+        return u"'%s'" % unicode(val)
+
+def convert_dict_to_js_map(dct, id_):
+    out = u'{'
+    is_first = True
+    for name in dct:
+        if not is_first:
+            out += u", "
+        else:
+            is_first = False
+
+        out += u"'%s': " % name
+        out += convert_py_to_js_data(dct[name], id_)
+
+    return out + u'}'
+
+def convert_to_js_arr(lst, id_):
+    out = u'['
+    is_first = True
+    for val in lst:
+        if not is_first:
+            out += u", "
+        else:
+            is_first = False
+
+        out += convert_py_to_js_data(val, id_)
+
+    return out + u']'
+
+def convert_to_js_string_arr(lst):
+    lst = ['"%s"' % l for l in lst]
+    return u"[%s]" % (",".join(lst))
 
 ### Auto view helper utils ###
 

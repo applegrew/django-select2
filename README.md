@@ -13,10 +13,9 @@ External dependencies
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.
 
-=================
 Changelog Summary
 =================
 
-v2.0
-----
+### v2.0
+
 Mostly major bug fixes in code and design. The changes were many, raising the possibility of backward incompatibilty. However, the backward incompatibilty would be subtle.

@@ -36,10 +36,32 @@
     },
     {
         "pk": 1, 
+        "model": "testmain.lab", 
+        "fields": {
+            "name": "Crimsion"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "testmain.lab", 
+        "fields": {
+            "name": "Saffron"
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "testmain.lab", 
+        "fields": {
+            "name": "Lavender"
+        }
+    },
+    {
+        "pk": 1, 
         "model": "testmain.dept", 
         "fields": {
             "name": "Chemistry",
-            "allotted_rooms": [1, 2, 3]
+            "allotted_rooms": [1, 2, 3],
+            "allotted_labs": [1]
         }
     },
     {
@@ -47,7 +69,8 @@
         "model": "testmain.dept", 
         "fields": {
             "name": "Biology",
-            "allotted_rooms": [3, 4]
+            "allotted_rooms": [3, 4],
+            "allotted_labs": [2]
         }
     },
     {
@@ -55,7 +78,8 @@
         "model": "testmain.dept", 
         "fields": {
             "name": "Physics",
-            "allotted_rooms": [1, 2, 5]
+            "allotted_rooms": [1, 2, 5],
+            "allotted_labs": [1, 3]
         }
     },
     {

@@ -2,8 +2,10 @@ class AutoViewFieldMixin(object):
     """Registers itself with AutoResponseView."""
     def __init__(self, *args, **kwargs):
         name = self.__class__.__name__
+        print '<><><><><><>', self.__module__, ' :::: ', name, 
         from .util import register_field
-        if name not in ['AutoViewFieldMixin', 'AutoSelect2Field', 'AutoModelSelect2Field']:
+        if name not in ['AutoViewFieldMixin', 'AutoSelect2Field', 'AutoModelSelect2Field',
+                        'AutoSelect2MultipleField', 'AutoModelSelect2MultipleField']:
             id_ = register_field("%s.%s" % (self.__module__, name), self)
             self.widget.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
@@ -24,7 +26,8 @@ from django.utils.encoding import smart_unicode
 from django.core.validators import EMPTY_VALUES
 
 from .widgets import Select2Widget, Select2MultipleWidget,\
-    HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget
+    HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
+    AutoHeavySelect2MultipleWidget
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
 
@@ -173,7 +176,7 @@ class ModelSelect2Field(ModelChoiceField) :
     "Light Model Select2 field"
     widget = Select2Widget
 
-class ModelMultipleSelect2Field(ModelMultipleChoiceField) :
+class ModelSelect2MultipleField(ModelMultipleChoiceField) :
     "Light multiple-value Model Select2 field"
     widget = Select2MultipleWidget
 
@@ -199,16 +202,21 @@ class HeavySelect2ChoiceField(HeavySelect2FieldBase):
 class HeavySelect2MultipleChoiceField(HeavySelect2FieldBase):
     widget = HeavySelect2MultipleWidget
 
-### Heavy field specialized for Models (Single valued) ###
+### Heavy field specialized for Models ###
 
 class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2ChoiceField, ModelChoiceField):
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
 
+class HeavyModelSelect2MultipleChoiceField(QuerysetChoiceMixin, HeavySelect2MultipleChoiceField, ModelMultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('choices', None)
+        super(HeavyModelSelect2MultipleChoiceField, self).__init__(*args, **kwargs)
+
 ### Heavy general field that uses central AutoView ###
 
-class AutoSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavySelect2ChoiceField):
+class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
     """
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
@@ -220,6 +228,19 @@ class AutoSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavySelect2Cho
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
         super(AutoSelect2Field, self).__init__(*args, **kwargs)
+
+class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceField):
+    """
+    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
+    json query requests for that type (class).
+    """
+
+    widget = AutoHeavySelect2MultipleWidget
+
+    def __init__(self, *args, **kwargs):
+        self.data_view = "django_select2_central_json"
+        kwargs['data_view'] = self.data_view
+        super(AutoSelect2MultipleField, self).__init__(*args, **kwargs)
 
 ### Heavy field, specialized for Model, that uses central AutoView ###
 
@@ -237,3 +258,20 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
         super(AutoModelSelect2Field, self).__init__(*args, **kwargs)
+
+class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
+    """
+    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
+    json query requests for that type (class).
+    """
+    __metaclass__ = UnhideableQuerysetType # Makes sure that user defined queryset class variable is replaced by
+                                           # queryset property (as it is needed by super classes).
+
+    widget = AutoHeavySelect2MultipleWidget
+
+    def __init__(self, *args, **kwargs):
+        self.data_view = "django_select2_central_json"
+        kwargs['data_view'] = self.data_view
+        super(AutoModelSelect2MultipleField, self).__init__(*args, **kwargs)
+
+

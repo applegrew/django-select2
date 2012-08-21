@@ -1,6 +1,6 @@
 
 var django_select2 = {
-	MULTISEPARATOR: String.fromCharCode(0),
+	MULTISEPARATOR: String.fromCharCode(0), // We use this unprintable char as separator, since this can't be entered by user.
 	get_url_params: function (term, page, context) {
 		var field_id = $(this).data('field_id'),
 			res = {
@@ -163,6 +163,10 @@ var django_select2 = {
 		e = $(e);
 		var id = e.attr('id'), data = null, val = e.select2('val');
 
+		if (!val && val !== 0) {
+			val = e.data('initVal');
+		}
+
 		if (val || val === 0) {
 			// Value is set so need to get the text.
 			data = django_select2.getValText(e);
@@ -176,14 +180,16 @@ var django_select2 = {
 		callback(data); // Change for 2.3.x
 	},
 	onMultipleHiddenChange: function () {
-		var $e = $(this), valContainer = $e.data('valContainer'), name = $e.data('name');
+		var $e = $(this), valContainer = $e.data('valContainer'), name = $e.data('name'), vals = $e.val();
 		valContainer.empty();
-		$($e.val()).each(function () {
-			var inp = $('<input>').appendTo(valContainer);
-			inp.attr('type', 'hidden');
-			inp.attr('name', name);
-			inp.val(this);
-		});
+		if (vals) {
+			vals = vals.split(django_select2.MULTISEPARATOR);
+			$(vals).each(function () {
+				var inp = $('<input type="hidden">').appendTo(valContainer);
+				inp.attr('name', name);
+				inp.val(this);
+			});
+		}
 	},
 	initMultipleHidden: function ($e) {
 		var valContainer;
@@ -191,18 +197,41 @@ var django_select2 = {
 		$e.data('name', $e.attr('name'));
 		$e.attr('name', '');
 
-		valContainer = $e.after('<div>').css({'display': 'none'});
+		valContainer = $('<div>').insertAfter($e).css({'display': 'none'});
 		$e.data('valContainer', valContainer);
 
 		$e.change(django_select2.onMultipleHiddenChange);
+		if ($e.val()) {
+			$e.change();
+		}
 	},
 	convertArrToStr: function (arr) {
 		return arr.join(django_select2.MULTISEPARATOR);
+	},
+	runInContextHelper: function (f, id) {
+		return function () {
+			var args = Array.prototype.slice.call(arguments);
+	        return f.apply($('#' + id).get(0), args);
+	    }
 	}
 };
 
 (function( $ ){
-	$.fn.txt = function() {
-		return this.attr('txt');
+	// This sets or gets the text lables for an element. It merely takes care returing array or single
+	// value, based on if element is multiple type.
+	$.fn.txt = function(val) {
+		if (typeof(val) !== 'undefined') {
+			if (val instanceof Array) {
+				val = django_select2.convertArrToStr(val);
+			}
+			this.attr('txt', val);
+			return this;
+		} else {
+			val = this.attr('txt');
+			if (val && this.attr('multiple')) {
+				val = val.split(django_select2.MULTISEPARATOR);
+			}
+			return val;
+		}
 	};
 })( jQuery );
