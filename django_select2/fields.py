@@ -11,7 +11,7 @@ class AutoViewFieldMixin(object):
 
         from . import util
         id_ = util.register_field(name, self)
-        self.widget.field_id = id_
+        self.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
 
     def security_check(self, request, *args, **kwargs):
@@ -199,6 +199,13 @@ class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
 
         kargs.update(kwargs)
         super(HeavySelect2FieldBase, self).__init__(*args, **kargs)
+        # This piece of code is needed here since (God knows) why Django's Field class does not call
+        # super(); because of that __init__() of classes would get called after Field.__init__().
+        # If did had super() call there then we could have simply moved AutoViewFieldMixin at the
+        # end of the MRO list. This way it would have got widget instance instead of class and it
+        # could have directly set field_id on it.
+        if hasattr(self, 'field_id'):
+            self.widget.field_id = self.field_id
 
 class HeavySelect2ChoiceField(HeavySelect2FieldBase):
     widget = HeavySelect2Widget
