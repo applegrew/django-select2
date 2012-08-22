@@ -26,3 +26,7 @@ class DeptForm(forms.ModelForm):
 
     class Meta:
         model = Dept
+
+# These are just for testing Auto registration of fields
+EmployeeChoices() # Should already be registered
+EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId") # Should get registered

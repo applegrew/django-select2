@@ -5,12 +5,12 @@ logger = logging.getLogger(__name__)
 class AutoViewFieldMixin(object):
     """Registers itself with AutoResponseView."""
     def __init__(self, *args, **kwargs):
-        name = self.__class__.__name__
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug("Registering auto field: %s.%s", self.__module__, name)
+        name = kwargs.pop('auto_id', u"%s.%s" % (self.__module__, self.__class__.__name__))
+        if logger.isEnabledFor(logging.INFO):
+            logger.info("Registering auto field: %s", name)
 
         from .util import register_field
-        id_ = register_field("%s.%s" % (self.__module__, name), self)
+        id_ = register_field(name, self)
         self.widget.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
 

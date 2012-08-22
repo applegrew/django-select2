@@ -221,10 +221,16 @@ var django_select2 = {
 	// value, based on if element is multiple type.
 	$.fn.txt = function(val) {
 		if (typeof(val) !== 'undefined') {
-			if (val instanceof Array) {
-				val = django_select2.convertArrToStr(val);
+			if (val) {
+				if (val instanceof Array) {
+					if (this.attr('multiple')) {
+						val = django_select2.convertArrToStr(val);
+					} else {
+						val = val[0]
+					}
+				}
+				this.attr('txt', val);
 			}
-			this.attr('txt', val);
 			return this;
 		} else {
 			val = this.attr('txt');

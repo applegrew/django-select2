@@ -2,6 +2,7 @@ import logging
 from itertools import chain
 
 from django import forms
+from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
@@ -149,9 +150,11 @@ class HeavySelect2Mixin(Select2Mixin):
         super(HeavySelect2Mixin, self).__init__(**kwargs)
 
     def render_texts(self, selected_choices, choices):
+        selected_choices = list(force_unicode(v) for v in selected_choices)
         txts = []
         all_choices = choices if choices else []
         for val, txt in chain(self.choices, all_choices):
+            val = force_unicode(val)
             if val in selected_choices:
                 txts.append(txt)
         if txts:
@@ -169,7 +172,7 @@ class HeavySelect2Mixin(Select2Mixin):
             values = [value] # Just like forms.Select.render() it assumes that value will be single valued.
             texts = self.render_texts(values, choices)
             if texts:
-                return u"$('#%s').attr('txt', %s);" % (id_, texts)
+                return u"$('#%s').txt(%s);" % (id_, texts)
 
     def render_inner_js_code(self, id_, name, value, attrs=None, choices=(), *args):
         js = u"$('#%s').change(django_select2.onValChange).data('userGetValText', %s);" \
