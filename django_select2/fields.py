@@ -1,13 +1,17 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 class AutoViewFieldMixin(object):
     """Registers itself with AutoResponseView."""
     def __init__(self, *args, **kwargs):
         name = self.__class__.__name__
-        print '<><><><><><>', self.__module__, '.', name, '\n'
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Registering auto field: %s.%s", self.__module__, name)
+
         from .util import register_field
-        if name not in ['AutoViewFieldMixin', 'AutoSelect2Field', 'AutoModelSelect2Field',
-                        'AutoSelect2MultipleField', 'AutoModelSelect2MultipleField']:
-            id_ = register_field("%s.%s" % (self.__module__, name), self)
-            self.widget.field_id = id_
+        id_ = register_field("%s.%s" % (self.__module__, name), self)
+        self.widget.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
 
     def security_check(self, request, *args, **kwargs):

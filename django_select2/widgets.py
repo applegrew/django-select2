@@ -1,3 +1,4 @@
+import logging
 from itertools import chain
 
 from django import forms
@@ -7,6 +8,8 @@ from django.utils.datastructures import MultiValueDict, MergeDict
 
 from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext, \
     convert_dict_to_js_map, convert_to_js_arr
+
+logger = logging.getLogger(__name__)
 
 ### Light mixin and widgets ###
 
@@ -67,6 +70,10 @@ class Select2Mixin(object):
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         s += self.render_js_code(id_, name, value, attrs, choices)
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Generated widget code:-\n%s", s)
+
         return mark_safe(s)
 
     class Media:

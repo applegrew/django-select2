@@ -1,4 +1,7 @@
 import types
+import logging
+
+logger = logging.getLogger(__name__)
 
 def render_js_script(inner_code):
     return u"""
@@ -120,8 +123,13 @@ def register_field(name, field):
 
         __field_store[name] = id_
         __id_store[id_] = field
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Registering new field: %s; With actual id: %s", name, id_)
     else:
         id_ = __field_store[name]
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Field already registered: %s; With actual id: %s", name, id_)
     return id_
 
 def get_field(id_):
