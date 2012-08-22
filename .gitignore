@@ -2,3 +2,8 @@
 testapp/tt.py
 
 *.pyc
+<<<<<<< HEAD
+=======
+
+testapp/tt2.py
+>>>>>>> v1.1

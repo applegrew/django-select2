@@ -1,0 +1,143 @@
+[
+    {
+        "pk": 1, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "100"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "200"
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "203"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "203A"
+        }
+    },
+    {
+        "pk": 5, 
+        "model": "testmain.classroom", 
+        "fields": {
+            "number": "500"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "testmain.lab", 
+        "fields": {
+            "name": "Crimsion"
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "testmain.lab", 
+        "fields": {
+            "name": "Saffron"
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "testmain.lab", 
+        "fields": {
+            "name": "Lavender"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "testmain.dept", 
+        "fields": {
+            "name": "Chemistry",
+            "allotted_rooms": [1, 2, 3],
+            "allotted_labs": [1]
+        }
+    },
+    {
+        "pk": 2, 
+        "model": "testmain.dept", 
+        "fields": {
+            "name": "Biology",
+            "allotted_rooms": [3, 4],
+            "allotted_labs": [2]
+        }
+    },
+    {
+        "pk": 3, 
+        "model": "testmain.dept", 
+        "fields": {
+            "name": "Physics",
+            "allotted_rooms": [1, 2, 5],
+            "allotted_labs": [1, 3]
+        }
+    },
+    {
+    	"pk": 1,
+    	"model": "testmain.employee", 
+        "fields": {
+            "name": "John Roger", 
+            "salary": 8000,
+            "dept": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "testmain.employee", 
+        "fields": {
+            "name": "John Doe", 
+            "salary": 9000,
+            "dept": 2
+        }
+    },
+    {
+        "pk": 3,
+        "model": "testmain.employee", 
+        "fields": {
+            "name": "John Mark", 
+            "salary": 10000,
+            "dept": 3
+        }
+    },
+    {
+        "pk": 4,
+        "model": "testmain.employee", 
+        "fields": {
+            "name": "Mary Jane", 
+            "salary": 2000,
+            "dept": 1,
+            "manager": 1
+        }
+    },
+    {
+        "pk": 5,
+        "model": "testmain.employee", 
+        "fields": {
+            "name": "Hulk", 
+            "salary": 7000,
+            "dept": 2,
+            "manager": 2
+        }
+    },
+    {
+        "pk": 6,
+        "model": "testmain.employee", 
+        "fields": {
+            "name": "Green Gold", 
+            "salary": 4000,
+            "dept": 2,
+            "manager": 2
+        }
+    }
+]
+

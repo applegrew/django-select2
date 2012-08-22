@@ -1,0 +1,15 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="{{ STATIC_URL }}jquery-1.7.2.min.js"></script>
+</head>
+<body>
+<form method="post" action="">
+	{% csrf_token %}
+	<table>
+		{{form}}
+	</table>
+	<input type="submit" value="Submit Form"/>
+</form>
+</body>
