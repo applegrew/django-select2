@@ -1,5 +1,3 @@
-** Notice: ** Currently branch [v1.1](https://github.com/applegrew/django-select2/tree/v1.1) is being tested. It is recommended that you check out that branch first and see if that works for you.
-
 Django-Select2
 ==============
 
