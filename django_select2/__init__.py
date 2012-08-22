@@ -1,4 +1,4 @@
-__version__ = "2.0"
+__version__ = "2.0.1"
 
 from django.conf import settings
 if settings.configured:

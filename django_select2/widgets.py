@@ -207,7 +207,15 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
 
 ### Auto Heavy widgets ###
 
-class AutoHeavySelect2Mixin(HeavySelect2Mixin):
+class AutoHeavySelect2Mixin(object):
+    def __init__(self, *args, **kwargs):
+        if hasattr(self.__class__, 'field_id'): # By the time AutoViewFieldMixin runs widget is not instantiated
+                                                # so it sets the value on the widget class.
+            self.field_id = getattr(self.__class__, 'field_id')
+            delattr(self.__class__, 'field_id')
+
+        super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
+
     def render_inner_js_code(self, id_, *args):
         js = u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
         js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)

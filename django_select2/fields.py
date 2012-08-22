@@ -9,8 +9,8 @@ class AutoViewFieldMixin(object):
         if logger.isEnabledFor(logging.INFO):
             logger.info("Registering auto field: %s", name)
 
-        from .util import register_field
-        id_ = register_field(name, self)
+        from . import util
+        id_ = util.register_field(name, self)
         self.widget.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
 

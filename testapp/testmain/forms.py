@@ -12,6 +12,9 @@ class ClassRoomChoices(AutoModelSelect2MultipleField):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
 
+class ClassRoomSingleChoices(AutoModelSelect2Field):
+    queryset = ClassRoom.objects
+    search_fields = ['number__icontains', ]
 
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
@@ -26,6 +29,13 @@ class DeptForm(forms.ModelForm):
 
     class Meta:
         model = Dept
+
+class MixedForm(forms.Form):
+    emp1 = EmployeeChoices()
+    rooms1 = ClassRoomChoices()
+    emp2 = EmployeeChoices()
+    rooms2 = ClassRoomChoices()
+    rooms3 = ClassRoomSingleChoices()
 
 # These are just for testing Auto registration of fields
 EmployeeChoices() # Should already be registered
