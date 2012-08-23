@@ -102,11 +102,10 @@ def find_package_data(
                 out.setdefault(package, []).append(prefix+name)
     return out
 
-
 PACKAGE = "django_select2"
 NAME = "Django-Select2"
 DESCRIPTION = "Select2 option fields for Django"
-AUTHOR = "AppleGrew"
+AUTHOR = "Nirupam Biswas"
 AUTHOR_EMAIL = "admin@applegrew.com"
 URL = "https://github.com/applegrew/django-select2"
 VERSION = __import__(PACKAGE).__version__
@@ -119,18 +118,22 @@ setup(
     long_description=read("README.md"),
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
-    license="MIT",
+    license="LICENSE.txt",
     url=URL,
-    packages=find_packages(exclude=["tests.*", "tests"]),
-    package_data=find_package_data(PACKAGE, only_in_packages=False),
+    packages=[PACKAGE],
+    package_data=find_package_data(),
+    exclude_package_data={ '': standard_exclude },
     include_package_data=True,
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Framework :: Django",
+    ],
+    install_requires=[
+        "Django",
     ],
 )
