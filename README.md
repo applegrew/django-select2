@@ -8,7 +8,14 @@ The app includes Select2 driven Django Widgets and Form Fields.
 Installation
 ============
 
+1. Install `django_select2`
+
     pip install django_select2
+
+1. Add `django_select2` to your `INSTALLED_APPS` in your project settings.
+1. When deploying on production server, run :-
+
+    python manage.py collectstatic
 
 More details
 ============
