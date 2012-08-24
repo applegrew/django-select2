@@ -1,3 +1,3 @@
-include *.txt
+include *.txt *.md
 recursive-include django_select2/static *.*
 recursive-exclude django_select2/static .DS_Store
