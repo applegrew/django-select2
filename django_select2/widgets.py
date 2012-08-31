@@ -116,6 +116,7 @@ class Select2Mixin(object):
     def set_placeholder(self, val):
         """
         Placeholder is a value which Select2 JS library shows when nothing is selected. This should be string.
+        
         :return: None
         """
         self.options['placeholder'] = val
@@ -123,6 +124,7 @@ class Select2Mixin(object):
     def get_options(self):
         """
         :return: Dictionary of options to be passed to Select2 JS.
+        
         :rtype: :py:obj:`dict`
         """
         options = dict(self.options)
@@ -133,6 +135,7 @@ class Select2Mixin(object):
     def render_select2_options_code(self, options, id_):
         """
         Renders options for Select2 JS.
+        
         :return: The rendered JS code.
         :rtype: :py:obj:`unicode`
         """
@@ -141,6 +144,7 @@ class Select2Mixin(object):
     def render_js_code(self, id_, *args):
         """
         Renders the ``<script>`` block which contains the JS code for this widget.
+        
         :return: The rendered JS code enclosed inside ``<script>`` block.
         :rtype: :py:obj:`unicode`
         """
@@ -151,6 +155,7 @@ class Select2Mixin(object):
     def render_inner_js_code(self, id_, *args):
         """
         Renders all the JS code required for this widget.
+        
         :return: The rendered JS code which will be later enclosed inside ``<script>`` block.
         :rtype: :py:obj:`unicode`
         """
@@ -162,6 +167,7 @@ class Select2Mixin(object):
     def render(self, name, value, attrs=None, choices=()):
         """
         Renders this widget. Html and JS code blocks all are rendered by this.
+        
         :return: The rendered markup.
         :rtype: :py:obj:`unicode`
         """
