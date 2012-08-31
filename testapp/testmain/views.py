@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
-from .forms import EmployeeForm, DeptForm, MixedForm
+from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm
 from .models import Employee, Dept
 
 def test_single_value_model_field(request):
@@ -45,4 +45,9 @@ def test_multi_values_model_field1(request, id):
 
 def test_mixed_form(request):
     return render_to_response('form.html', RequestContext(request, {'form': MixedForm()}))
+
+
+def test_init_values(request):
+    return render_to_response('form.html', RequestContext(request, {'form': InitialValueForm()}))
+
 

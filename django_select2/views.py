@@ -8,6 +8,11 @@ from django.http import Http404
 from .util import get_field, is_valid_id
 
 NO_ERR_RESP = 'nil'
+"""
+Equals to 'nil' constant.
+
+Use this in :py:meth:`.Select2View.get_results` to mean no error, instead of hardcoding 'nil' value.
+"""
 
 class JSONResponseMixin(object):
     """
@@ -30,6 +35,14 @@ class JSONResponseMixin(object):
         return json.dumps(context)
 
 class Select2View(JSONResponseMixin, View):
+    """
+    Base view which is designed to respond with JSON to Ajax queries from heavy widgets/fields.
+
+    Although the widgets won't enforce the type of data_view it gets, but it is recommended to
+    sub-class this view instead of creating a Django view from scratch.
+
+    .. note:: Only `GET <http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3>`_ Http requests are supported.
+    """
 
     def dispatch(self, request, *args, **kwargs):
         try:
@@ -53,7 +66,7 @@ class Select2View(JSONResponseMixin, View):
             except ValueError:
                 page = -1
             if page == -1:
-                return self.render_to_response(self._results_to_context(('bade page no.', False, [], )))
+                return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
             context = request.GET.get('context', None)
         else:
             return self.render_to_response(self._results_to_context(('not a get request', False, [], )))
@@ -65,6 +78,13 @@ class Select2View(JSONResponseMixin, View):
             )
 
     def respond_with_exception(self, e):
+        """
+        :param e: Exception object.
+        :type e: Exception
+        :return: Response with status code of 404 if e is ``Http404`` object,
+            else 400.
+        :rtype: HttpResponse
+        """
         if isinstance(e, Http404):
             status = 404
         else:
@@ -87,20 +107,56 @@ class Select2View(JSONResponseMixin, View):
         }
 
     def check_all_permissions(self, request, *args, **kwargs):
-        """Sub-classes can use this to raise exception on permission check failures,
-        or these checks can be placed in urls.py, e.g. login_required(SelectClass.as_view())."""
+        """
+        Sub-classes can use this to raise exception on permission check failures,
+        or these checks can be placed in ``urls.py``, e.g. ``login_required(SelectClass.as_view())``.
+
+        :param request: The Ajax request object.
+        :type request: :py:class:`django.http.HttpRequest`
+
+        :param args: The ``*args`` passed to :py:meth:`django.views.generic.View.dispatch`.
+        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.
+
+        .. warning:: Sub-classes should override this. You really do not want random people making
+            Http reqeusts to your server, be able to get access to sensitive information.
+        """
         pass
 
     def get_results(self, request, term, page, context):
         """
-        Expected output is of the form:-
-        (err, has_more, [results]), where results = [(id1, text1), (id2, text2),...]
-        e.g.
-        ('nil', False,
-            [
-            (1, 'Value label1'),
-            (20, 'Value label2'),
-            ])
+        Returns the result for the given search ``term``.
+
+        :param request: The Ajax request object.
+        :type request: :py:class:`django.http.HttpRequest`
+
+        :param term: The search term.
+        :type term: :py:obj:`str`
+
+        :param page: The page number. If in your last response you had signalled that there are more results,
+            then when user scrolls more a new Ajax request would be sent for the same term but with next page
+            number. (Page number starts at 1)
+        :type page: :py:obj:`int`
+
+        :param context: Can be anything which persists across the lifecycle of queries for the same search term.
+            It is reset to ``None`` when the term changes.
+
+            .. note:: Currently this is not used by ``heavy_data.js``.
+        :type context: :py:obj:`str` or None
+
+        Expected output is of the form::
+
+            (err, has_more, [results])
+
+        Where ``results = [(id1, text1), (id2, text2), ...]``
+
+        For example::
+
+            ('nil', False,
+                [
+                (1, 'Value label1'),
+                (20, 'Value label2'),
+                ])
+
         When everything is fine then the `err` must be 'nil'.
         `has_more` should be true if there are more rows.
         """
@@ -108,7 +164,12 @@ class Select2View(JSONResponseMixin, View):
 
 
 class AutoResponseView(Select2View):
-    """A central view meant to respond to Ajax queries for all Heavy fields. Although it is not mandatory to use. This is just a helper."""
+    """
+    A central view meant to respond to Ajax queries for all Heavy widgets/fields.
+    Although it is not mandatory to use, but is immensely helpful.
+
+    .. tip:: Fields which want to use this view must sub-class :py:class:`~.widgets.AutoViewFieldMixin`.
+    """
     def check_all_permissions(self, request, *args, **kwargs):
         id_ = request.GET.get('field_id', None)
         if id_ is None or not is_valid_id(id_):

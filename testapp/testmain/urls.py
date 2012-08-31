@@ -8,4 +8,6 @@ urlpatterns = patterns("",
     url(r'multi/model/field/([0-9]+)/$', 'testmain.views.test_multi_values_model_field1', name='test_multi_values_model_field1'),
 
     url(r'mixed/form/$', 'testmain.views.test_mixed_form', name='test_mixed_form'),
+
+    url(r'initial/form/$', 'testmain.views.test_init_values', name='test_init_values'),
 )

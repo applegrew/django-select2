@@ -31,12 +31,23 @@ External Dependencies
 
 Example Application
 ===================
-Please checkout `testapp` application. This application is used to manually test the functionalities of this component. This also serves as a good example.
+Please see `testapp` application. This application is used to manually test the functionalities of this package. This also serves as a good example.
 
-You need only django 1.4 or above to run that.
+You need only Django 1.4 or above to run that. It might run on older versions but that is not tested.
+
+Special Thanks
+==============
+
+* Samuel Goldszmidt (@ouhouhsami) for reporting many fundamental issues with the code, because of which versions 2.0 and 2.0.1 were released.
 
 Changelog Summary
 =================
+
+### v3.0
+
+* Added docs.
+* Some bug fixes. See issue#4.
+* `widgets.Select2Mixin.__init__` now accepts `select2_options` kwarg to override its `options` settings. Previously `attrs` were being used for this too. This means backward compatibility has been broken here. `attrs` will no longer override `options` values. **The major release version has been changed to 3, because of this backward incompatible change.**
 
 ### v2.0.1
 

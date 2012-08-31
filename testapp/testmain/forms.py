@@ -40,3 +40,10 @@ class MixedForm(forms.Form):
 # These are just for testing Auto registration of fields
 EmployeeChoices() # Should already be registered
 EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId") # Should get registered
+
+class InitialValueForm(forms.Form):
+    select2Choice = Select2ChoiceField(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    select2MultipleChoice = Select2MultipleChoiceField(initial=[2,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2Choice = AutoSelect2Field(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+

@@ -1,8 +1,9 @@
 if (!window['django_select2']) {
-	// This JS file can be included multiple times. So, as not to ovverwrite previous states, we run this only once.
+	// This JS file can be included multiple times. So, as not to overwrite previous states, we run this only once.
 
 	var django_select2 = {
-		MULTISEPARATOR: String.fromCharCode(0), // We use this unprintable char as separator, since this can't be entered by user.
+		MULTISEPARATOR: String.fromCharCode(0), // We use this unprintable char as separator,
+												// since this can't be entered by user.
 		get_url_params: function (term, page, context) {
 			var field_id = $(this).data('field_id'),
 				res = {

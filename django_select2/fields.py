@@ -1,10 +1,41 @@
+"""
+Contains all the Django fields for Select2.
+"""
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 class AutoViewFieldMixin(object):
-    """Registers itself with AutoResponseView."""
+    """
+    Registers itself with AutoResponseView.
+
+    All Auto fields must sub-class this mixin, so that they are registered.
+
+    .. warning:: Do not forget to include ``'django_select2.urls'`` in your url conf, else,
+        central view used to serve Auto fields won't be available.
+    """
     def __init__(self, *args, **kwargs):
+        """
+        Class constructor.
+
+        :param auto_id: The key to use while registering this field. If it is not provided then
+            an auto generated key is used.
+
+            .. tip::
+                This mixin uses full class name of the field to register itself. This is
+                used like key in a :py:obj:`dict` by :py:func:`.util.register_field`.
+
+                If that key already exists then the instance is not registered again. So, eventually
+                all instances of an Auto field share one instance to respond to the Ajax queries for
+                its fields.
+
+                If for some reason any instance needs to be isolated then ``auto_id`` can be used to
+                provide a unique key which has never occured before.
+
+        :type auto_id: :py:obj:`unicode`
+
+        """
         name = kwargs.pop('auto_id', u"%s.%s" % (self.__module__, self.__class__.__name__))
         if logger.isEnabledFor(logging.INFO):
             logger.info("Registering auto field: %s", name)
@@ -15,9 +46,25 @@ class AutoViewFieldMixin(object):
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
 
     def security_check(self, request, *args, **kwargs):
+        """
+        Returns ``False`` if security check fails.
+
+        :param request: The Ajax request object.
+        :type request: :py:class:`django.http.HttpRequest`
+
+        :param args: The ``*args`` passed to :py:meth:`django.views.generic.View.dispatch`.
+        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.
+
+        :return: A boolean value, signalling if check passed or failed.
+        :rtype: :py:obj:`bool`
+
+        .. warning:: Sub-classes should override this. You really do not want random people making
+            Http reqeusts to your server, be able to get access to sensitive information.
+        """
         return True
 
     def get_results(self, request, term, page, context):
+        "See :py:meth:`.views.Select2View.get_results`."
         raise NotImplementedError
 
 import copy
@@ -38,16 +85,45 @@ from .util import extract_some_key_val
 ### Light general fields ###
 
 class Select2ChoiceField(forms.ChoiceField):
+    """
+    Drop-in Select2 replacement for :py:class:`forms.ChoiceField`.
+    """
     widget = Select2Widget
 
 class Select2MultipleChoiceField(forms.MultipleChoiceField):
+    """
+    Drop-in Select2 replacement for :py:class:`forms.MultipleChoiceField`.
+    """
     widget = Select2MultipleWidget
 
 ### Model fields related mixins ###
 
 class ModelResultJsonMixin(object):
+    """
+    Makes ``heavy_data.js`` parsable JSON response for queries on its model.
+
+    On query it uses :py:meth:`.prepare_qs_params` to prepare query attributes
+    which it then passes to ``self.queryset.filter()`` to get the results.
+
+    It is expected that sub-classes will defined a class field variable
+    ``search_fields``, which should be a list of field names to search for.
+    """
 
     def __init__(self, *args, **kwargs):
+        """
+        Class constructor.
+
+        :param queryset: This can be passed as kwarg here or defined as field variabel,
+            like ``search_fields``.
+        :type queryset: :py:class:`django.db.models.query.QuerySet` or None
+
+        :param max_results: Maximum number to results to return per Ajax query.
+        :type max_results: :py:obj:`int`
+
+        :param to_field_name: Which field's value should be returned as result tuple's
+            value. (Default is ``pk``, i.e. the id field of the model)
+        :type to_field_name: :py:obj:`str`
+        """
         if self.queryset is None and not kwargs.has_key('queryset'):
             raise ValueError('queryset is required.')
 
@@ -60,9 +136,72 @@ class ModelResultJsonMixin(object):
         super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
 
     def label_from_instance(self, obj):
+        """
+        Sub-classes should override this to generate custom label texts for values.
+
+        :param obj: The model object.
+        :type obj: :py:class:`django.model.Model`
+
+        :return: The label string.
+        :rtype: :py:obj:`unicode`
+        """
         return smart_unicode(obj)
 
-    def prepare_qs_params(self, request, search_term, search_fields):        
+    def prepare_qs_params(self, request, search_term, search_fields):
+        """
+        Prepares queryset parameter to use for searching.
+
+        :param search_term: The search term.
+        :type search_term: :py:obj:`str`
+
+        :param search_fields: The list of search fields. This is same as ``self.search_fields``.
+        :type search_term: :py:obj:`list`
+
+        :return: A dictionary of parameters to 'or' and 'and' together. The output format should
+            be ::
+
+                {
+                    'or': [
+                    Q(attr11=term11) | Q(attr12=term12) | ...,
+                    Q(attrN1=termN1) | Q(attrN2=termN2) | ...,
+                    ...],
+
+                    'and': {
+                        'attrX1': termX1,
+                        'attrX2': termX2,
+                        ...
+                    }
+                }
+
+            The above would then be coaxed into ``filter()`` as below::
+
+                queryset.filter(
+                    Q(attr11=term11) | Q(attr12=term12) | ...,
+                    Q(attrN1=termN1) | Q(attrN2=termN2) | ...,
+                    ...,
+                    attrX1=termX1,
+                    attrX2=termX2,
+                    ...
+                    )
+
+            In this implementation, ``term11, term12, termN1, ...`` etc., all are actually ``search_term``.
+            Also then ``and`` part is always empty.
+
+            So, let's take an example.
+
+            | Assume, ``search_term == 'John'``
+            | ``self.search_fields == ['first_name__icontains', 'last_name__icontains']``
+            
+            So, the prepared query would be::
+
+                {
+                    'or': [
+                        Q(first_name__icontains=search_term) | Q(last_name__icontains=search_term)
+                    ],
+                    'and': {}
+                }
+        :rtype: :py:obj:`dict`
+        """      
         q = None
         for field in search_fields:
             kwargs = {}
@@ -74,6 +213,11 @@ class ModelResultJsonMixin(object):
         return {'or': [q], 'and': {},}
 
     def get_results(self, request, term, page, context):
+        """
+        See :py:meth:`.views.Select2View.get_results`.
+
+        This implementation takes care of detecting if more results are available.
+        """
         qs = copy.deepcopy(self.queryset)
         params = self.prepare_qs_params(request, term, self.search_fields)
 
@@ -92,6 +236,13 @@ class ModelResultJsonMixin(object):
         return (NO_ERR_RESP, has_more, res, )
 
 class UnhideableQuerysetType(type):
+    """
+    This does some pretty nasty hacky stuff, to make sure users can
+    also define ``queryset`` as class-level field variable, instead of
+    passing it to constructor.
+    """
+
+    # TODO check for alternatives. Maybe this hack is not necessary.
 
     def __new__(cls, name, bases, dct):
         _q = dct.get('queryset', None)
@@ -113,6 +264,10 @@ class UnhideableQuerysetType(type):
         return type.__call__(cls, *args, **kwargs)
 
 class ChoiceMixin(object):
+    """
+    Simple mixin which provides a property -- ``choices``. When ``choices`` is set,
+    then it sets that value to ``self.widget.choices`` too.
+    """
     def _get_choices(self):
         if hasattr(self, '_choices'):
             return self._choices
@@ -126,6 +281,11 @@ class ChoiceMixin(object):
     choices = property(_get_choices, _set_choices)
 
 class QuerysetChoiceMixin(ChoiceMixin):
+    """
+    Overrides ``choices``' getter to return instance of :py:class:`.ModelChoiceIterator`
+    instead.
+    """
+
     def _get_choices(self):
         # If self._choices is set, then somebody must have manually set
         # the property self.choices. In this case, just return self._choices.
@@ -177,19 +337,43 @@ class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceF
 ### Light Fileds specialized for Models ###
 
 class ModelSelect2Field(ModelChoiceField) :
-    "Light Model Select2 field"
+    """
+    Light Select2 field, specialized for Models.
+
+    Select2 replacement for :py:class:`forms.ModelChoiceField`.
+    """
     widget = Select2Widget
 
 class ModelSelect2MultipleField(ModelMultipleChoiceField) :
-    "Light multiple-value Model Select2 field"
+    """
+    Light multiple-value Select2 field, specialized for Models.
+
+    Select2 replacement for :py:class:`forms.ModelMultipleChoiceField`.
+    """
     widget = Select2MultipleWidget
 
 ### Heavy fields ###
 
 class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
+    """
+    Base field for all Heavy fields.
+    """
     def __init__(self, *args, **kwargs):
+        """
+        Class constructor.
+
+        :param data_view: A :py:class:`~.views.Select2View` sub-class which can respond to this widget's Ajax queries.
+        :type data_view: :py:class:`django.views.generic.View` or None
+
+        :param widget: A widget instance.
+        :type widget: :py:class:`django.forms.widgets.Widget` or None
+
+        .. warning:: Either of ``data_view`` or ``widget`` must be specified, else :py:exc:`ValueError` would
+            be raised.
+
+        """
         data_view = kwargs.pop('data_view', None)
-        self.choices = kwargs.pop('choices', [])
+        choices = kwargs.pop('choices', [])
 
         kargs = {}
         if data_view is not None:
@@ -199,7 +383,10 @@ class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
 
         kargs.update(kwargs)
         super(HeavySelect2FieldBase, self).__init__(*args, **kargs)
-        # This piece of code is needed here since (God knows) why Django's Field class does not call
+
+        # By this time self.widget would have been instantiated.
+
+        # This piece of code is needed here since (God knows why) Django's Field class does not call
         # super(); because of that __init__() of classes would get called after Field.__init__().
         # If did had super() call there then we could have simply moved AutoViewFieldMixin at the
         # end of the MRO list. This way it would have got widget instance instead of class and it
@@ -207,20 +394,28 @@ class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
         if hasattr(self, 'field_id'):
             self.widget.field_id = self.field_id
 
+        if not choices and hasattr(self, 'choices'): # ModelChoiceField will set this to ModelChoiceIterator
+            choices = self.choices
+        self.choices = choices
+
 class HeavySelect2ChoiceField(HeavySelect2FieldBase):
+    "Heavy Select2 Choice field."
     widget = HeavySelect2Widget
 
 class HeavySelect2MultipleChoiceField(HeavySelect2FieldBase):
+    "Heavy Select2 Multiple Choice field."
     widget = HeavySelect2MultipleWidget
 
 ### Heavy field specialized for Models ###
 
 class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2ChoiceField, ModelChoiceField):
+    "Heavy Select2 Choice field, specialized for Models."
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
 
 class HeavyModelSelect2MultipleChoiceField(QuerysetChoiceMixin, HeavySelect2MultipleChoiceField, ModelMultipleChoiceField):
+    "Heavy Select2 Multiple Choice field, specialized for Models."
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2MultipleChoiceField, self).__init__(*args, **kwargs)
@@ -229,6 +424,8 @@ class HeavyModelSelect2MultipleChoiceField(QuerysetChoiceMixin, HeavySelect2Mult
 
 class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
     """
+    Auto Heavy Select2 field.
+
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
@@ -242,6 +439,8 @@ class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
 
 class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceField):
     """
+    Auto Heavy Select2 field for multiple choices.
+
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
@@ -257,6 +456,8 @@ class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceFie
 
 class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField):
     """
+    Auto Heavy Select2 field, specialized for Models.
+
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
@@ -272,6 +473,8 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
 
 class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
     """
+    Auto Heavy Select2 field for multiple choices, specialized for Models.
+
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """

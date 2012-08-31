@@ -1,0 +1,191 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview &mdash; Django-Select2 3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django-Select2 3.0 documentation" href="index.html" />
+    <link rel="next" title="API Reference" href="reference.html" />
+    <link rel="prev" title="All Contents" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="API Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="All Contents"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django-Select2 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-django_select2">
+<span id="overview"></span><h1>Overview<a class="headerlink" href="#module-django_select2" title="Permalink to this headline">¶</a></h1>
+<p>This is a <a class="reference external" href="https://www.djangoproject.com/">Django</a> integration of <a class="reference external" href="http://ivaynberg.github.com/select2/">Select2</a>.</p>
+<p>The app includes Select2 driven Django Widgets and Form Fields.</p>
+<div class="section" id="widgets">
+<h2>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h2>
+<p>These components are responsible for rendering the necessary Javascript and HTML markups. Since this whole
+package is to render choices using Select2 Javascript library, hence these components are meant to be used
+with choice fields.</p>
+<p>Widgets are generally of two types :-</p>
+<blockquote>
+<div><p>1. <strong>Light</strong> &#8211;
+They are not meant to be used when there are too many options, say, in thousands. This
+is because all those options would have to be pre-rendered onto the page and Javascript would
+be used to search through them. Said that, they are also one the most easiest to use. They are almost
+drop-in-replacement for Django&#8217;s default select widgets.</p>
+<p>2. <strong>Heavy</strong> &#8211;
+They are suited for scenarios when the number of options are large and need complex queries
+(from maybe different sources) to get the options. This dynamic fetching of options undoubtably requires
+Ajax communication with the server. Django-Select2 includes a helper JS file which is included automatically,
+so you need not worry about writing any Ajax related JS code. Although on the server side you do need to
+create a view specifically to respond to the queries.</p>
+<p>Heavies have further specialized versions called &#8211; <strong>Auto Heavy</strong>. These do not require views to server Ajax
+request. When they are instantiated, they register themselves with one central view which handels Ajax requests
+for them.</p>
+<p><a class="reference external" href="http://blog.applegrew.com/2012/08/django-select2/">Read more</a></p>
+</div></blockquote>
+<p>Heavy widgets have the word &#8216;Heavy&#8217; in their name. Light widgets are normally named, i.e. there is no &#8216;Light&#8217; word
+in their names.</p>
+<p><strong>Available widgets:</strong></p>
+<p><a class="reference internal" href="ref_widgets.html#django_select2.widgets.Select2Widget" title="django_select2.widgets.Select2Widget"><tt class="xref py py-class docutils literal"><span class="pre">Select2Widget</span></tt></a>, <a class="reference internal" href="ref_widgets.html#django_select2.widgets.Select2MultipleWidget" title="django_select2.widgets.Select2MultipleWidget"><tt class="xref py py-class docutils literal"><span class="pre">Select2MultipleWidget</span></tt></a>, <a class="reference internal" href="ref_widgets.html#django_select2.widgets.HeavySelect2Widget" title="django_select2.widgets.HeavySelect2Widget"><tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2Widget</span></tt></a>, <a class="reference internal" href="ref_widgets.html#django_select2.widgets.HeavySelect2MultipleWidget" title="django_select2.widgets.HeavySelect2MultipleWidget"><tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2MultipleWidget</span></tt></a>,
+<a class="reference internal" href="ref_widgets.html#django_select2.widgets.AutoHeavySelect2Widget" title="django_select2.widgets.AutoHeavySelect2Widget"><tt class="xref py py-class docutils literal"><span class="pre">AutoHeavySelect2Widget</span></tt></a>, <a class="reference internal" href="ref_widgets.html#django_select2.widgets.AutoHeavySelect2MultipleWidget" title="django_select2.widgets.AutoHeavySelect2MultipleWidget"><tt class="xref py py-class docutils literal"><span class="pre">AutoHeavySelect2MultipleWidget</span></tt></a></p>
+</div>
+<div class="section" id="fields">
+<h2>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h2>
+<p>These are pre-implemented choice fields which use the above widgets. It is highly recommended that you use them
+instead of rolling your own.</p>
+<p>The fields available are good for general purpose use, although more specialized versions too are available for
+your ease.</p>
+<p><strong>Available fields:</strong></p>
+<p><a class="reference internal" href="ref_fields.html#django_select2.fields.Select2ChoiceField" title="django_select2.fields.Select2ChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">Select2ChoiceField</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.Select2MultipleChoiceField" title="django_select2.fields.Select2MultipleChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">Select2MultipleChoiceField</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.HeavySelect2ChoiceField" title="django_select2.fields.HeavySelect2ChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2ChoiceField</span></tt></a>,
+<a class="reference internal" href="ref_fields.html#django_select2.fields.HeavySelect2MultipleChoiceField" title="django_select2.fields.HeavySelect2MultipleChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2MultipleChoiceField</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.HeavyModelSelect2ChoiceField" title="django_select2.fields.HeavyModelSelect2ChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">HeavyModelSelect2ChoiceField</span></tt></a>,
+<a class="reference internal" href="ref_fields.html#django_select2.fields.HeavyModelSelect2MultipleChoiceField" title="django_select2.fields.HeavyModelSelect2MultipleChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">HeavyModelSelect2MultipleChoiceField</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.ModelSelect2Field" title="django_select2.fields.ModelSelect2Field"><tt class="xref py py-class docutils literal"><span class="pre">ModelSelect2Field</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.ModelSelect2MultipleField" title="django_select2.fields.ModelSelect2MultipleField"><tt class="xref py py-class docutils literal"><span class="pre">ModelSelect2MultipleField</span></tt></a>,
+<a class="reference internal" href="ref_fields.html#django_select2.fields.AutoSelect2Field" title="django_select2.fields.AutoSelect2Field"><tt class="xref py py-class docutils literal"><span class="pre">AutoSelect2Field</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.AutoSelect2MultipleField" title="django_select2.fields.AutoSelect2MultipleField"><tt class="xref py py-class docutils literal"><span class="pre">AutoSelect2MultipleField</span></tt></a>, <a class="reference internal" href="ref_fields.html#django_select2.fields.AutoModelSelect2Field" title="django_select2.fields.AutoModelSelect2Field"><tt class="xref py py-class docutils literal"><span class="pre">AutoModelSelect2Field</span></tt></a>,
+<a class="reference internal" href="ref_fields.html#django_select2.fields.AutoModelSelect2MultipleField" title="django_select2.fields.AutoModelSelect2MultipleField"><tt class="xref py py-class docutils literal"><span class="pre">AutoModelSelect2MultipleField</span></tt></a></p>
+</div>
+<div class="section" id="views">
+<h2>Views<a class="headerlink" href="#views" title="Permalink to this headline">¶</a></h2>
+<p>The view - <cite>Select2View</cite>, exposed here is meant to be used with &#8216;Heavy&#8217; fields and widgets. <a class="reference external" href="http://blog.applegrew.com/2012/08/django-select2/">Read more</a></p>
+<p><strong>Imported:</strong></p>
+<p><a class="reference internal" href="ref_views.html#django_select2.views.Select2View" title="django_select2.views.Select2View"><tt class="xref py py-class docutils literal"><span class="pre">Select2View</span></tt></a>, <a class="reference internal" href="ref_views.html#django_select2.views.NO_ERR_RESP" title="django_select2.views.NO_ERR_RESP"><tt class="xref py py-data docutils literal"><span class="pre">NO_ERR_RESP</span></tt></a></p>
+</div>
+</div>
+<div class="section" id="external-dependencies">
+<h1>External Dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Django - This is obvious.</li>
+<li>jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.</li>
+</ul>
+</div>
+<div class="section" id="example-application">
+<h1>Example Application<a class="headerlink" href="#example-application" title="Permalink to this headline">¶</a></h1>
+<p>Please see <tt class="docutils literal"><span class="pre">testapp</span></tt> application. This application is used to manually test the functionalities of this package. This also serves as a good example.</p>
+<p>You need only Django 1.4 or above to run that. It might run on older versions but that is not tested.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#widgets">Widgets</a></li>
+<li><a class="reference internal" href="#fields">Fields</a></li>
+<li><a class="reference internal" href="#views">Views</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#external-dependencies">External Dependencies</a></li>
+<li><a class="reference internal" href="#example-application">Example Application</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">All Contents</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="reference.html"
+                        title="next chapter">API Reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/overview.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="API Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="All Contents"
+             >previous</a> |</li>
+        <li><a href="index.html">Django-Select2 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nirupam Biswas.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
