@@ -60,7 +60,7 @@
 <p>Contains all the Django widgets for Select2.</p>
 <dl class="class">
 <dt id="django_select2.widgets.Select2Mixin">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">Select2Mixin</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">Select2Mixin</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>The base mixin of all Select2 widgets.</p>
 <p>This mixin is responsible for rendering the necessary Javascript and CSS codes which turns normal <tt class="docutils literal"><span class="pre">&lt;select&gt;</span></tt>
@@ -81,14 +81,14 @@ markups into Select2 choice list.</p>
 </div>
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor of the class.</p>
 <p>The following additional kwarg is allowed:-</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>select2_options</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt> or None) &#8211; <p>This is similar to standard Django way to pass extra attributes to widgets.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>select2_options</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></a> or None) &#8211; <p>This is similar to standard Django way to pass extra attributes to widgets.
 This is meant to override values of existing <a class="reference internal" href="#django_select2.widgets.Select2Mixin.options" title="django_select2.widgets.Select2Mixin.options"><tt class="xref py py-attr docutils literal"><span class="pre">options</span></tt></a>.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyForm</span><span class="p">(</span><span class="n">ModelForm</span><span class="p">):</span>
@@ -127,7 +127,7 @@ The complete description of theses options are available in <a class="reference 
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.init_options">
-<tt class="descname">init_options</tt><big>(</big><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.init_options" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">init_options</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.init_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.init_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sub-classes can use this to pass additional options to Select2 JS library.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">init_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -146,21 +146,28 @@ use <a class="reference internal" href="ref_util.html#django_select2.util.JSFunc
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.set_placeholder">
-<tt class="descname">set_placeholder</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.set_placeholder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Placeholder is a value which Select2 JS library shows when nothing is selected. This should be string.
-:return: None</p>
+<tt class="descname">set_placeholder</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.set_placeholder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.set_placeholder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder is a value which Select2 JS library shows when nothing is selected. This should be string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.get_options">
-<tt class="descname">get_options</tt><big>(</big><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.get_options" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_options</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.get_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.get_options" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of options to be passed to Select2 JS.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -168,41 +175,73 @@ use <a class="reference internal" href="ref_util.html#django_select2.util.JSFunc
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.render_select2_options_code">
-<tt class="descname">render_select2_options_code</tt><big>(</big><em>options</em>, <em>id_</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render_select2_options_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renders options for Select2 JS.
-:return: The rendered JS code.
-:rtype: <tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tt class="descname">render_select2_options_code</tt><big>(</big><em>options</em>, <em>id_</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.render_select2_options_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render_select2_options_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders options for Select2 JS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The rendered JS code.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.render_js_code">
-<tt class="descname">render_js_code</tt><big>(</big><em>id_</em>, <em>*args</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render_js_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renders the <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> block which contains the JS code for this widget.
-:return: The rendered JS code enclosed inside <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> block.
-:rtype: <tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tt class="descname">render_js_code</tt><big>(</big><em>id_</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.render_js_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render_js_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders the <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> block which contains the JS code for this widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The rendered JS code enclosed inside <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> block.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.render_inner_js_code">
-<tt class="descname">render_inner_js_code</tt><big>(</big><em>id_</em>, <em>*args</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render_inner_js_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renders all the JS code required for this widget.
-:return: The rendered JS code which will be later enclosed inside <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> block.
-:rtype: <tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tt class="descname">render_inner_js_code</tt><big>(</big><em>id_</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.render_inner_js_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render_inner_js_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders all the JS code required for this widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The rendered JS code which will be later enclosed inside <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> block.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="django_select2.widgets.Select2Mixin.render">
-<tt class="descname">render</tt><big>(</big><em>name</em>, <em>value</em>, <em>attrs=None</em>, <em>choices=()</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renders this widget. Html and JS code blocks all are rendered by this.
-:return: The rendered markup.
-:rtype: <tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tt class="descname">render</tt><big>(</big><em>name</em>, <em>value</em>, <em>attrs=None</em>, <em>choices=()</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Mixin.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Mixin.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders this widget. Html and JS code blocks all are rendered by this.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The rendered markup.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="django_select2.widgets.Select2Widget">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">Select2Widget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2Widget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">Select2Widget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2Widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2Widget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.Select2Mixin" title="django_select2.widgets.Select2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.Select2Mixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.Select</span></tt></p>
 <p>Drop-in Select2 replacement for <tt class="xref py py-class docutils literal"><span class="pre">forms.Select</span></tt>.</p>
 <p>Following Select2 option from <a class="reference internal" href="#django_select2.widgets.Select2Mixin.options" title="django_select2.widgets.Select2Mixin.options"><tt class="xref py py-attr docutils literal"><span class="pre">Select2Mixin.options</span></tt></a> is removed:-</p>
@@ -215,7 +254,7 @@ use <a class="reference internal" href="ref_util.html#django_select2.util.JSFunc
 
 <dl class="class">
 <dt id="django_select2.widgets.Select2MultipleWidget">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">Select2MultipleWidget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.Select2MultipleWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">Select2MultipleWidget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#Select2MultipleWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.Select2MultipleWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.Select2Mixin" title="django_select2.widgets.Select2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.Select2Mixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.SelectMultiple</span></tt></p>
 <p>Drop-in Select2 replacement for <tt class="xref py py-class docutils literal"><span class="pre">forms.SelectMultiple</span></tt>.</p>
 <p>Following Select2 options from <a class="reference internal" href="#django_select2.widgets.Select2Mixin.options" title="django_select2.widgets.Select2Mixin.options"><tt class="xref py py-attr docutils literal"><span class="pre">Select2Mixin.options</span></tt></a> are removed:-</p>
@@ -230,7 +269,7 @@ use <a class="reference internal" href="ref_util.html#django_select2.util.JSFunc
 
 <dl class="class">
 <dt id="django_select2.widgets.MultipleSelect2HiddenInput">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">MultipleSelect2HiddenInput</tt><big>(</big><em>attrs=None</em><big>)</big><a class="headerlink" href="#django_select2.widgets.MultipleSelect2HiddenInput" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">MultipleSelect2HiddenInput</tt><big>(</big><em>attrs=None</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#MultipleSelect2HiddenInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.MultipleSelect2HiddenInput" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.TextInput</span></tt></p>
 <p>Multiple hidden input for Select2.</p>
 <p>This is a specialized multiple Hidden Input widget. This includes a special
@@ -245,7 +284,7 @@ would be available as list.</p>
 
 <dl class="class">
 <dt id="django_select2.widgets.HeavySelect2Mixin">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">HeavySelect2Mixin</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">HeavySelect2Mixin</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2Mixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.Select2Mixin" title="django_select2.widgets.Select2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.Select2Mixin</span></tt></a></p>
 <p>The base mixin of all Heavy Select2 widgets. It sub-classes <a class="reference internal" href="#django_select2.widgets.Select2Mixin" title="django_select2.widgets.Select2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">Select2Mixin</span></tt></a>.</p>
 <p>This mixin adds more Select2 options to <a class="reference internal" href="#django_select2.widgets.Select2Mixin.options" title="django_select2.widgets.Select2Mixin.options"><tt class="xref py py-attr docutils literal"><span class="pre">Select2Mixin.options</span></tt></a>. These are:-</p>
@@ -274,7 +313,7 @@ would be available as list.</p>
 </div>
 <dl class="method">
 <dt id="django_select2.widgets.HeavySelect2Mixin.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2Mixin.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor of the class.</p>
 <p>The following kwargs are allowed:-</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -283,7 +322,7 @@ would be available as list.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data_view</strong> (<tt class="xref py py-class docutils literal"><span class="pre">django.views.generic.View</span></tt> or None) &#8211; A <a class="reference internal" href="ref_views.html#django_select2.views.Select2View" title="django_select2.views.Select2View"><tt class="xref py py-class docutils literal"><span class="pre">Select2View</span></tt></a> sub-class which can respond to this widget&#8217;s Ajax queries.</li>
-<li><strong>data_url</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt> or None) &#8211; Url which will respond to Ajax queries with JSON object.</li>
+<li><strong>data_url</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a> or None) &#8211; Url which will respond to Ajax queries with JSON object.</li>
 </ul>
 </td>
 </tr>
@@ -292,7 +331,7 @@ would be available as list.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">When <tt class="docutils literal"><span class="pre">data_view</span></tt> is provided then it is converted into Url using
-<tt class="xref py py-func docutils literal"><span class="pre">reverse()</span></tt>.</p>
+<a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/http/urls/#django.core.urlresolvers.reverse" title="(in Django v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">reverse()</span></tt></a>.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -304,7 +343,7 @@ be raised.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>choices</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt>) &#8211; The list of available choices. If not provided then empty list is used instead. It
+<li><strong>choices</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt></a>) &#8211; The list of available choices. If not provided then empty list is used instead. It
 should be of the form &#8211; <tt class="docutils literal"><span class="pre">[(val1,</span> <span class="pre">'Label1'),</span> <span class="pre">(val2,</span> <span class="pre">'Label2'),</span> <span class="pre">...]</span></tt>.</li>
 <li><strong>userGetValTextFuncName</strong> &#8211; <p>The name of the custom JS function which you want to use to convert
 value to label.</p>
@@ -330,15 +369,15 @@ when browser is closed.</p>
 
 <dl class="method">
 <dt id="django_select2.widgets.HeavySelect2Mixin.render_texts">
-<tt class="descname">render_texts</tt><big>(</big><em>selected_choices</em>, <em>choices</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin.render_texts" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">render_texts</tt><big>(</big><em>selected_choices</em>, <em>choices</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2Mixin.render_texts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin.render_texts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Renders a JS array with labels for the <tt class="docutils literal"><span class="pre">selected_choices</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>selected_choices</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt>) &#8211; List of selected choices&#8217; values.</li>
-<li><strong>choices</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt>) &#8211; Extra choices, if any. This is a list of tuples. In each tuple, the first
+<li><strong>selected_choices</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt></a>) &#8211; List of selected choices&#8217; values.</li>
+<li><strong>choices</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt></a>) &#8211; Extra choices, if any. This is a list of tuples. In each tuple, the first
 item is the choice value and the second item is choice label.</li>
 </ul>
 </td>
@@ -346,7 +385,7 @@ item is the choice value and the second item is choice label.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The rendered JS array code.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -355,7 +394,7 @@ item is the choice value and the second item is choice label.</li>
 
 <dl class="method">
 <dt id="django_select2.widgets.HeavySelect2Mixin.render_texts_for_value">
-<tt class="descname">render_texts_for_value</tt><big>(</big><em>id_</em>, <em>value</em>, <em>choices</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin.render_texts_for_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">render_texts_for_value</tt><big>(</big><em>id_</em>, <em>value</em>, <em>choices</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2Mixin.render_texts_for_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2Mixin.render_texts_for_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Renders the JS code which sets the <tt class="docutils literal"><span class="pre">txt</span></tt> attribute on the field. It gets the array
 of lables from <a class="reference internal" href="#django_select2.widgets.HeavySelect2Mixin.render_texts" title="django_select2.widgets.HeavySelect2Mixin.render_texts"><tt class="xref py py-meth docutils literal"><span class="pre">render_texts()</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -363,9 +402,9 @@ of lables from <a class="reference internal" href="#django_select2.widgets.Heavy
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>id</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt>) &#8211; Id of the field. This can be used to get reference of this field&#8217;s DOM in JS.</li>
+<li><strong>id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a>) &#8211; Id of the field. This can be used to get reference of this field&#8217;s DOM in JS.</li>
 <li><strong>value</strong> (<em>Any</em>) &#8211; Currently set value on the field.</li>
-<li><strong>choices</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt>) &#8211; Extra choices, if any. This is a list of tuples. In each tuple, the first
+<li><strong>choices</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt></a>) &#8211; Extra choices, if any. This is a list of tuples. In each tuple, the first
 item is the choice value and the second item is choice label.</li>
 </ul>
 </td>
@@ -373,7 +412,7 @@ item is the choice value and the second item is choice label.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JS code which sets the <tt class="docutils literal"><span class="pre">txt</span></tt> attribute.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -384,7 +423,7 @@ item is the choice value and the second item is choice label.</li>
 
 <dl class="class">
 <dt id="django_select2.widgets.HeavySelect2Widget">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">HeavySelect2Widget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2Widget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">HeavySelect2Widget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2Widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2Widget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.HeavySelect2Mixin" title="django_select2.widgets.HeavySelect2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.HeavySelect2Mixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.TextInput</span></tt></p>
 <p>Single selection heavy widget.</p>
 <p>Following Select2 option from <a class="reference internal" href="#django_select2.widgets.Select2Mixin.options" title="django_select2.widgets.Select2Mixin.options"><tt class="xref py py-attr docutils literal"><span class="pre">Select2Mixin.options</span></tt></a> is added or set:-</p>
@@ -397,7 +436,7 @@ item is the choice value and the second item is choice label.</li>
 
 <dl class="class">
 <dt id="django_select2.widgets.HeavySelect2MultipleWidget">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">HeavySelect2MultipleWidget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2MultipleWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">HeavySelect2MultipleWidget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2MultipleWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2MultipleWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.HeavySelect2Mixin" title="django_select2.widgets.HeavySelect2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.HeavySelect2Mixin</span></tt></a>, <a class="reference internal" href="#django_select2.widgets.MultipleSelect2HiddenInput" title="django_select2.widgets.MultipleSelect2HiddenInput"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.MultipleSelect2HiddenInput</span></tt></a></p>
 <p>Multiple selection heavy widget.</p>
 <p>Following Select2 options from <a class="reference internal" href="#django_select2.widgets.Select2Mixin.options" title="django_select2.widgets.Select2Mixin.options"><tt class="xref py py-attr docutils literal"><span class="pre">Select2Mixin.options</span></tt></a> are removed:-</p>
@@ -416,7 +455,7 @@ item is the choice value and the second item is choice label.</li>
 </div></blockquote>
 <dl class="method">
 <dt id="django_select2.widgets.HeavySelect2MultipleWidget.render_texts_for_value">
-<tt class="descname">render_texts_for_value</tt><big>(</big><em>id_</em>, <em>value</em>, <em>choices</em><big>)</big><a class="headerlink" href="#django_select2.widgets.HeavySelect2MultipleWidget.render_texts_for_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">render_texts_for_value</tt><big>(</big><em>id_</em>, <em>value</em>, <em>choices</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#HeavySelect2MultipleWidget.render_texts_for_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.HeavySelect2MultipleWidget.render_texts_for_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Renders the JS code which sets the <tt class="docutils literal"><span class="pre">txt</span></tt> attribute on the field. It gets the array
 of lables from <a class="reference internal" href="#django_select2.widgets.HeavySelect2Mixin.render_texts" title="django_select2.widgets.HeavySelect2Mixin.render_texts"><tt class="xref py py-meth docutils literal"><span class="pre">render_texts()</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -424,9 +463,9 @@ of lables from <a class="reference internal" href="#django_select2.widgets.Heavy
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>id</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt>) &#8211; Id of the field. This can be used to get reference of this field&#8217;s DOM in JS.</li>
-<li><strong>value</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt>) &#8211; <strong>List</strong> of currently set value on the field.</li>
-<li><strong>choices</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt>) &#8211; Extra choices, if any. This is a list of tuples. In each tuple, the first
+<li><strong>id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a>) &#8211; Id of the field. This can be used to get reference of this field&#8217;s DOM in JS.</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a>) &#8211; <strong>List</strong> of currently set value on the field.</li>
+<li><strong>choices</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">tuple</span></tt></a>) &#8211; Extra choices, if any. This is a list of tuples. In each tuple, the first
 item is the choice value and the second item is choice label.</li>
 </ul>
 </td>
@@ -434,7 +473,7 @@ item is the choice value and the second item is choice label.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JS code which sets the <tt class="docutils literal"><span class="pre">txt</span></tt> attribute.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -445,7 +484,7 @@ item is the choice value and the second item is choice label.</li>
 
 <dl class="class">
 <dt id="django_select2.widgets.AutoHeavySelect2Mixin">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">AutoHeavySelect2Mixin</tt><a class="headerlink" href="#django_select2.widgets.AutoHeavySelect2Mixin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">AutoHeavySelect2Mixin</tt><a class="reference internal" href="_modules/django_select2/widgets.html#AutoHeavySelect2Mixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.AutoHeavySelect2Mixin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>This mixin is needed for Auto heavy fields.</p>
 <p>This mxin adds extra JS code to notify the field&#8217;s DOM object of the generated id. The generated id
@@ -457,14 +496,14 @@ serve the request.</p>
 
 <dl class="class">
 <dt id="django_select2.widgets.AutoHeavySelect2Widget">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">AutoHeavySelect2Widget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.AutoHeavySelect2Widget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">AutoHeavySelect2Widget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#AutoHeavySelect2Widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.AutoHeavySelect2Widget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.AutoHeavySelect2Mixin" title="django_select2.widgets.AutoHeavySelect2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.AutoHeavySelect2Mixin</span></tt></a>, <a class="reference internal" href="#django_select2.widgets.HeavySelect2Widget" title="django_select2.widgets.HeavySelect2Widget"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.HeavySelect2Widget</span></tt></a></p>
 <p>Auto version of <a class="reference internal" href="#django_select2.widgets.HeavySelect2Widget" title="django_select2.widgets.HeavySelect2Widget"><tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2Widget</span></tt></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="django_select2.widgets.AutoHeavySelect2MultipleWidget">
-<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">AutoHeavySelect2MultipleWidget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.widgets.AutoHeavySelect2MultipleWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.widgets.</tt><tt class="descname">AutoHeavySelect2MultipleWidget</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/widgets.html#AutoHeavySelect2MultipleWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.widgets.AutoHeavySelect2MultipleWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.widgets.AutoHeavySelect2Mixin" title="django_select2.widgets.AutoHeavySelect2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.AutoHeavySelect2Mixin</span></tt></a>, <a class="reference internal" href="#django_select2.widgets.HeavySelect2MultipleWidget" title="django_select2.widgets.HeavySelect2MultipleWidget"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.widgets.HeavySelect2MultipleWidget</span></tt></a></p>
 <p>Auto version of <a class="reference internal" href="#django_select2.widgets.HeavySelect2MultipleWidget" title="django_select2.widgets.HeavySelect2MultipleWidget"><tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2MultipleWidget</span></tt></a></p>
 </dd></dl>

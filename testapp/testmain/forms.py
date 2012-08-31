@@ -30,12 +30,32 @@ class DeptForm(forms.ModelForm):
     class Meta:
         model = Dept
 
+class SelfChoices(AutoSelect2Field):
+    def get_results(self, request, term, page, context):
+        res = []
+        for i in range(1, 6):
+            res.append((i, term * i,))
+        self.choices = res
+
+        return (NO_ERR_RESP, False, res)
+
+class SelfMultiChoices(AutoSelect2MultipleField):
+    def get_results(self, request, term, page, context):
+        res = []
+        for i in range(1, 6):
+            res.append((i, term * i,))
+        self.choices = res
+
+        return (NO_ERR_RESP, False, res)
+
 class MixedForm(forms.Form):
     emp1 = EmployeeChoices()
     rooms1 = ClassRoomChoices()
     emp2 = EmployeeChoices()
     rooms2 = ClassRoomChoices()
     rooms3 = ClassRoomSingleChoices()
+    self_choices = SelfChoices(label='Self copy choices')
+    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices')
 
 # These are just for testing Auto registration of fields
 EmployeeChoices() # Should already be registered

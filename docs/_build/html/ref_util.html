@@ -55,7 +55,7 @@
 <span id="util"></span><h1>Util<a class="headerlink" href="#module-django_select2.util" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="django_select2.util.JSVar">
-<em class="property">class </em><tt class="descclassname">django_select2.util.</tt><tt class="descname">JSVar</tt><a class="headerlink" href="#django_select2.util.JSVar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.util.</tt><tt class="descname">JSVar</tt><a class="reference internal" href="_modules/django_select2/util.html#JSVar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.JSVar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unicode</span></tt></p>
 <p>A JS variable.</p>
 <p>This is a simple unicode string. This class type acts as a marker that this string is a JS variable name,
@@ -64,7 +64,7 @@ so it must not be quoted by <a class="reference internal" href="#django_select2.
 
 <dl class="class">
 <dt id="django_select2.util.JSFunction">
-<em class="property">class </em><tt class="descclassname">django_select2.util.</tt><tt class="descname">JSFunction</tt><a class="headerlink" href="#django_select2.util.JSFunction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.util.</tt><tt class="descname">JSFunction</tt><a class="reference internal" href="_modules/django_select2/util.html#JSFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.JSFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.util.JSVar" title="django_select2.util.JSVar"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.util.JSVar</span></tt></a></p>
 <p>A JS function name.</p>
 <p>From rendering point of view, rendering this is no different from <a class="reference internal" href="#django_select2.util.JSVar" title="django_select2.util.JSVar"><tt class="xref py py-class docutils literal"><span class="pre">JSVar</span></tt></a>. After all, a JS varible
@@ -78,7 +78,7 @@ understand.</p>
 
 <dl class="class">
 <dt id="django_select2.util.JSFunctionInContext">
-<em class="property">class </em><tt class="descclassname">django_select2.util.</tt><tt class="descname">JSFunctionInContext</tt><a class="headerlink" href="#django_select2.util.JSFunctionInContext" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_select2.util.</tt><tt class="descname">JSFunctionInContext</tt><a class="reference internal" href="_modules/django_select2/util.html#JSFunctionInContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.JSFunctionInContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#django_select2.util.JSVar" title="django_select2.util.JSVar"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.util.JSVar</span></tt></a></p>
 <p>A JS function name to run in context of some other Html DOM element.</p>
 <p>Like :py:class:JSFunction`, this too flags the string as JS function, but with a special requirement. The JS function
@@ -92,7 +92,7 @@ needs to be invoked in the context of a Html DOM, such that, <tt class="docutils
 
 <dl class="function">
 <dt id="django_select2.util.render_js_script">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">render_js_script</tt><big>(</big><em>inner_code</em><big>)</big><a class="headerlink" href="#django_select2.util.render_js_script" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">render_js_script</tt><big>(</big><em>inner_code</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#render_js_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.render_js_script" title="Permalink to this definition">¶</a></dt>
 <dd><p>This wraps <tt class="docutils literal"><span class="pre">inner_code</span></tt> string inside the following code block:</p>
 <div class="highlight-python"><pre>&lt;script&gt;
     $(function () {
@@ -104,7 +104,7 @@ needs to be invoked in the context of a Html DOM, such that, <tt class="docutils
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -112,19 +112,19 @@ needs to be invoked in the context of a Html DOM, such that, <tt class="docutils
 
 <dl class="function">
 <dt id="django_select2.util.extract_some_key_val">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">extract_some_key_val</tt><big>(</big><em>dct</em>, <em>keys</em><big>)</big><a class="headerlink" href="#django_select2.util.extract_some_key_val" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a sub-set of a <tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt>.</p>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">extract_some_key_val</tt><big>(</big><em>dct</em>, <em>keys</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#extract_some_key_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.extract_some_key_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a sub-set of a <a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dct</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt>) &#8211; Source dictionary.</li>
-<li><strong>keys</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or any iterable.) &#8211; List of subset keys, which to extract from <tt class="docutils literal"><span class="pre">dct</span></tt>.</li>
+<li><strong>dct</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></a>) &#8211; Source dictionary.</li>
+<li><strong>keys</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or any iterable.) &#8211; List of subset keys, which to extract from <tt class="docutils literal"><span class="pre">dct</span></tt>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -133,7 +133,7 @@ needs to be invoked in the context of a Html DOM, such that, <tt class="docutils
 
 <dl class="function">
 <dt id="django_select2.util.convert_py_to_js_data">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_py_to_js_data</tt><big>(</big><em>val</em>, <em>id_</em><big>)</big><a class="headerlink" href="#django_select2.util.convert_py_to_js_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_py_to_js_data</tt><big>(</big><em>val</em>, <em>id_</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#convert_py_to_js_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.convert_py_to_js_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts Python data type to JS data type.</p>
 <p>Practically what this means is, convert <tt class="docutils literal"><span class="pre">False</span></tt> to <tt class="docutils literal"><span class="pre">false</span></tt>, <tt class="docutils literal"><span class="pre">True</span></tt> to <tt class="docutils literal"><span class="pre">true</span></tt> and so on.
 It also takes care of the conversion of <a class="reference internal" href="#django_select2.util.JSVar" title="django_select2.util.JSVar"><tt class="xref py py-class docutils literal"><span class="pre">JSVar</span></tt></a>, <a class="reference internal" href="#django_select2.util.JSFunction" title="django_select2.util.JSFunction"><tt class="xref py py-class docutils literal"><span class="pre">JSFunction</span></tt></a>
@@ -145,12 +145,12 @@ too.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>val</strong> (<em>Any</em>) &#8211; The Python data to convert.</li>
-<li><strong>id</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt>) &#8211; The DOM id of the element in which context <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a> functions
+<li><strong>id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a>) &#8211; The DOM id of the element in which context <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a> functions
 should run. (This is not needed if <tt class="docutils literal"><span class="pre">val</span></tt> contains no <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a>)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -159,20 +159,20 @@ should run. (This is not needed if <tt class="docutils literal"><span class="pre
 
 <dl class="function">
 <dt id="django_select2.util.convert_dict_to_js_map">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_dict_to_js_map</tt><big>(</big><em>dct</em>, <em>id_</em><big>)</big><a class="headerlink" href="#django_select2.util.convert_dict_to_js_map" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_dict_to_js_map</tt><big>(</big><em>dct</em>, <em>id_</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#convert_dict_to_js_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.convert_dict_to_js_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a Python dictionary to JS map.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dct</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt>) &#8211; The Python dictionary to convert.</li>
-<li><strong>id</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt>) &#8211; The DOM id of the element in which context <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a> functions
+<li><strong>dct</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt></a>) &#8211; The Python dictionary to convert.</li>
+<li><strong>id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a>) &#8211; The DOM id of the element in which context <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a> functions
 should run. (This is not needed if <tt class="docutils literal"><span class="pre">dct</span></tt> contains no <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a>)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -181,20 +181,20 @@ should run. (This is not needed if <tt class="docutils literal"><span class="pre
 
 <dl class="function">
 <dt id="django_select2.util.convert_to_js_arr">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_to_js_arr</tt><big>(</big><em>lst</em>, <em>id_</em><big>)</big><a class="headerlink" href="#django_select2.util.convert_to_js_arr" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_to_js_arr</tt><big>(</big><em>lst</em>, <em>id_</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#convert_to_js_arr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.convert_to_js_arr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a Python list (or any iterable) to JS array.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lst</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt> or Any iterable) &#8211; The Python iterable to convert.</li>
-<li><strong>id</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt>) &#8211; The DOM id of the element in which context <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a> functions
+<li><strong>lst</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">list</span></tt></a> or Any iterable) &#8211; The Python iterable to convert.</li>
+<li><strong>id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a>) &#8211; The DOM id of the element in which context <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a> functions
 should run. (This is not needed if <tt class="docutils literal"><span class="pre">lst</span></tt> contains no <a class="reference internal" href="#django_select2.util.JSFunctionInContext" title="django_select2.util.JSFunctionInContext"><tt class="xref py py-class docutils literal"><span class="pre">JSFunctionInContext</span></tt></a>)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -203,7 +203,7 @@ should run. (This is not needed if <tt class="docutils literal"><span class="pre
 
 <dl class="function">
 <dt id="django_select2.util.convert_to_js_string_arr">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_to_js_string_arr</tt><big>(</big><em>lst</em><big>)</big><a class="headerlink" href="#django_select2.util.convert_to_js_string_arr" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">convert_to_js_string_arr</tt><big>(</big><em>lst</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#convert_to_js_string_arr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.convert_to_js_string_arr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a Python list (or any iterable) of strings to JS array.</p>
 <p><a class="reference internal" href="#django_select2.util.convert_to_js_arr" title="django_select2.util.convert_to_js_arr"><tt class="xref py py-func docutils literal"><span class="pre">convert_to_js_arr()</span></tt></a> can always be used instead of this. However, since it
 knows that it only contains strings, it cuts down on unnecessary computations.</p>
@@ -211,7 +211,7 @@ knows that it only contains strings, it cuts down on unnecessary computations.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -219,21 +219,21 @@ knows that it only contains strings, it cuts down on unnecessary computations.</
 
 <dl class="function">
 <dt id="django_select2.util.synchronized">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">synchronized</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#django_select2.util.synchronized" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">synchronized</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#synchronized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.synchronized" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to synchronize multiple calls to a functions.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="django_select2.util.is_valid_id">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">is_valid_id</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#django_select2.util.is_valid_id" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">is_valid_id</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#is_valid_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.is_valid_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if <tt class="docutils literal"><span class="pre">val</span></tt> is a valid generated Id.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt>) &#8211; The value to check.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">str</span></tt></a>) &#8211; The value to check.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-obj docutils literal"><span class="pre">bool</span></tt></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">bool</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -241,14 +241,14 @@ knows that it only contains strings, it cuts down on unnecessary computations.</
 
 <dl class="function">
 <dt id="django_select2.util.register_field">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">register_field</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.util.register_field" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">register_field</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#register_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.register_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers an Auto field for use with <a class="reference internal" href="ref_views.html#django_select2.views.AutoResponseView" title="django_select2.views.AutoResponseView"><tt class="xref py py-class docutils literal"><span class="pre">views.AutoResponseView</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt>) &#8211; The key to use while registering this field.</li>
+<li><strong>key</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a>) &#8211; The key to use while registering this field.</li>
 <li><strong>field</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AutoViewFieldMixin</span></tt>) &#8211; The field to register.</li>
 </ul>
 </td>
@@ -257,7 +257,7 @@ knows that it only contains strings, it cuts down on unnecessary computations.</
 Id generated that time, would be returned.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -266,13 +266,13 @@ Id generated that time, would be returned.</p>
 
 <dl class="function">
 <dt id="django_select2.util.get_field">
-<tt class="descclassname">django_select2.util.</tt><tt class="descname">get_field</tt><big>(</big><em>id_</em><big>)</big><a class="headerlink" href="#django_select2.util.get_field" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">django_select2.util.</tt><tt class="descname">get_field</tt><big>(</big><em>id_</em><big>)</big><a class="reference internal" href="_modules/django_select2/util.html#get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.util.get_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an Auto field instance registered with the given Id.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>id</strong> (<tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt>) &#8211; The generated Id the field is registered with.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a>) &#8211; The generated Id the field is registered with.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">AutoViewFieldMixin</span></tt> or None</td>
 </tr>

@@ -67,6 +67,7 @@ class AutoViewFieldMixin(object):
         "See :py:meth:`.views.Select2View.get_results`."
         raise NotImplementedError
 
+
 import copy
 
 from django import forms
@@ -90,11 +91,13 @@ class Select2ChoiceField(forms.ChoiceField):
     """
     widget = Select2Widget
 
+
 class Select2MultipleChoiceField(forms.MultipleChoiceField):
     """
     Drop-in Select2 replacement for :py:class:`forms.MultipleChoiceField`.
     """
     widget = Select2MultipleWidget
+
 
 ### Model fields related mixins ###
 
@@ -235,6 +238,7 @@ class ModelResultJsonMixin(object):
         res = [ (getattr(obj, self.to_field_name), self.label_from_instance(obj), ) for obj in res ]
         return (NO_ERR_RESP, has_more, res, )
 
+
 class UnhideableQuerysetType(type):
     """
     This does some pretty nasty hacky stuff, to make sure users can
@@ -263,6 +267,7 @@ class UnhideableQuerysetType(type):
             kwargs['queryset'] = getattr(cls, '_subclass_queryset')
         return type.__call__(cls, *args, **kwargs)
 
+
 class ChoiceMixin(object):
     """
     Simple mixin which provides a property -- ``choices``. When ``choices`` is set,
@@ -279,6 +284,7 @@ class ChoiceMixin(object):
         self._choices = self.widget.choices = list(value)
 
     choices = property(_get_choices, _set_choices)
+
 
 class QuerysetChoiceMixin(ChoiceMixin):
     """
@@ -303,6 +309,7 @@ class QuerysetChoiceMixin(ChoiceMixin):
 
     choices = property(_get_choices, ChoiceMixin._set_choices)
 
+
 class ModelChoiceFieldMixin(object):
 
     def __init__(self, *args, **kwargs):
@@ -326,13 +333,16 @@ class ModelChoiceFieldMixin(object):
         if hasattr(self, '_queryset'):
             return self._queryset
 
+
 ### Slightly altered versions of the Django counterparts with the same name in forms module. ###
 
 class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
 
+
 class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
+
 
 ### Light Fileds specialized for Models ###
 
@@ -344,6 +354,7 @@ class ModelSelect2Field(ModelChoiceField) :
     """
     widget = Select2Widget
 
+
 class ModelSelect2MultipleField(ModelMultipleChoiceField) :
     """
     Light multiple-value Select2 field, specialized for Models.
@@ -352,11 +363,12 @@ class ModelSelect2MultipleField(ModelMultipleChoiceField) :
     """
     widget = Select2MultipleWidget
 
+
 ### Heavy fields ###
 
-class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
+class HeavySelect2FieldBaseMixin(object):
     """
-    Base field for all Heavy fields.
+    Base mixin field for all Heavy fields.
     """
     def __init__(self, *args, **kwargs):
         """
@@ -382,7 +394,7 @@ class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
             raise ValueError('data_view is required else you need to provide your own widget instance.')
 
         kargs.update(kwargs)
-        super(HeavySelect2FieldBase, self).__init__(*args, **kargs)
+        super(HeavySelect2FieldBaseMixin, self).__init__(*args, **kargs)
 
         # By this time self.widget would have been instantiated.
 
@@ -398,27 +410,36 @@ class HeavySelect2FieldBase(ChoiceMixin, forms.Field):
             choices = self.choices
         self.choices = choices
 
-class HeavySelect2ChoiceField(HeavySelect2FieldBase):
+
+class HeavySelect2ChoiceField(HeavySelect2FieldBaseMixin, forms.ChoiceField):
     "Heavy Select2 Choice field."
     widget = HeavySelect2Widget
 
-class HeavySelect2MultipleChoiceField(HeavySelect2FieldBase):
+
+class HeavySelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, forms.MultipleChoiceField):
     "Heavy Select2 Multiple Choice field."
     widget = HeavySelect2MultipleWidget
 
+
 ### Heavy field specialized for Models ###
 
-class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2ChoiceField, ModelChoiceField):
+class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2FieldBaseMixin, ModelChoiceField):
     "Heavy Select2 Choice field, specialized for Models."
+    widget = HeavySelect2Widget
+
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
 
-class HeavyModelSelect2MultipleChoiceField(QuerysetChoiceMixin, HeavySelect2MultipleChoiceField, ModelMultipleChoiceField):
+
+class HeavyModelSelect2MultipleChoiceField(QuerysetChoiceMixin, HeavySelect2FieldBaseMixin, ModelMultipleChoiceField):
     "Heavy Select2 Multiple Choice field, specialized for Models."
+    widget = HeavySelect2MultipleWidget
+
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2MultipleChoiceField, self).__init__(*args, **kwargs)
+
 
 ### Heavy general field that uses central AutoView ###
 
@@ -428,6 +449,8 @@ class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
 
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_results` is not implemented.
     """
 
     widget = AutoHeavySelect2Widget
@@ -437,12 +460,15 @@ class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
         kwargs['data_view'] = self.data_view
         super(AutoSelect2Field, self).__init__(*args, **kwargs)
 
+
 class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceField):
     """
     Auto Heavy Select2 field for multiple choices.
 
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_results` is not implemented.
     """
 
     widget = AutoHeavySelect2MultipleWidget
@@ -451,6 +477,7 @@ class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceFie
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
         super(AutoSelect2MultipleField, self).__init__(*args, **kwargs)
+
 
 ### Heavy field, specialized for Model, that uses central AutoView ###
 
@@ -470,6 +497,7 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
         super(AutoModelSelect2Field, self).__init__(*args, **kwargs)
+
 
 class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
     """

@@ -44,7 +44,12 @@ def test_multi_values_model_field1(request, id):
     return render_to_response('form.html', RequestContext(request, {'form': form}))
 
 def test_mixed_form(request):
-    return render_to_response('form.html', RequestContext(request, {'form': MixedForm()}))
+    if request.POST:
+        form = MixedForm(request.POST)
+        form.is_valid()
+    else:
+        form = MixedForm()
+    return render_to_response('form.html', RequestContext(request, {'form': form}))
 
 
 def test_init_values(request):

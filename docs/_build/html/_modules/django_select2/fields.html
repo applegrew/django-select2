@@ -1,0 +1,582 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django_select2.fields &mdash; Django-Select2 3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django-Select2 3.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Django-Select2 3.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for django_select2.fields</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Contains all the Django fields for Select2.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AutoViewFieldMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoViewFieldMixin">[docs]</a><span class="k">class</span> <span class="nc">AutoViewFieldMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Registers itself with AutoResponseView.</span>
+
+<span class="sd">    All Auto fields must sub-class this mixin, so that they are registered.</span>
+
+<span class="sd">    .. warning:: Do not forget to include ``&#39;django_select2.urls&#39;`` in your url conf, else,</span>
+<span class="sd">        central view used to serve Auto fields won&#39;t be available.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AutoViewFieldMixin.__init__"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoViewFieldMixin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class constructor.</span>
+
+<span class="sd">        :param auto_id: The key to use while registering this field. If it is not provided then</span>
+<span class="sd">            an auto generated key is used.</span>
+
+<span class="sd">            .. tip::</span>
+<span class="sd">                This mixin uses full class name of the field to register itself. This is</span>
+<span class="sd">                used like key in a :py:obj:`dict` by :py:func:`.util.register_field`.</span>
+
+<span class="sd">                If that key already exists then the instance is not registered again. So, eventually</span>
+<span class="sd">                all instances of an Auto field share one instance to respond to the Ajax queries for</span>
+<span class="sd">                its fields.</span>
+
+<span class="sd">                If for some reason any instance needs to be isolated then ``auto_id`` can be used to</span>
+<span class="sd">                provide a unique key which has never occured before.</span>
+
+<span class="sd">        :type auto_id: :py:obj:`unicode`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;auto_id&#39;</span><span class="p">,</span> <span class="s">u&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Registering auto field: </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">util</span>
+        <span class="n">id_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">register_field</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutoViewFieldMixin.security_check"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoViewFieldMixin.security_check">[docs]</a>    <span class="k">def</span> <span class="nf">security_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns ``False`` if security check fails.</span>
+
+<span class="sd">        :param request: The Ajax request object.</span>
+<span class="sd">        :type request: :py:class:`django.http.HttpRequest`</span>
+
+<span class="sd">        :param args: The ``*args`` passed to :py:meth:`django.views.generic.View.dispatch`.</span>
+<span class="sd">        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.</span>
+
+<span class="sd">        :return: A boolean value, signalling if check passed or failed.</span>
+<span class="sd">        :rtype: :py:obj:`bool`</span>
+
+<span class="sd">        .. warning:: Sub-classes should override this. You really do not want random people making</span>
+<span class="sd">            Http reqeusts to your server, be able to get access to sensitive information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="AutoViewFieldMixin.get_results"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoViewFieldMixin.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="s">&quot;See :py:meth:`.views.Select2View.get_results`.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div></div>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.forms.models</span> <span class="kn">import</span> <span class="n">ModelChoiceIterator</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.utils.encoding</span> <span class="kn">import</span> <span class="n">smart_unicode</span>
+<span class="kn">from</span> <span class="nn">django.core.validators</span> <span class="kn">import</span> <span class="n">EMPTY_VALUES</span>
+
+<span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">Select2Widget</span><span class="p">,</span> <span class="n">Select2MultipleWidget</span><span class="p">,</span>\
+    <span class="n">HeavySelect2Widget</span><span class="p">,</span> <span class="n">HeavySelect2MultipleWidget</span><span class="p">,</span> <span class="n">AutoHeavySelect2Widget</span><span class="p">,</span> \
+    <span class="n">AutoHeavySelect2MultipleWidget</span>
+<span class="kn">from</span> <span class="nn">.views</span> <span class="kn">import</span> <span class="n">NO_ERR_RESP</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">extract_some_key_val</span>
+
+<span class="c">### Light general fields ###</span>
+
+<div class="viewcode-block" id="Select2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.Select2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">Select2ChoiceField</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Drop-in Select2 replacement for :py:class:`forms.ChoiceField`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2Widget</span>
+</div>
+<div class="viewcode-block" id="Select2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.Select2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">Select2MultipleChoiceField</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">MultipleChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Drop-in Select2 replacement for :py:class:`forms.MultipleChoiceField`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2MultipleWidget</span>
+
+<span class="c">### Model fields related mixins ###</span>
+</div>
+<div class="viewcode-block" id="ModelResultJsonMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelResultJsonMixin">[docs]</a><span class="k">class</span> <span class="nc">ModelResultJsonMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes ``heavy_data.js`` parsable JSON response for queries on its model.</span>
+
+<span class="sd">    On query it uses :py:meth:`.prepare_qs_params` to prepare query attributes</span>
+<span class="sd">    which it then passes to ``self.queryset.filter()`` to get the results.</span>
+
+<span class="sd">    It is expected that sub-classes will defined a class field variable</span>
+<span class="sd">    ``search_fields``, which should be a list of field names to search for.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ModelResultJsonMixin.__init__"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelResultJsonMixin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class constructor.</span>
+
+<span class="sd">        :param queryset: This can be passed as kwarg here or defined as field variabel,</span>
+<span class="sd">            like ``search_fields``.</span>
+<span class="sd">        :type queryset: :py:class:`django.db.models.query.QuerySet` or None</span>
+
+<span class="sd">        :param max_results: Maximum number to results to return per Ajax query.</span>
+<span class="sd">        :type max_results: :py:obj:`int`</span>
+
+<span class="sd">        :param to_field_name: Which field&#39;s value should be returned as result tuple&#39;s</span>
+<span class="sd">            value. (Default is ``pk``, i.e. the id field of the model)</span>
+<span class="sd">        :type to_field_name: :py:obj:`str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;queryset&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;queryset is required.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_fields</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;search_fields is required.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_results</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;max_results&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_field_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;to_field_name&#39;</span><span class="p">,</span> <span class="s">&#39;pk&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModelResultJsonMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelResultJsonMixin.label_from_instance"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelResultJsonMixin.label_from_instance">[docs]</a>    <span class="k">def</span> <span class="nf">label_from_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sub-classes should override this to generate custom label texts for values.</span>
+
+<span class="sd">        :param obj: The model object.</span>
+<span class="sd">        :type obj: :py:class:`django.model.Model`</span>
+
+<span class="sd">        :return: The label string.</span>
+<span class="sd">        :rtype: :py:obj:`unicode`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">smart_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelResultJsonMixin.prepare_qs_params"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelResultJsonMixin.prepare_qs_params">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_qs_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">search_term</span><span class="p">,</span> <span class="n">search_fields</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepares queryset parameter to use for searching.</span>
+
+<span class="sd">        :param search_term: The search term.</span>
+<span class="sd">        :type search_term: :py:obj:`str`</span>
+
+<span class="sd">        :param search_fields: The list of search fields. This is same as ``self.search_fields``.</span>
+<span class="sd">        :type search_term: :py:obj:`list`</span>
+
+<span class="sd">        :return: A dictionary of parameters to &#39;or&#39; and &#39;and&#39; together. The output format should</span>
+<span class="sd">            be ::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    &#39;or&#39;: [</span>
+<span class="sd">                    Q(attr11=term11) | Q(attr12=term12) | ...,</span>
+<span class="sd">                    Q(attrN1=termN1) | Q(attrN2=termN2) | ...,</span>
+<span class="sd">                    ...],</span>
+
+<span class="sd">                    &#39;and&#39;: {</span>
+<span class="sd">                        &#39;attrX1&#39;: termX1,</span>
+<span class="sd">                        &#39;attrX2&#39;: termX2,</span>
+<span class="sd">                        ...</span>
+<span class="sd">                    }</span>
+<span class="sd">                }</span>
+
+<span class="sd">            The above would then be coaxed into ``filter()`` as below::</span>
+
+<span class="sd">                queryset.filter(</span>
+<span class="sd">                    Q(attr11=term11) | Q(attr12=term12) | ...,</span>
+<span class="sd">                    Q(attrN1=termN1) | Q(attrN2=termN2) | ...,</span>
+<span class="sd">                    ...,</span>
+<span class="sd">                    attrX1=termX1,</span>
+<span class="sd">                    attrX2=termX2,</span>
+<span class="sd">                    ...</span>
+<span class="sd">                    )</span>
+
+<span class="sd">            In this implementation, ``term11, term12, termN1, ...`` etc., all are actually ``search_term``.</span>
+<span class="sd">            Also then ``and`` part is always empty.</span>
+
+<span class="sd">            So, let&#39;s take an example.</span>
+
+<span class="sd">            | Assume, ``search_term == &#39;John&#39;``</span>
+<span class="sd">            | ``self.search_fields == [&#39;first_name__icontains&#39;, &#39;last_name__icontains&#39;]``</span>
+<span class="sd">            </span>
+<span class="sd">            So, the prepared query would be::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    &#39;or&#39;: [</span>
+<span class="sd">                        Q(first_name__icontains=search_term) | Q(last_name__icontains=search_term)</span>
+<span class="sd">                    ],</span>
+<span class="sd">                    &#39;and&#39;: {}</span>
+<span class="sd">                }</span>
+<span class="sd">        :rtype: :py:obj:`dict`</span>
+<span class="sd">        &quot;&quot;&quot;</span>      
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">search_fields</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">search_term</span>
+            <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;or&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">q</span><span class="p">],</span> <span class="s">&#39;and&#39;</span><span class="p">:</span> <span class="p">{},}</span>
+</div>
+<div class="viewcode-block" id="ModelResultJsonMixin.get_results"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelResultJsonMixin.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :py:meth:`.views.Select2View.get_results`.</span>
+
+<span class="sd">        This implementation takes care of detecting if more results are available.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queryset</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_qs_params</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_fields</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_results</span><span class="p">:</span>
+            <span class="n">min_</span> <span class="o">=</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_results</span>
+            <span class="n">max_</span> <span class="o">=</span> <span class="n">min_</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_results</span> <span class="o">+</span> <span class="mi">1</span> <span class="c"># fetching one extra row to check if it has more rows.</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">qs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;or&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;and&#39;</span><span class="p">])[</span><span class="n">min_</span><span class="p">:</span><span class="n">max_</span><span class="p">])</span>
+            <span class="n">has_more</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">max_</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">has_more</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">qs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;or&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;and&#39;</span><span class="p">]))</span>
+            <span class="n">has_more</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_field_name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_from_instance</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">res</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">NO_ERR_RESP</span><span class="p">,</span> <span class="n">has_more</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="UnhideableQuerysetType"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.UnhideableQuerysetType">[docs]</a><span class="k">class</span> <span class="nc">UnhideableQuerysetType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This does some pretty nasty hacky stuff, to make sure users can</span>
+<span class="sd">    also define ``queryset`` as class-level field variable, instead of</span>
+<span class="sd">    passing it to constructor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># TODO check for alternatives. Maybe this hack is not necessary.</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
+        <span class="n">_q</span> <span class="o">=</span> <span class="n">dct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;queryset&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_q</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+            <span class="c"># This hack is needed since users are allowed to</span>
+            <span class="c"># provide queryset in sub-classes by declaring</span>
+            <span class="c"># class variable named - queryset, which will</span>
+            <span class="c"># effectively hide the queryset declared in this</span>
+            <span class="c"># mixin.</span>
+            <span class="n">dct</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;queryset&#39;</span><span class="p">)</span> <span class="c"># Throwing away the sub-class queryset</span>
+            <span class="n">dct</span><span class="p">[</span><span class="s">&#39;_subclass_queryset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_q</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">queryset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;queryset&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">queryset</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;_subclass_queryset&#39;</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;queryset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;_subclass_queryset&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ChoiceMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ChoiceMixin">[docs]</a><span class="k">class</span> <span class="nc">ChoiceMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple mixin which provides a property -- ``choices``. When ``choices`` is set,</span>
+<span class="sd">    then it sets that value to ``self.widget.choices`` too.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_get_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_choices&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choices</span>
+
+    <span class="k">def</span> <span class="nf">_set_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c"># Setting choices also sets the choices on the widget.</span>
+        <span class="c"># choices can be any iterable, but we call list() on it because</span>
+        <span class="c"># it will be consumed more than once.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">choices</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_choices</span><span class="p">,</span> <span class="n">_set_choices</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="QuerysetChoiceMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.QuerysetChoiceMixin">[docs]</a><span class="k">class</span> <span class="nc">QuerysetChoiceMixin</span><span class="p">(</span><span class="n">ChoiceMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overrides ``choices``&#39; getter to return instance of :py:class:`.ModelChoiceIterator`</span>
+<span class="sd">    instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># If self._choices is set, then somebody must have manually set</span>
+        <span class="c"># the property self.choices. In this case, just return self._choices.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_choices&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choices</span>
+
+        <span class="c"># Otherwise, execute the QuerySet in self.queryset to determine the</span>
+        <span class="c"># choices dynamically. Return a fresh ModelChoiceIterator that has not been</span>
+        <span class="c"># consumed. Note that we&#39;re instantiating a new ModelChoiceIterator *each*</span>
+        <span class="c"># time _get_choices() is called (and, thus, each time self.choices is</span>
+        <span class="c"># accessed) so that we can ensure the QuerySet has not been consumed. This</span>
+        <span class="c"># construct might look complicated but it allows for lazy evaluation of</span>
+        <span class="c"># the queryset.</span>
+        <span class="k">return</span> <span class="n">ModelChoiceIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="n">choices</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_choices</span><span class="p">,</span> <span class="n">ChoiceMixin</span><span class="o">.</span><span class="n">_set_choices</span><span class="p">)</span>
+</div>
+<span class="k">class</span> <span class="nc">ModelChoiceFieldMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">queryset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;queryset&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">kargs</span> <span class="o">=</span> <span class="n">extract_some_key_val</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="p">[</span>
+            <span class="s">&#39;empty_label&#39;</span><span class="p">,</span> <span class="s">&#39;cache_choices&#39;</span><span class="p">,</span> <span class="s">&#39;required&#39;</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">,</span> <span class="s">&#39;initial&#39;</span><span class="p">,</span> <span class="s">&#39;help_text&#39;</span><span class="p">,</span>
+            <span class="p">])</span>
+        <span class="n">kargs</span><span class="p">[</span><span class="s">&#39;widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;widget&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;widget&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+        <span class="n">kargs</span><span class="p">[</span><span class="s">&#39;to_field_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;to_field_name&#39;</span><span class="p">,</span> <span class="s">&#39;pk&#39;</span><span class="p">)</span>        
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_choices&#39;</span><span class="p">):</span> <span class="c"># If it exists then probably it is set by HeavySelect2FieldBase.</span>
+                                      <span class="c"># We are not gonna use that anyway.</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choices</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;set_placeholder&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">set_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty_label</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_queryset&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queryset</span>
+
+<span class="c">### Slightly altered versions of the Django counterparts with the same name in forms module. ###</span>
+
+<span class="k">class</span> <span class="nc">ModelChoiceField</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelChoiceField</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="o">.</span><span class="n">_get_queryset</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelChoiceField</span><span class="o">.</span><span class="n">_set_queryset</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ModelMultipleChoiceField</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelMultipleChoiceField</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="o">.</span><span class="n">_get_queryset</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelMultipleChoiceField</span><span class="o">.</span><span class="n">_set_queryset</span><span class="p">)</span>
+
+<span class="c">### Light Fileds specialized for Models ###</span>
+
+<div class="viewcode-block" id="ModelSelect2Field"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelSelect2Field">[docs]</a><span class="k">class</span> <span class="nc">ModelSelect2Field</span><span class="p">(</span><span class="n">ModelChoiceField</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Light Select2 field, specialized for Models.</span>
+
+<span class="sd">    Select2 replacement for :py:class:`forms.ModelChoiceField`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2Widget</span>
+</div>
+<div class="viewcode-block" id="ModelSelect2MultipleField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelSelect2MultipleField">[docs]</a><span class="k">class</span> <span class="nc">ModelSelect2MultipleField</span><span class="p">(</span><span class="n">ModelMultipleChoiceField</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Light multiple-value Select2 field, specialized for Models.</span>
+
+<span class="sd">    Select2 replacement for :py:class:`forms.ModelMultipleChoiceField`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2MultipleWidget</span>
+
+<span class="c">### Heavy fields ###</span>
+</div>
+<div class="viewcode-block" id="HeavySelect2FieldBase"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2FieldBase">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2FieldBase</span><span class="p">(</span><span class="n">ChoiceMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">Field</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base field for all Heavy fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="HeavySelect2FieldBase.__init__"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2FieldBase.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class constructor.</span>
+
+<span class="sd">        :param data_view: A :py:class:`~.views.Select2View` sub-class which can respond to this widget&#39;s Ajax queries.</span>
+<span class="sd">        :type data_view: :py:class:`django.views.generic.View` or None</span>
+
+<span class="sd">        :param widget: A widget instance.</span>
+<span class="sd">        :type widget: :py:class:`django.forms.widgets.Widget` or None</span>
+
+<span class="sd">        .. warning:: Either of ``data_view`` or ``widget`` must be specified, else :py:exc:`ValueError` would</span>
+<span class="sd">            be raised.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_view</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;data_view&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">choices</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;choices&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">kargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">data_view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">kargs</span><span class="p">[</span><span class="s">&#39;widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">data_view</span><span class="o">=</span><span class="n">data_view</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;widget&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;data_view is required else you need to provide your own widget instance.&#39;</span><span class="p">)</span>
+
+        <span class="n">kargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeavySelect2FieldBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+
+        <span class="c"># By this time self.widget would have been instantiated.</span>
+
+        <span class="c"># This piece of code is needed here since (God knows why) Django&#39;s Field class does not call</span>
+        <span class="c"># super(); because of that __init__() of classes would get called after Field.__init__().</span>
+        <span class="c"># If did had super() call there then we could have simply moved AutoViewFieldMixin at the</span>
+        <span class="c"># end of the MRO list. This way it would have got widget instance instead of class and it</span>
+        <span class="c"># could have directly set field_id on it.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;field_id&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">field_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">choices</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;choices&#39;</span><span class="p">):</span> <span class="c"># ModelChoiceField will set this to ModelChoiceIterator</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">choices</span>
+</div></div>
+<div class="viewcode-block" id="HeavySelect2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2ChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBase</span><span class="p">):</span>
+    <span class="s">&quot;Heavy Select2 Choice field.&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">HeavySelect2Widget</span>
+</div>
+<div class="viewcode-block" id="HeavySelect2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2MultipleChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBase</span><span class="p">):</span>
+    <span class="s">&quot;Heavy Select2 Multiple Choice field.&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">HeavySelect2MultipleWidget</span>
+
+<span class="c">### Heavy field specialized for Models ###</span>
+</div>
+<div class="viewcode-block" id="HeavyModelSelect2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyModelSelect2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyModelSelect2ChoiceField</span><span class="p">(</span><span class="n">QuerysetChoiceMixin</span><span class="p">,</span> <span class="n">HeavySelect2ChoiceField</span><span class="p">,</span> <span class="n">ModelChoiceField</span><span class="p">):</span>
+    <span class="s">&quot;Heavy Select2 Choice field, specialized for Models.&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;choices&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeavyModelSelect2ChoiceField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HeavyModelSelect2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyModelSelect2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyModelSelect2MultipleChoiceField</span><span class="p">(</span><span class="n">QuerysetChoiceMixin</span><span class="p">,</span> <span class="n">HeavySelect2MultipleChoiceField</span><span class="p">,</span> <span class="n">ModelMultipleChoiceField</span><span class="p">):</span>
+    <span class="s">&quot;Heavy Select2 Multiple Choice field, specialized for Models.&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;choices&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeavyModelSelect2MultipleChoiceField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c">### Heavy general field that uses central AutoView ###</span>
+</div>
+<div class="viewcode-block" id="AutoSelect2Field"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoSelect2Field">[docs]</a><span class="k">class</span> <span class="nc">AutoSelect2Field</span><span class="p">(</span><span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="n">HeavySelect2ChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auto Heavy Select2 field.</span>
+
+<span class="sd">    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming</span>
+<span class="sd">    json query requests for that type (class).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">AutoHeavySelect2Widget</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoSelect2Field</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutoSelect2MultipleField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoSelect2MultipleField">[docs]</a><span class="k">class</span> <span class="nc">AutoSelect2MultipleField</span><span class="p">(</span><span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="n">HeavySelect2MultipleChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auto Heavy Select2 field for multiple choices.</span>
+
+<span class="sd">    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming</span>
+<span class="sd">    json query requests for that type (class).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">AutoHeavySelect2MultipleWidget</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoSelect2MultipleField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c">### Heavy field, specialized for Model, that uses central AutoView ###</span>
+</div>
+<div class="viewcode-block" id="AutoModelSelect2Field"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoModelSelect2Field">[docs]</a><span class="k">class</span> <span class="nc">AutoModelSelect2Field</span><span class="p">(</span><span class="n">ModelResultJsonMixin</span><span class="p">,</span> <span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="n">HeavyModelSelect2ChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auto Heavy Select2 field, specialized for Models.</span>
+
+<span class="sd">    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming</span>
+<span class="sd">    json query requests for that type (class).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">UnhideableQuerysetType</span> <span class="c"># Makes sure that user defined queryset class variable is replaced by</span>
+                                           <span class="c"># queryset property (as it is needed by super classes).</span>
+
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">AutoHeavySelect2Widget</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoModelSelect2Field</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutoModelSelect2MultipleField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoModelSelect2MultipleField">[docs]</a><span class="k">class</span> <span class="nc">AutoModelSelect2MultipleField</span><span class="p">(</span><span class="n">ModelResultJsonMixin</span><span class="p">,</span> <span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="n">HeavyModelSelect2MultipleChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auto Heavy Select2 field for multiple choices, specialized for Models.</span>
+
+<span class="sd">    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming</span>
+<span class="sd">    json query requests for that type (class).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">UnhideableQuerysetType</span> <span class="c"># Makes sure that user defined queryset class variable is replaced by</span>
+                                           <span class="c"># queryset property (as it is needed by super classes).</span>
+
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">AutoHeavySelect2MultipleWidget</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoModelSelect2MultipleField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Django-Select2 3.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nirupam Biswas.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
