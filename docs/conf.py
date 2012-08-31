@@ -27,6 +27,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testapp.settings")
 sys.path.insert(0, os.path.abspath('../testapp'))
 sys.path.insert(0, os.path.abspath('..'))
 
+import datetime
+year = datetime.datetime.now().strftime("%Y")
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -34,7 +37,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
 
 intersphinx_mapping = {
     'python': ('http://docs.python.org/2.7', None),
@@ -55,7 +58,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Django-Select2'
-copyright = u'2012, Nirupam Biswas'
+copyright = u'%s, Nirupam Biswas' % year
 
 def get_version():
   import django_select2
