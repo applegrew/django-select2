@@ -37,8 +37,8 @@ sys.path.insert(0, os.path.abspath('..'))
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
 intersphinx_mapping = {
-    'python': ('http://python.readthedocs.org/en/latest/', None),
-    'django': ('http://django.readthedocs.org/en/latest/ref/', None),
+    'python': ('http://docs.python.org/2.7', None),
+    'django': ('http://docs.djangoproject.com/en/dev/', 'http://docs.djangoproject.com/en/dev/_objects/'),
 }
 
 # Add any paths that contain templates here, relative to this directory.
