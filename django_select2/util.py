@@ -15,6 +15,7 @@ class JSVar(unicode):
     """
     pass
 
+
 class JSFunction(JSVar):
     """
     A JS function name.
@@ -27,6 +28,7 @@ class JSFunction(JSVar):
     """
     pass
 
+
 class JSFunctionInContext(JSVar):
     """
     A JS function name to run in context of some other Html DOM element.
@@ -38,6 +40,7 @@ class JSFunctionInContext(JSVar):
     .. tip:: JS functions of this type are warapped inside special another JS function -- ``django_select2.runInContextHelper``.
     """
     pass
+
 
 def render_js_script(inner_code):
     """
@@ -58,6 +61,7 @@ def render_js_script(inner_code):
         });
     </script>""" % inner_code
 
+
 def extract_some_key_val(dct, keys):
     """
     Gets a sub-set of a :py:obj:`dict`.
@@ -76,6 +80,7 @@ def extract_some_key_val(dct, keys):
         if v is not None:
             edct[k] = v
     return edct
+
 
 def convert_py_to_js_data(val, id_):
     """
@@ -110,6 +115,7 @@ def convert_py_to_js_data(val, id_):
     else:
         return u"'%s'" % force_unicode(val)
 
+
 def convert_dict_to_js_map(dct, id_):
     """
     Converts a Python dictionary to JS map.
@@ -136,6 +142,7 @@ def convert_dict_to_js_map(dct, id_):
 
     return out + u'}'
 
+
 def convert_to_js_arr(lst, id_):
     """
     Converts a Python list (or any iterable) to JS array.
@@ -161,6 +168,7 @@ def convert_to_js_arr(lst, id_):
 
     return out + u']'
 
+
 def convert_to_js_string_arr(lst):
     """
     Converts a Python list (or any iterable) of strings to JS array.
@@ -173,11 +181,13 @@ def convert_to_js_string_arr(lst):
     lst = [u'"%s"' % force_unicode(l) for l in lst]
     return u"[%s]" % (",".join(lst))
 
+
 ### Auto view helper utils ###
 
 import re
 import threading
 import datetime
+
 
 def synchronized(f):
     "Decorator to synchronize multiple calls to a functions."
@@ -193,6 +203,7 @@ def synchronized(f):
 
 __id_store = {} # Generated Id to field instance mapping.
 __field_store = {} # Field's key to generated Id mapping.
+
 
 ID_PATTERN = r"[0-9_a-zA-Z.:+\- ]+"
 
@@ -210,6 +221,7 @@ def is_valid_id(val):
         return False
     else:
         return True
+
 
 @synchronized
 def register_field(key, field):
@@ -246,6 +258,7 @@ def register_field(key, field):
         if logger.isEnabledFor(logging.INFO):
             logger.info("Field already registered: %s; With actual id: %s", key, id_)
     return id_
+
 
 def get_field(id_):
     """

@@ -66,4 +66,7 @@ class InitialValueForm(forms.Form):
     select2MultipleChoice = Select2MultipleChoiceField(initial=[2,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     heavySelect2Choice = AutoSelect2Field(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_choices = SelfChoices(label='Self copy choices', initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices',
+        initial=[2,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
 

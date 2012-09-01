@@ -73,7 +73,7 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 
 """
 
-__version__ = "3.0"
+__version__ = "3.0.1"
 
 from django.conf import settings
 if settings.configured:

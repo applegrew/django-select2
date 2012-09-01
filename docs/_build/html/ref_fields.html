@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Fields &mdash; Django-Select2 3.0 documentation</title>
+    <title>Fields &mdash; Django-Select2 3.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '3.0',
+        VERSION:     '3.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Django-Select2 3.0 documentation" href="index.html" />
+    <link rel="top" title="Django-Select2 3.0.1 documentation" href="index.html" />
     <link rel="up" title="API Reference" href="reference.html" />
     <link rel="next" title="Views" href="ref_views.html" />
     <link rel="prev" title="Widgets" href="ref_widgets.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="ref_widgets.html" title="Widgets"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Django-Select2 3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Django-Select2 3.0.1 documentation</a> &raquo;</li>
           <li><a href="reference.html" accesskey="U">API Reference</a> &raquo;</li> 
       </ul>
     </div>  
@@ -335,13 +335,20 @@ instead.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="django_select2.fields.HeavySelect2FieldBase">
-<em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavySelect2FieldBase</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/fields.html#HeavySelect2FieldBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.fields.HeavySelect2FieldBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.ChoiceMixin" title="django_select2.fields.ChoiceMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.ChoiceMixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django.forms.fields.Field</span></tt></p>
-<p>Base field for all Heavy fields.</p>
+<dt id="django_select2.fields.HeavySelect2FieldBaseMixin">
+<em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavySelect2FieldBaseMixin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base mixin field for all Heavy fields.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Although Heavy fields accept <tt class="docutils literal"><span class="pre">choices</span></tt> parameter like all Django choice fields, but these
+fields are backed by big data sources, so <tt class="docutils literal"><span class="pre">choices</span></tt> cannot possibly have all the values.</p>
+<p class="last">For Heavies, consider <tt class="docutils literal"><span class="pre">choices</span></tt> to be a subset of all possible choices. It is available because users
+might expect it to be available.</p>
+</div>
 <dl class="method">
-<dt id="django_select2.fields.HeavySelect2FieldBase.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/fields.html#HeavySelect2FieldBase.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.fields.HeavySelect2FieldBase.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="django_select2.fields.HeavySelect2FieldBaseMixin.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavySelect2FieldBaseMixin.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class constructor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -365,9 +372,89 @@ be raised.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="django_select2.fields.HeavyChoiceField">
+<em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavyChoiceField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavyChoiceField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.ChoiceMixin" title="django_select2.fields.ChoiceMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.ChoiceMixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django.forms.fields.Field</span></tt></p>
+<p>Reimplements <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/forms/fields/#django.forms.TypedChoiceField" title="(in Django v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">django.forms.TypedChoiceField</span></tt></a> in a way which suites the use of big data.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although this field accepts <tt class="docutils literal"><span class="pre">choices</span></tt> parameter like all Django choice fields, but these
+fields are backed by big data sources, so <tt class="docutils literal"><span class="pre">choices</span></tt> cannot possibly have all the values. It is meant
+to be a subset of all possible choices.</p>
+</div>
+<dl class="attribute">
+<dt id="django_select2.fields.HeavyChoiceField.empty_value">
+<tt class="descname">empty_value</tt><em class="property"> = u''</em><a class="headerlink" href="#django_select2.fields.HeavyChoiceField.empty_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub-classes can set this other value if needed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_select2.fields.HeavyChoiceField.coerce_value">
+<tt class="descname">coerce_value</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavyChoiceField.coerce_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coerces <tt class="docutils literal"><span class="pre">value</span></tt> to a Python data type.</p>
+<p>Sub-classes should override this if they do not want unicode values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_select2.fields.HeavyChoiceField.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavyChoiceField.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub-classes can override this to validate the value entered against the big data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (As coerced by <a class="reference internal" href="#django_select2.fields.HeavyChoiceField.coerce_value" title="django_select2.fields.HeavyChoiceField.coerce_value"><tt class="xref py py-meth docutils literal"><span class="pre">coerce_value()</span></tt></a>.) &#8211; Value entered by the user.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">True</span></tt> means the <tt class="docutils literal"><span class="pre">value</span></tt> is valid.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_select2.fields.HeavyChoiceField.get_val_txt">
+<tt class="descname">get_val_txt</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavyChoiceField.get_val_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>If Heavy widgets encounter any value which it can&#8217;t find in <tt class="docutils literal"><span class="pre">choices</span></tt> then it calls
+this method to get the label for the value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (As coerced by <a class="reference internal" href="#django_select2.fields.HeavyChoiceField.coerce_value" title="django_select2.fields.HeavyChoiceField.coerce_value"><tt class="xref py py-meth docutils literal"><span class="pre">coerce_value()</span></tt></a>.) &#8211; Value entered by the user.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The label for this value.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">unicode</span></tt></a> or None (when no possible label could be found)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django_select2.fields.HeavyMultipleChoiceField">
+<em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavyMultipleChoiceField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#django_select2.fields.HeavyMultipleChoiceField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavyChoiceField" title="django_select2.fields.HeavyChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavyChoiceField</span></tt></a></p>
+<p>Reimplements <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/forms/fields/#django.forms.TypedMultipleChoiceField" title="(in Django v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">django.forms.TypedMultipleChoiceField</span></tt></a> in a way which suites the use of big data.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although this field accepts <tt class="docutils literal"><span class="pre">choices</span></tt> parameter like all Django choice fields, but these
+fields are backed by big data sources, so <tt class="docutils literal"><span class="pre">choices</span></tt> cannot possibly have all the values. It is meant
+to be a subset of all possible choices.</p>
+</div>
+<dl class="attribute">
+<dt id="django_select2.fields.HeavyMultipleChoiceField.hidden_widget">
+<tt class="descname">hidden_widget</tt><a class="headerlink" href="#django_select2.fields.HeavyMultipleChoiceField.hidden_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MultipleHiddenInput</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="django_select2.fields.HeavySelect2ChoiceField">
 <em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavySelect2ChoiceField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/fields.html#HeavySelect2ChoiceField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.fields.HeavySelect2ChoiceField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavySelect2FieldBase" title="django_select2.fields.HeavySelect2FieldBase"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2FieldBase</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="django_select2.fields.HeavySelect2FieldBaseMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2FieldBaseMixin</span></tt></a>, <a class="reference internal" href="#django_select2.fields.HeavyChoiceField" title="django_select2.fields.HeavyChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavyChoiceField</span></tt></a></p>
 <p>Heavy Select2 Choice field.</p>
 <dl class="attribute">
 <dt id="django_select2.fields.HeavySelect2ChoiceField.widget">
@@ -380,7 +467,7 @@ be raised.</p>
 <dl class="class">
 <dt id="django_select2.fields.HeavySelect2MultipleChoiceField">
 <em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavySelect2MultipleChoiceField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/fields.html#HeavySelect2MultipleChoiceField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.fields.HeavySelect2MultipleChoiceField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavySelect2FieldBase" title="django_select2.fields.HeavySelect2FieldBase"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2FieldBase</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="django_select2.fields.HeavySelect2FieldBaseMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2FieldBaseMixin</span></tt></a>, <a class="reference internal" href="#django_select2.fields.HeavyMultipleChoiceField" title="django_select2.fields.HeavyMultipleChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavyMultipleChoiceField</span></tt></a></p>
 <p>Heavy Select2 Multiple Choice field.</p>
 <dl class="attribute">
 <dt id="django_select2.fields.HeavySelect2MultipleChoiceField.widget">
@@ -393,15 +480,27 @@ be raised.</p>
 <dl class="class">
 <dt id="django_select2.fields.HeavyModelSelect2ChoiceField">
 <em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavyModelSelect2ChoiceField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/fields.html#HeavyModelSelect2ChoiceField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.fields.HeavyModelSelect2ChoiceField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.QuerysetChoiceMixin" title="django_select2.fields.QuerysetChoiceMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.QuerysetChoiceMixin</span></tt></a>, <a class="reference internal" href="#django_select2.fields.HeavySelect2ChoiceField" title="django_select2.fields.HeavySelect2ChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2ChoiceField</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.ModelChoiceField</span></tt></p>
+<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="django_select2.fields.HeavySelect2FieldBaseMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2FieldBaseMixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.ModelChoiceField</span></tt></p>
 <p>Heavy Select2 Choice field, specialized for Models.</p>
+<dl class="attribute">
+<dt id="django_select2.fields.HeavyModelSelect2ChoiceField.widget">
+<tt class="descname">widget</tt><a class="headerlink" href="#django_select2.fields.HeavyModelSelect2ChoiceField.widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2Widget</span></tt></p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="django_select2.fields.HeavyModelSelect2MultipleChoiceField">
 <em class="property">class </em><tt class="descclassname">django_select2.fields.</tt><tt class="descname">HeavyModelSelect2MultipleChoiceField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_select2/fields.html#HeavyModelSelect2MultipleChoiceField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_select2.fields.HeavyModelSelect2MultipleChoiceField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.QuerysetChoiceMixin" title="django_select2.fields.QuerysetChoiceMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.QuerysetChoiceMixin</span></tt></a>, <a class="reference internal" href="#django_select2.fields.HeavySelect2MultipleChoiceField" title="django_select2.fields.HeavySelect2MultipleChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2MultipleChoiceField</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.ModelMultipleChoiceField</span></tt></p>
+<dd><p>Bases: <a class="reference internal" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="django_select2.fields.HeavySelect2FieldBaseMixin"><tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.HeavySelect2FieldBaseMixin</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">django_select2.fields.ModelMultipleChoiceField</span></tt></p>
 <p>Heavy Select2 Multiple Choice field, specialized for Models.</p>
+<dl class="attribute">
+<dt id="django_select2.fields.HeavyModelSelect2MultipleChoiceField.widget">
+<tt class="descname">widget</tt><a class="headerlink" href="#django_select2.fields.HeavyModelSelect2MultipleChoiceField.widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">HeavySelect2MultipleWidget</span></tt></p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -411,6 +510,10 @@ be raised.</p>
 <p>Auto Heavy Select2 field.</p>
 <p>This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
 json query requests for that type (class).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> would be thrown if <tt class="xref py py-meth docutils literal"><span class="pre">get_results()</span></tt> is not implemented.</p>
+</div>
 <dl class="attribute">
 <dt id="django_select2.fields.AutoSelect2Field.widget">
 <tt class="descname">widget</tt><a class="headerlink" href="#django_select2.fields.AutoSelect2Field.widget" title="Permalink to this definition">¶</a></dt>
@@ -426,6 +529,10 @@ json query requests for that type (class).</p>
 <p>Auto Heavy Select2 field for multiple choices.</p>
 <p>This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
 json query requests for that type (class).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> would be thrown if <tt class="xref py py-meth docutils literal"><span class="pre">get_results()</span></tt> is not implemented.</p>
+</div>
 <dl class="attribute">
 <dt id="django_select2.fields.AutoSelect2MultipleField.widget">
 <tt class="descname">widget</tt><a class="headerlink" href="#django_select2.fields.AutoSelect2MultipleField.widget" title="Permalink to this definition">¶</a></dt>
@@ -515,7 +622,7 @@ json query requests for that type (class).</p>
         <li class="right" >
           <a href="ref_widgets.html" title="Widgets"
              >previous</a> |</li>
-        <li><a href="index.html">Django-Select2 3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Django-Select2 3.0.1 documentation</a> &raquo;</li>
           <li><a href="reference.html" >API Reference</a> &raquo;</li> 
       </ul>
     </div>

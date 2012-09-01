@@ -71,6 +71,8 @@ class AutoViewFieldMixin(object):
 import copy
 
 from django import forms
+from django.core import validators
+from django.core.exceptions import ValidationError
 from django.forms.models import ModelChoiceIterator
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
@@ -276,6 +278,7 @@ class ChoiceMixin(object):
     def _get_choices(self):
         if hasattr(self, '_choices'):
             return self._choices
+        return []
 
     def _set_choices(self, value):
         # Setting choices also sets the choices on the widget.
@@ -284,6 +287,11 @@ class ChoiceMixin(object):
         self._choices = self.widget.choices = list(value)
 
     choices = property(_get_choices, _set_choices)
+
+    def __deepcopy__(self, memo):
+        result = super(ChoiceMixin, self).__deepcopy__(memo)
+        result._choices = copy.deepcopy(self._choices, memo)
+        return result
 
 
 class QuerysetChoiceMixin(ChoiceMixin):
@@ -369,6 +377,13 @@ class ModelSelect2MultipleField(ModelMultipleChoiceField) :
 class HeavySelect2FieldBaseMixin(object):
     """
     Base mixin field for all Heavy fields.
+
+    .. note:: Although Heavy fields accept ``choices`` parameter like all Django choice fields, but these
+        fields are backed by big data sources, so ``choices`` cannot possibly have all the values.
+
+        For Heavies, consider ``choices`` to be a subset of all possible choices. It is available because users
+        might expect it to be available.
+
     """
     def __init__(self, *args, **kwargs):
         """
@@ -411,19 +426,130 @@ class HeavySelect2FieldBaseMixin(object):
         self.choices = choices
 
 
-class HeavySelect2ChoiceField(HeavySelect2FieldBaseMixin, forms.ChoiceField):
+class HeavyChoiceField(ChoiceMixin, forms.Field):
+    """
+    Reimplements :py:class:`django.forms.TypedChoiceField` in a way which suites the use of big data.
+
+    .. note:: Although this field accepts ``choices`` parameter like all Django choice fields, but these
+        fields are backed by big data sources, so ``choices`` cannot possibly have all the values. It is meant
+        to be a subset of all possible choices.
+    """
+    default_error_messages = {
+        'invalid_choice': _(u'Select a valid choice. %(value)s is not one of the available choices.'),
+    }
+    empty_value = u''
+    "Sub-classes can set this other value if needed."
+
+    def __init__(self, *args, **kwargs):
+        super(HeavyChoiceField, self).__init__(*args, **kwargs)
+        # Widget should have been instantiated by now.
+        self.widget.field = self
+
+    def to_python(self, value):
+        if value == self.empty_value or value in validators.EMPTY_VALUES:
+            return self.empty_value
+        try:
+            value = self.coerce_value(value)
+        except (ValueError, TypeError, ValidationError):
+            raise ValidationError(self.error_messages['invalid_choice'] % {'value': value})
+        return value
+
+    def validate(self, value):
+        super(HeavyChoiceField, self).validate(value)
+        if value and not self.valid_value(value):
+            raise ValidationError(self.error_messages['invalid_choice'] % {'value': value})
+
+    def valid_value(self, value):
+        uvalue = smart_unicode(value)
+        for k, v in self.choices:
+            if uvalue == smart_unicode(k):
+                return True
+        return self.validate_value(value)
+
+    def coerce_value(self, value):
+        """
+        Coerces ``value`` to a Python data type.
+
+        Sub-classes should override this if they do not want unicode values.
+        """
+        return smart_unicode(value)
+
+    def validate_value(self, value):
+        """
+        Sub-classes can override this to validate the value entered against the big data.
+
+        :param value: Value entered by the user.
+        :type value: As coerced by :py:meth:`.coerce_value`.
+
+        :return: ``True`` means the ``value`` is valid.
+        """
+        return True
+
+    def _get_val_txt(self, value):
+        try:
+            value = self.coerce_value(value)
+            self.validate_value(value)
+        except:
+            return None
+        return self.get_val_txt(value)
+
+    def get_val_txt(self, value):
+        """
+        If Heavy widgets encounter any value which it can't find in ``choices`` then it calls
+        this method to get the label for the value.
+
+        :param value: Value entered by the user.
+        :type value: As coerced by :py:meth:`.coerce_value`.
+
+        :return: The label for this value.
+        :rtype: :py:obj:`unicode` or None (when no possible label could be found)
+        """
+        return None
+
+class HeavyMultipleChoiceField(HeavyChoiceField):
+    """
+    Reimplements :py:class:`django.forms.TypedMultipleChoiceField` in a way which suites the use of big data.
+
+    .. note:: Although this field accepts ``choices`` parameter like all Django choice fields, but these
+        fields are backed by big data sources, so ``choices`` cannot possibly have all the values. It is meant
+        to be a subset of all possible choices.
+    """
+    hidden_widget = forms.MultipleHiddenInput
+    default_error_messages = {
+        'invalid_choice': _(u'Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_list': _(u'Enter a list of values.'),
+    }
+
+    def to_python(self, value):
+        if not value:
+            return []
+        elif not isinstance(value, (list, tuple)):
+            raise ValidationError(self.error_messages['invalid_list'])
+        return [self.coerce_value(val) for val in value]
+
+    def validate(self, value):
+        if self.required and not value:
+            raise ValidationError(self.error_messages['required'])
+        # Validate that each value in the value list is in self.choices or
+        # the big data (i.e. validate_value() returns True).
+        for val in value:
+            if not self.valid_value(val):
+                raise ValidationError(self.error_messages['invalid_choice'] % {'value': val})
+
+
+class HeavySelect2ChoiceField(HeavySelect2FieldBaseMixin, HeavyChoiceField):
     "Heavy Select2 Choice field."
     widget = HeavySelect2Widget
 
 
-class HeavySelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, forms.MultipleChoiceField):
+class HeavySelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, HeavyMultipleChoiceField):
     "Heavy Select2 Multiple Choice field."
     widget = HeavySelect2MultipleWidget
 
 
 ### Heavy field specialized for Models ###
 
-class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2FieldBaseMixin, ModelChoiceField):
+class HeavyModelSelect2ChoiceField(HeavySelect2FieldBaseMixin, ModelChoiceField):
     "Heavy Select2 Choice field, specialized for Models."
     widget = HeavySelect2Widget
 
@@ -432,7 +558,7 @@ class HeavyModelSelect2ChoiceField(QuerysetChoiceMixin, HeavySelect2FieldBaseMix
         super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
 
 
-class HeavyModelSelect2MultipleChoiceField(QuerysetChoiceMixin, HeavySelect2FieldBaseMixin, ModelMultipleChoiceField):
+class HeavyModelSelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceField):
     "Heavy Select2 Multiple Choice field, specialized for Models."
     widget = HeavySelect2MultipleWidget
 
