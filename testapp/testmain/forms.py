@@ -40,11 +40,26 @@ class SelfChoices(AutoSelect2Field):
         return (NO_ERR_RESP, False, res)
 
 class SelfMultiChoices(AutoSelect2MultipleField):
+    big_data = {
+        1: "First", 2: "Second", 3: "Third",
+        }
+
+    def validate_value(self, value):
+        if value in [v for v in self.big_data]:
+            return True
+        else:
+            return False
+
+    def coerce_value(self, value):
+        return int(value)
+
+    def get_val_txt(self, value):
+        return self.big_data.get(value, None)
+
     def get_results(self, request, term, page, context):
-        res = []
-        for i in range(1, 6):
+        res = [(v, self.big_data[v]) for v in self.big_data]
+        for i in range(len(res), 6):
             res.append((i, term * i,))
-        self.choices = res
 
         return (NO_ERR_RESP, False, res)
 
@@ -67,6 +82,5 @@ class InitialValueForm(forms.Form):
     heavySelect2Choice = AutoSelect2Field(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     self_choices = SelfChoices(label='Self copy choices', initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices',
-        initial=[2,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2,3])
 

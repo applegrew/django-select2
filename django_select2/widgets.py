@@ -364,8 +364,8 @@ class HeavySelect2Mixin(Select2Mixin):
                 selected_choices = [v for v in selected_choices if v != val]
                 txts.append(txt)
         if hasattr(self.field, '_get_val_txt') and selected_choices:
-            for v in selected_choices:
-                txt = self.field._get_val_txt(v)
+            for val in selected_choices:
+                txt = self.field._get_val_txt(val)
                 if txt is not None:
                     txts.append(txt)
         if txts:

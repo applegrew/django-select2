@@ -489,7 +489,8 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         try:
             value = self.coerce_value(value)
             self.validate_value(value)
-        except:
+        except Exception, e:
+            logger.exception("Exception while trying to get label for value")
             return None
         return self.get_val_txt(value)
 

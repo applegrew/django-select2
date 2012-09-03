@@ -79,8 +79,11 @@ if (!window['django_select2']) {
 				// Cookies are used to persist selection's text. This is needed
 				// when the form springs back if there is any validation failure.
 				$(res[0]).each(function (idx) {
-					django_select2.setCookie(id + '_heavy_val:' + idx, this);
-					django_select2.setCookie(id + '_heavy_txt:' + idx, res[1][idx]);
+					var txt = res[1][idx];
+					if (typeof(txt) !== 'undefined') {
+						django_select2.setCookie(id + '_heavy_val:' + idx, this);
+						django_select2.setCookie(id + '_heavy_txt:' + idx, txt);
+					}
 				});
 			} else {
 				django_select2.delCookie(id + '_heavy_val:', true);
