@@ -43,6 +43,12 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.0.1
+
+* Revised the design of heavy fields. The previous design didn't quite make it easy to back heavy fields by big data sources. See `fields.HeavyChoiceField` class and its methods' docs for more info.
+* Updated docs.
+* Some more fixes for issue#4.
+
 ### v3.0
 
 * Added docs.
