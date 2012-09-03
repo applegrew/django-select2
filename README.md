@@ -21,7 +21,7 @@ Installation
 Documentation
 =============
 
-Documentation available at http://django-select2.readthedocs.org/
+Documentation available at http://django-select2.readthedocs.org/.
 
 More details
 ============
