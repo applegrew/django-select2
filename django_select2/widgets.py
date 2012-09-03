@@ -16,6 +16,14 @@ from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction,
 
 logger = logging.getLogger(__name__)
 
+def get_select2_js_path():
+    from django.conf import settings
+    if settings.configured and settings.DEBUG:
+        return 'js/select2.js'
+    else:
+        return 'js/select2.min.js'
+
+
 ### Light mixin and widgets ###
 
 class Select2Mixin(object):
@@ -186,7 +194,7 @@ class Select2Mixin(object):
         return mark_safe(s)
 
     class Media:
-        js = ('js/select2.min.js', )
+        js = (get_select2_js_path(), )
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
 
@@ -412,7 +420,7 @@ class HeavySelect2Mixin(Select2Mixin):
         return js
 
     class Media:
-        js = ('js/select2.min.js', 'js/heavy_data.js', )
+        js = (get_select2_js_path(), 'js/heavy_data.js', )
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
 

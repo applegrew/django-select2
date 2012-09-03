@@ -32,8 +32,6 @@ Widgets are generally of two types :-
     request. When they are instantiated, they register themselves with one central view which handels Ajax requests
     for them.
 
-    `Read more`_
-
 Heavy widgets have the word 'Heavy' in their name. Light widgets are normally named, i.e. there is no 'Light' word
 in their names.
 
@@ -41,6 +39,8 @@ in their names.
 
 :py:class:`.Select2Widget`, :py:class:`.Select2MultipleWidget`, :py:class:`.HeavySelect2Widget`, :py:class:`.HeavySelect2MultipleWidget`,
 :py:class:`.AutoHeavySelect2Widget`, :py:class:`.AutoHeavySelect2MultipleWidget`
+
+`Read more`_
 
 Fields
 ------
@@ -62,12 +62,13 @@ your ease.
 Views
 -----
 
-The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields and widgets. `Read more`_
+The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields and widgets.
 
 **Imported:**
 
 :py:class:`.Select2View`, :py:data:`.NO_ERR_RESP`
 
+`Read more`_
 
 .. _Read more: http://blog.applegrew.com/2012/08/django-select2/
 

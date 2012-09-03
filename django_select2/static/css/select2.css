@@ -1,5 +1,5 @@
 /*
-Version: 3.0 Timestamp: Tue Jul 31 21:09:16 PDT 2012
+Version: 3.1 Timestamp: Tue Aug 14 09:05:17 PDT 2012
 */
 .select2-container {
     position: relative;
@@ -7,7 +7,7 @@ Version: 3.0 Timestamp: Tue Jul 31 21:09:16 PDT 2012
     /* inline-block for ie7 */
     zoom: 1;
     *display: inline;
-
+    vertical-align: top;
 }
 
 .select2-container,
@@ -310,11 +310,8 @@ Version: 3.0 Timestamp: Tue Jul 31 21:09:16 PDT 2012
 .select2-results .select2-highlighted em {
   background: transparent;
 }
-.select2-results .select2-no-results {
-  background: #f4f4f4;
-  display: list-item;
-}
-
+.select2-results .select2-no-results,
+.select2-results .select2-searching,
 .select2-results .select2-selection-limit {
   background: #f4f4f4;
   display: list-item;
