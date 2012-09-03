@@ -26,7 +26,7 @@ Documentation available at http://django-select2.readthedocs.org/.
 More details
 ============
 
-More details can be found on my blog at - [http://blog.applegrew.com/2012/08/django-select2/](http://blog.applegrew.com/2012/08/django-select2/).
+More details can be found on my blog at - http://blog.applegrew.com/2012/08/django-select2/.
 
 External Dependencies
 =====================
