@@ -48,6 +48,7 @@ Changelog Summary
 * Revised the design of heavy fields. The previous design didn't quite make it easy to back heavy fields by big data sources. See `fields.HeavyChoiceField` class and its methods' docs for more info.
 * Updated docs.
 * Some more fixes for issue#4.
+* Updated Select2 JS to version 3.1.
 
 ### v3.0
 
