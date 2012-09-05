@@ -52,8 +52,8 @@ class AutoViewFieldMixin(object):
         :param request: The Ajax request object.
         :type request: :py:class:`django.http.HttpRequest`
 
-        :param args: The ``*args`` passed to :py:meth:`django.views.generic.View.dispatch`.
-        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.
+        :param args: The ``*args`` passed to :py:meth:`django.views.generic.base.View.dispatch`.
+        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.base.View.dispatch`.
 
         :return: A boolean value, signalling if check passed or failed.
         :rtype: :py:obj:`bool`
@@ -390,7 +390,7 @@ class HeavySelect2FieldBaseMixin(object):
         Class constructor.
 
         :param data_view: A :py:class:`~.views.Select2View` sub-class which can respond to this widget's Ajax queries.
-        :type data_view: :py:class:`django.views.generic.View` or None
+        :type data_view: :py:class:`django.views.generic.base.View` or None
 
         :param widget: A widget instance.
         :type widget: :py:class:`django.forms.widgets.Widget` or None

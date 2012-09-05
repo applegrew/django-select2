@@ -66,6 +66,14 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
+<span class="k">def</span> <span class="nf">get_select2_js_path</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">configured</span> <span class="ow">and</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;js/select2.js&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;js/select2.min.js&#39;</span>
+
+
 <span class="c">### Light mixin and widgets ###</span>
 
 <div class="viewcode-block" id="Select2Mixin"><a class="viewcode-back" href="../../ref_widgets.html#django_select2.widgets.Select2Mixin">[docs]</a><span class="k">class</span> <span class="nc">Select2Mixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -236,7 +244,7 @@
         <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 </div>
     <span class="k">class</span> <span class="nc">Media</span><span class="p">:</span>
-        <span class="n">js</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;js/select2.min.js&#39;</span><span class="p">,</span> <span class="p">)</span>
+        <span class="n">js</span> <span class="o">=</span> <span class="p">(</span><span class="n">get_select2_js_path</span><span class="p">(),</span> <span class="p">)</span>
         <span class="n">css</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;screen&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;css/select2.css&#39;</span><span class="p">,</span> <span class="s">&#39;css/extra.css&#39;</span><span class="p">,</span> <span class="p">)}</span>
 
 </div>
@@ -372,6 +380,7 @@
 <span class="sd">                ``heavy_data.js`` stores the selected values and their labels in the cookies. These are cleared</span>
 <span class="sd">                when browser is closed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span> <span class="c"># Making an instance specific copy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;data_view&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;data_url&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
@@ -410,7 +419,13 @@
         <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">txt</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">,</span> <span class="n">all_choices</span><span class="p">):</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">force_unicode</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">selected_choices</span><span class="p">:</span>
+                <span class="n">selected_choices</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">selected_choices</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">val</span><span class="p">]</span>
                 <span class="n">txts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="s">&#39;_get_val_txt&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">selected_choices</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">selected_choices</span><span class="p">:</span>
+                <span class="n">txt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">_get_val_txt</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">txt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">txts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">txts</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">convert_to_js_string_arr</span><span class="p">(</span><span class="n">txts</span><span class="p">)</span>
 </div>
@@ -455,7 +470,7 @@
         <span class="k">return</span> <span class="n">js</span>
 
     <span class="k">class</span> <span class="nc">Media</span><span class="p">:</span>
-        <span class="n">js</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;js/select2.min.js&#39;</span><span class="p">,</span> <span class="s">&#39;js/heavy_data.js&#39;</span><span class="p">,</span> <span class="p">)</span>
+        <span class="n">js</span> <span class="o">=</span> <span class="p">(</span><span class="n">get_select2_js_path</span><span class="p">(),</span> <span class="s">&#39;js/heavy_data.js&#39;</span><span class="p">,</span> <span class="p">)</span>
         <span class="n">css</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;screen&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;css/select2.css&#39;</span><span class="p">,</span> <span class="s">&#39;css/extra.css&#39;</span><span class="p">,</span> <span class="p">)}</span>
 
 </div>

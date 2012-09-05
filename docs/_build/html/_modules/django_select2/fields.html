@@ -102,8 +102,8 @@
 <span class="sd">        :param request: The Ajax request object.</span>
 <span class="sd">        :type request: :py:class:`django.http.HttpRequest`</span>
 
-<span class="sd">        :param args: The ``*args`` passed to :py:meth:`django.views.generic.View.dispatch`.</span>
-<span class="sd">        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.</span>
+<span class="sd">        :param args: The ``*args`` passed to :py:meth:`django.views.generic.base.View.dispatch`.</span>
+<span class="sd">        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.base.View.dispatch`.</span>
 
 <span class="sd">        :return: A boolean value, signalling if check passed or failed.</span>
 <span class="sd">        :rtype: :py:obj:`bool`</span>
@@ -116,10 +116,13 @@
 <div class="viewcode-block" id="AutoViewFieldMixin.get_results"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoViewFieldMixin.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="s">&quot;See :py:meth:`.views.Select2View.get_results`.&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
 </div></div>
 <span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="kn">import</span> <span class="n">validators</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">django.forms.models</span> <span class="kn">import</span> <span class="n">ModelChoiceIterator</span>
 <span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
 <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
@@ -139,12 +142,14 @@
 <span class="sd">    Drop-in Select2 replacement for :py:class:`forms.ChoiceField`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2Widget</span>
+
 </div>
 <div class="viewcode-block" id="Select2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.Select2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">Select2MultipleChoiceField</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">MultipleChoiceField</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Drop-in Select2 replacement for :py:class:`forms.MultipleChoiceField`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2MultipleWidget</span>
+
 
 <span class="c">### Model fields related mixins ###</span>
 </div>
@@ -284,6 +289,7 @@
 
         <span class="n">res</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_field_name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_from_instance</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">res</span> <span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">NO_ERR_RESP</span><span class="p">,</span> <span class="n">has_more</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="p">)</span>
+
 </div></div>
 <div class="viewcode-block" id="UnhideableQuerysetType"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.UnhideableQuerysetType">[docs]</a><span class="k">class</span> <span class="nc">UnhideableQuerysetType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -312,6 +318,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">queryset</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;_subclass_queryset&#39;</span><span class="p">):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;queryset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;_subclass_queryset&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="ChoiceMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ChoiceMixin">[docs]</a><span class="k">class</span> <span class="nc">ChoiceMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -321,6 +328,7 @@
     <span class="k">def</span> <span class="nf">_get_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_choices&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choices</span>
+        <span class="k">return</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_set_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c"># Setting choices also sets the choices on the widget.</span>
@@ -329,6 +337,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="n">choices</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_choices</span><span class="p">,</span> <span class="n">_set_choices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ChoiceMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">(</span><span class="n">memo</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_choices</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_choices</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
 </div>
 <div class="viewcode-block" id="QuerysetChoiceMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.QuerysetChoiceMixin">[docs]</a><span class="k">class</span> <span class="nc">QuerysetChoiceMixin</span><span class="p">(</span><span class="n">ChoiceMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -352,6 +366,7 @@
         <span class="k">return</span> <span class="n">ModelChoiceIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="n">choices</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_choices</span><span class="p">,</span> <span class="n">ChoiceMixin</span><span class="o">.</span><span class="n">_set_choices</span><span class="p">)</span>
+
 </div>
 <span class="k">class</span> <span class="nc">ModelChoiceFieldMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
@@ -376,13 +391,16 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_queryset&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queryset</span>
 
+
 <span class="c">### Slightly altered versions of the Django counterparts with the same name in forms module. ###</span>
 
 <span class="k">class</span> <span class="nc">ModelChoiceField</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelChoiceField</span><span class="p">):</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="o">.</span><span class="n">_get_queryset</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelChoiceField</span><span class="o">.</span><span class="n">_set_queryset</span><span class="p">)</span>
 
+
 <span class="k">class</span> <span class="nc">ModelMultipleChoiceField</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelMultipleChoiceField</span><span class="p">):</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">ModelChoiceFieldMixin</span><span class="o">.</span><span class="n">_get_queryset</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelMultipleChoiceField</span><span class="o">.</span><span class="n">_set_queryset</span><span class="p">)</span>
+
 
 <span class="c">### Light Fileds specialized for Models ###</span>
 
@@ -393,6 +411,7 @@
 <span class="sd">    Select2 replacement for :py:class:`forms.ModelChoiceField`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2Widget</span>
+
 </div>
 <div class="viewcode-block" id="ModelSelect2MultipleField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.ModelSelect2MultipleField">[docs]</a><span class="k">class</span> <span class="nc">ModelSelect2MultipleField</span><span class="p">(</span><span class="n">ModelMultipleChoiceField</span><span class="p">)</span> <span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -402,18 +421,26 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">widget</span> <span class="o">=</span> <span class="n">Select2MultipleWidget</span>
 
+
 <span class="c">### Heavy fields ###</span>
 </div>
-<div class="viewcode-block" id="HeavySelect2FieldBase"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2FieldBase">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2FieldBase</span><span class="p">(</span><span class="n">ChoiceMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">Field</span><span class="p">):</span>
+<div class="viewcode-block" id="HeavySelect2FieldBaseMixin"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2FieldBaseMixin">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2FieldBaseMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base field for all Heavy fields.</span>
+<span class="sd">    Base mixin field for all Heavy fields.</span>
+
+<span class="sd">    .. note:: Although Heavy fields accept ``choices`` parameter like all Django choice fields, but these</span>
+<span class="sd">        fields are backed by big data sources, so ``choices`` cannot possibly have all the values.</span>
+
+<span class="sd">        For Heavies, consider ``choices`` to be a subset of all possible choices. It is available because users</span>
+<span class="sd">        might expect it to be available.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="HeavySelect2FieldBase.__init__"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2FieldBase.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="HeavySelect2FieldBaseMixin.__init__"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2FieldBaseMixin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class constructor.</span>
 
 <span class="sd">        :param data_view: A :py:class:`~.views.Select2View` sub-class which can respond to this widget&#39;s Ajax queries.</span>
-<span class="sd">        :type data_view: :py:class:`django.views.generic.View` or None</span>
+<span class="sd">        :type data_view: :py:class:`django.views.generic.base.View` or None</span>
 
 <span class="sd">        :param widget: A widget instance.</span>
 <span class="sd">        :type widget: :py:class:`django.forms.widgets.Widget` or None</span>
@@ -432,7 +459,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;data_view is required else you need to provide your own widget instance.&#39;</span><span class="p">)</span>
 
         <span class="n">kargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">HeavySelect2FieldBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeavySelect2FieldBaseMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
 
         <span class="c"># By this time self.widget would have been instantiated.</span>
 
@@ -447,28 +474,149 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">choices</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;choices&#39;</span><span class="p">):</span> <span class="c"># ModelChoiceField will set this to ModelChoiceIterator</span>
             <span class="n">choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">choices</span>
+
 </div></div>
-<div class="viewcode-block" id="HeavySelect2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2ChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBase</span><span class="p">):</span>
+<div class="viewcode-block" id="HeavyChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyChoiceField</span><span class="p">(</span><span class="n">ChoiceMixin</span><span class="p">,</span> <span class="n">forms</span><span class="o">.</span><span class="n">Field</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reimplements :py:class:`django.forms.TypedChoiceField` in a way which suites the use of big data.</span>
+
+<span class="sd">    .. note:: Although this field accepts ``choices`` parameter like all Django choice fields, but these</span>
+<span class="sd">        fields are backed by big data sources, so ``choices`` cannot possibly have all the values. It is meant</span>
+<span class="sd">        to be a subset of all possible choices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">default_error_messages</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;invalid_choice&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s">u&#39;Select a valid choice. </span><span class="si">%(value)s</span><span class="s"> is not one of the available choices.&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">empty_value</span> <span class="o">=</span> <span class="s">u&#39;&#39;</span>
+    <span class="s">&quot;Sub-classes can set this other value if needed.&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeavyChoiceField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># Widget should have been instantiated by now.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">to_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_value</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">validators</span><span class="o">.</span><span class="n">EMPTY_VALUES</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">[</span><span class="s">&#39;invalid_choice&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeavyChoiceField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">[</span><span class="s">&#39;invalid_choice&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">valid_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">uvalue</span> <span class="o">=</span> <span class="n">smart_unicode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">uvalue</span> <span class="o">==</span> <span class="n">smart_unicode</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeavyChoiceField.coerce_value"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyChoiceField.coerce_value">[docs]</a>    <span class="k">def</span> <span class="nf">coerce_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Coerces ``value`` to a Python data type.</span>
+
+<span class="sd">        Sub-classes should override this if they do not want unicode values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">smart_unicode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HeavyChoiceField.validate_value"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyChoiceField.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sub-classes can override this to validate the value entered against the big data.</span>
+
+<span class="sd">        :param value: Value entered by the user.</span>
+<span class="sd">        :type value: As coerced by :py:meth:`.coerce_value`.</span>
+
+<span class="sd">        :return: ``True`` means the ``value`` is valid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_val_txt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&quot;Exception while trying to get label for value&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_val_txt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeavyChoiceField.get_val_txt"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyChoiceField.get_val_txt">[docs]</a>    <span class="k">def</span> <span class="nf">get_val_txt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If Heavy widgets encounter any value which it can&#39;t find in ``choices`` then it calls</span>
+<span class="sd">        this method to get the label for the value.</span>
+
+<span class="sd">        :param value: Value entered by the user.</span>
+<span class="sd">        :type value: As coerced by :py:meth:`.coerce_value`.</span>
+
+<span class="sd">        :return: The label for this value.</span>
+<span class="sd">        :rtype: :py:obj:`unicode` or None (when no possible label could be found)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div></div>
+<div class="viewcode-block" id="HeavyMultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyMultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyMultipleChoiceField</span><span class="p">(</span><span class="n">HeavyChoiceField</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reimplements :py:class:`django.forms.TypedMultipleChoiceField` in a way which suites the use of big data.</span>
+
+<span class="sd">    .. note:: Although this field accepts ``choices`` parameter like all Django choice fields, but these</span>
+<span class="sd">        fields are backed by big data sources, so ``choices`` cannot possibly have all the values. It is meant</span>
+<span class="sd">        to be a subset of all possible choices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hidden_widget</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">MultipleHiddenInput</span>
+    <span class="n">default_error_messages</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;invalid_choice&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s">u&#39;Select a valid choice. </span><span class="si">%(value)s</span><span class="s"> is not one of the available choices.&#39;</span><span class="p">),</span>
+        <span class="s">&#39;invalid_list&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s">u&#39;Enter a list of values.&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">to_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">[</span><span class="s">&#39;invalid_list&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">coerce_value</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">[</span><span class="s">&#39;required&#39;</span><span class="p">])</span>
+        <span class="c"># Validate that each value in the value list is in self.choices or</span>
+        <span class="c"># the big data (i.e. validate_value() returns True).</span>
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_value</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">[</span><span class="s">&#39;invalid_choice&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
+
+</div>
+<div class="viewcode-block" id="HeavySelect2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2ChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBaseMixin</span><span class="p">,</span> <span class="n">HeavyChoiceField</span><span class="p">):</span>
     <span class="s">&quot;Heavy Select2 Choice field.&quot;</span>
     <span class="n">widget</span> <span class="o">=</span> <span class="n">HeavySelect2Widget</span>
+
 </div>
-<div class="viewcode-block" id="HeavySelect2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2MultipleChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBase</span><span class="p">):</span>
+<div class="viewcode-block" id="HeavySelect2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavySelect2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavySelect2MultipleChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBaseMixin</span><span class="p">,</span> <span class="n">HeavyMultipleChoiceField</span><span class="p">):</span>
     <span class="s">&quot;Heavy Select2 Multiple Choice field.&quot;</span>
     <span class="n">widget</span> <span class="o">=</span> <span class="n">HeavySelect2MultipleWidget</span>
 
+
 <span class="c">### Heavy field specialized for Models ###</span>
 </div>
-<div class="viewcode-block" id="HeavyModelSelect2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyModelSelect2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyModelSelect2ChoiceField</span><span class="p">(</span><span class="n">QuerysetChoiceMixin</span><span class="p">,</span> <span class="n">HeavySelect2ChoiceField</span><span class="p">,</span> <span class="n">ModelChoiceField</span><span class="p">):</span>
+<div class="viewcode-block" id="HeavyModelSelect2ChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyModelSelect2ChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyModelSelect2ChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBaseMixin</span><span class="p">,</span> <span class="n">ModelChoiceField</span><span class="p">):</span>
     <span class="s">&quot;Heavy Select2 Choice field, specialized for Models.&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">HeavySelect2Widget</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;choices&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HeavyModelSelect2ChoiceField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 </div>
-<div class="viewcode-block" id="HeavyModelSelect2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyModelSelect2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyModelSelect2MultipleChoiceField</span><span class="p">(</span><span class="n">QuerysetChoiceMixin</span><span class="p">,</span> <span class="n">HeavySelect2MultipleChoiceField</span><span class="p">,</span> <span class="n">ModelMultipleChoiceField</span><span class="p">):</span>
+<div class="viewcode-block" id="HeavyModelSelect2MultipleChoiceField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.HeavyModelSelect2MultipleChoiceField">[docs]</a><span class="k">class</span> <span class="nc">HeavyModelSelect2MultipleChoiceField</span><span class="p">(</span><span class="n">HeavySelect2FieldBaseMixin</span><span class="p">,</span> <span class="n">ModelMultipleChoiceField</span><span class="p">):</span>
     <span class="s">&quot;Heavy Select2 Multiple Choice field, specialized for Models.&quot;</span>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">HeavySelect2MultipleWidget</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;choices&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HeavyModelSelect2MultipleChoiceField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 
 <span class="c">### Heavy general field that uses central AutoView ###</span>
 </div>
@@ -478,6 +626,8 @@
 
 <span class="sd">    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming</span>
 <span class="sd">    json query requests for that type (class).</span>
+
+<span class="sd">    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_results` is not implemented.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">widget</span> <span class="o">=</span> <span class="n">AutoHeavySelect2Widget</span>
@@ -486,6 +636,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AutoSelect2Field</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="AutoSelect2MultipleField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoSelect2MultipleField">[docs]</a><span class="k">class</span> <span class="nc">AutoSelect2MultipleField</span><span class="p">(</span><span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="n">HeavySelect2MultipleChoiceField</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -493,6 +644,8 @@
 
 <span class="sd">    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming</span>
 <span class="sd">    json query requests for that type (class).</span>
+
+<span class="sd">    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_results` is not implemented.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">widget</span> <span class="o">=</span> <span class="n">AutoHeavySelect2MultipleWidget</span>
@@ -501,6 +654,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AutoSelect2MultipleField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 
 <span class="c">### Heavy field, specialized for Model, that uses central AutoView ###</span>
 </div>
@@ -520,6 +674,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="s">&quot;django_select2_central_json&quot;</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;data_view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AutoModelSelect2Field</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="AutoModelSelect2MultipleField"><a class="viewcode-back" href="../../ref_fields.html#django_select2.fields.AutoModelSelect2MultipleField">[docs]</a><span class="k">class</span> <span class="nc">AutoModelSelect2MultipleField</span><span class="p">(</span><span class="n">ModelResultJsonMixin</span><span class="p">,</span> <span class="n">AutoViewFieldMixin</span><span class="p">,</span> <span class="n">HeavyModelSelect2MultipleChoiceField</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

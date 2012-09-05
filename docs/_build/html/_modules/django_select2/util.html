@@ -64,6 +64,7 @@
 <span class="sd">    so it must not be quoted by :py:func:`.convert_py_to_js_data` while rendering the JS code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="JSFunction"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.JSFunction">[docs]</a><span class="k">class</span> <span class="nc">JSFunction</span><span class="p">(</span><span class="n">JSVar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -76,6 +77,7 @@
 <span class="sd">        understand.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="JSFunctionInContext"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.JSFunctionInContext">[docs]</a><span class="k">class</span> <span class="nc">JSFunctionInContext</span><span class="p">(</span><span class="n">JSVar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -88,6 +90,7 @@
 <span class="sd">    .. tip:: JS functions of this type are warapped inside special another JS function -- ``django_select2.runInContextHelper``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="render_js_script"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.render_js_script">[docs]</a><span class="k">def</span> <span class="nf">render_js_script</span><span class="p">(</span><span class="n">inner_code</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -107,6 +110,7 @@
 <span class="s">            </span><span class="si">%s</span><span class="s"></span>
 <span class="s">        });</span>
 <span class="s">    &lt;/script&gt;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">inner_code</span>
+
 </div>
 <div class="viewcode-block" id="extract_some_key_val"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.extract_some_key_val">[docs]</a><span class="k">def</span> <span class="nf">extract_some_key_val</span><span class="p">(</span><span class="n">dct</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -126,6 +130,7 @@
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">edct</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">return</span> <span class="n">edct</span>
+
 </div>
 <div class="viewcode-block" id="convert_py_to_js_data"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.convert_py_to_js_data">[docs]</a><span class="k">def</span> <span class="nf">convert_py_to_js_data</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -159,6 +164,7 @@
         <span class="k">return</span> <span class="n">convert_to_js_arr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="s">u&quot;&#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="n">force_unicode</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="convert_dict_to_js_map"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.convert_dict_to_js_map">[docs]</a><span class="k">def</span> <span class="nf">convert_dict_to_js_map</span><span class="p">(</span><span class="n">dct</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -185,6 +191,7 @@
         <span class="n">out</span> <span class="o">+=</span> <span class="n">convert_py_to_js_data</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">id_</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">out</span> <span class="o">+</span> <span class="s">u&#39;}&#39;</span>
+
 </div>
 <div class="viewcode-block" id="convert_to_js_arr"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.convert_to_js_arr">[docs]</a><span class="k">def</span> <span class="nf">convert_to_js_arr</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -210,6 +217,7 @@
         <span class="n">out</span> <span class="o">+=</span> <span class="n">convert_py_to_js_data</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">out</span> <span class="o">+</span> <span class="s">u&#39;]&#39;</span>
+
 </div>
 <div class="viewcode-block" id="convert_to_js_string_arr"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.convert_to_js_string_arr">[docs]</a><span class="k">def</span> <span class="nf">convert_to_js_string_arr</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -223,11 +231,13 @@
     <span class="n">lst</span> <span class="o">=</span> <span class="p">[</span><span class="s">u&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">force_unicode</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">]</span>
     <span class="k">return</span> <span class="s">u&quot;[</span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span>
 
+
 <span class="c">### Auto view helper utils ###</span>
 </div>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
+
 
 <div class="viewcode-block" id="synchronized"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.synchronized">[docs]</a><span class="k">def</span> <span class="nf">synchronized</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="s">&quot;Decorator to synchronize multiple calls to a functions.&quot;</span>
@@ -243,6 +253,7 @@
 </div>
 <span class="n">__id_store</span> <span class="o">=</span> <span class="p">{}</span> <span class="c"># Generated Id to field instance mapping.</span>
 <span class="n">__field_store</span> <span class="o">=</span> <span class="p">{}</span> <span class="c"># Field&#39;s key to generated Id mapping.</span>
+
 
 <span class="n">ID_PATTERN</span> <span class="o">=</span> <span class="s">r&quot;[0-9_a-zA-Z.:+\- ]+&quot;</span>
 
@@ -260,6 +271,7 @@
         <span class="k">return</span> <span class="bp">False</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">True</span>
+
 </div>
 <span class="nd">@synchronized</span>
 <div class="viewcode-block" id="register_field"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.register_field">[docs]</a><span class="k">def</span> <span class="nf">register_field</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
@@ -296,6 +308,7 @@
         <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Field already registered: </span><span class="si">%s</span><span class="s">; With actual id: </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">id_</span>
+
 </div>
 <div class="viewcode-block" id="get_field"><a class="viewcode-back" href="../../ref_util.html#django_select2.util.get_field">[docs]</a><span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span><span class="n">id_</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
