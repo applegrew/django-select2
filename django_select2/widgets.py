@@ -296,7 +296,7 @@ class HeavySelect2Mixin(Select2Mixin):
         The following kwargs are allowed:-
 
         :param data_view: A :py:class:`~.views.Select2View` sub-class which can respond to this widget's Ajax queries.
-        :type data_view: :py:class:`django.views.generic.View` or None
+        :type data_view: :py:class:`django.views.generic.base.View` or None
 
         :param data_url: Url which will respond to Ajax queries with JSON object.
         :type data_url: :py:obj:`str` or None

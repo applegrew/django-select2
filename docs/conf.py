@@ -37,11 +37,13 @@ year = datetime.datetime.now().strftime("%Y")
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc',  'sphinx.ext.inheritance_diagram', 'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
 
 intersphinx_mapping = {
     'python': ('http://docs.python.org/2.7', None),
-    'django': ('https://docs.djangoproject.com/en/1.4/', 'http://docs.djangoproject.com/en/1.4/_objects/'),
+    'django': ('https://docs.djangoproject.com/en/1.4/',
+      'http://www.applegrew.com/others/django.inv'),
+      #'http://docs.djangoproject.com/en/1.4/_objects/'),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -108,15 +110,22 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 def skip(app, what, name, obj, skip, options):
-    if name == "__init__" and obj.__doc__:
-        return False
-    return skip
+  if name == "__init__" and obj.__doc__:
+    return False
+  return skip
 
 def setup(app):
-    app.connect("autodoc-skip-member", skip)
+  app.connect("autodoc-skip-member", skip)
 
 autodoc_default_flags = ['members', 'show-inheritance']
 autodoc_member_order = 'bysource'
+
+inheritance_graph_attrs = dict(rankdir="TB", size='""')
+
+inheritance_node_attrs = dict(shape='ellipse', fontsize=9,
+                              color='"#97C9FD"', style='filled')
+
+inheritance_edge_attrs = dict(penwidth=0.75)
 
 # -- Options for HTML output ---------------------------------------------------
 
