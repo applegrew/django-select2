@@ -10,7 +10,7 @@ Contents:
 
 .. toctree::
 
-   overview
+   get_started
    reference
 
 Indices and tables

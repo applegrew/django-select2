@@ -74,14 +74,20 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 
 """
 
-__version__ = "3.0.1"
+__version__ = "3.0.2"
+
+__RENDER_SELECT2_STATICS = False
 
 from django.conf import settings
 if settings.configured:
-	from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
-		AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
-	from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
-		HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
-		ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
-		AutoModelSelect2Field, AutoModelSelect2MultipleField 
-	from .views import Select2View, NO_ERR_RESP
+    __RENDER_SELECT2_STATICS = getattr(settings, 'AUTO_RENDER_SELECT2_STATICS', True)
+
+    from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
+        AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
+    from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
+        HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
+        ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
+        AutoModelSelect2Field, AutoModelSelect2MultipleField 
+    from .views import Select2View, NO_ERR_RESP
+
+

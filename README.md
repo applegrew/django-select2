@@ -48,6 +48,11 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.0.2
+
+* Added `AUTO_RENDER_SELECT2_STATICS` settings. This, when specified and set to `False` in `settings.py` then Django_Select2 widgets won't automatically include the required scripts and stylesheets. When this setting is `True` (default) then every Select2 field on the page will output `<script>` and `<link>` tags to include the required JS and CSS files. This is convinient but will output the same JS and CSS files multiple times if there are more than one Select2 fields on the page.
+* Added `django_select2_tags` template tags to manually include the required JS and CSS files, when `AUTO_RENDER_SELECT2_STATICS` is turned off.
+
 ### v3.0.1
 
 * Revised the design of heavy fields. The previous design didn't quite make it easy to back heavy fields by big data sources. See `fields.HeavyChoiceField` class and its methods' docs for more info.

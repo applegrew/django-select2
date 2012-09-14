@@ -14,6 +14,8 @@ from django.utils.datastructures import MultiValueDict, MergeDict
 from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext, \
     convert_dict_to_js_map, convert_to_js_arr
 
+from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
+
 logger = logging.getLogger(__name__)
 
 def get_select2_js_path():
@@ -183,7 +185,8 @@ class Select2Mixin(object):
         if choices: args.append(choices)
 
         s = unicode(super(Select2Mixin, self).render(*args)) # Thanks to @ouhouhsami Issue#1
-        s += self.media.render()
+        if RENDER_SELECT2_STATICS:
+            s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         s += self.render_js_code(id_, name, value, attrs, choices)

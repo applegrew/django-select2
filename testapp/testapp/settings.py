@@ -171,3 +171,6 @@ LOGGING = {
         },
     }
 }
+
+AUTO_RENDER_SELECT2_STATICS = False
+
