@@ -1,5 +1,5 @@
 /*
-Version: 3.1 Timestamp: Tue Aug 14 09:05:17 PDT 2012
+Version: 3.2 Timestamp: Mon Sep 10 10:38:04 PDT 2012
 */
 .select2-container {
     position: relative;
@@ -509,3 +509,16 @@ disabled look for already selected choices in the results dropdown
 .select2-result-unselectable .select2-match { text-decoration: none; }
 
 .select2-offscreen { position: absolute; left: -10000px; }
+
+/* Retina-ize icons */
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+	.select2-search input, .select2-search-choice-close, .select2-container .select2-choice abbr, .select2-container .select2-choice div b {
+		background-image: url(select2x2.png) !important;
+		background-repeat: no-repeat !important;
+		background-size: 60px 40px !important;
+	}
+	.select2-search input {
+		background-position: 100% -21px !important;
+	}
+}
