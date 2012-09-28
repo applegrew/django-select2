@@ -48,7 +48,7 @@ Special Thanks
 Changelog Summary
 =================
 
-### v3.1.0
+### v3.1.1
 
 * Bumping up minor version since Select2 JS has been updated to version 3.2. It seems Select2 JS now includes new higher resolution icons for [Retina displays](http://en.wikipedia.org/wiki/Retina_Display).
 * Fixed an issue in `setup.py` because of which `templatetags` directory was not included in last PIP releases' tar file.
