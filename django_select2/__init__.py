@@ -78,16 +78,22 @@ __version__ = "3.1.1"
 
 __RENDER_SELECT2_STATICS = False
 
-from django.conf import settings
-if settings.configured:
-    __RENDER_SELECT2_STATICS = getattr(settings, 'AUTO_RENDER_SELECT2_STATICS', True)
+try:
+    from django.conf import settings
+    if settings.configured:
+        __RENDER_SELECT2_STATICS = getattr(settings, 'AUTO_RENDER_SELECT2_STATICS', True)
 
-    from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
-        AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
-    from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
-        HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
-        ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
-        AutoModelSelect2Field, AutoModelSelect2MultipleField 
-    from .views import Select2View, NO_ERR_RESP
+        from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
+            AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
+        from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
+            HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
+            ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
+            AutoModelSelect2Field, AutoModelSelect2MultipleField 
+        from .views import Select2View, NO_ERR_RESP
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
 
+    if logger.isEnabledFor(logging.INFO):
+        logger.info("Django not found.")
 
