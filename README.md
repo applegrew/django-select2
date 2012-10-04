@@ -48,6 +48,10 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.1.2
+
+* Fixed issue#7.
+
 ### v3.1.1
 
 * Bumping up minor version since Select2 JS has been updated to version 3.2. It seems Select2 JS now includes new higher resolution icons for [Retina displays](http://en.wikipedia.org/wiki/Retina_Display).
