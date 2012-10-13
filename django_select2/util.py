@@ -271,3 +271,22 @@ def get_field(id_):
     """
     return __id_store.get(id_, None)
 
+def timer(f):
+    def inner(*args, **kwargs):
+        import sys, time
+        if sys.platform == "win32":
+            # On Windows, the best timer is time.clock()
+            default_timer = time.clock
+            multiplier = 1.0
+        else:
+            # On most other platforms the best timer is time.time()
+            default_timer = time.time
+            multiplier = 1000.0
+
+        timeS = default_timer()
+        ret = f(*args, **kwargs)
+        timeE = default_timer()
+
+        logger.debug("Time taken by %s: %0.3f ms" % (f.func_name, (timeE - timeS) * multiplier))
+        return ret
+    return inner

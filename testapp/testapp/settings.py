@@ -162,7 +162,7 @@ LOGGING = {
         'django_select2': {
             'handlers':['console'],
             'propagate': True,
-            'level':'INFO',
+            'level':'DEBUG',
         },
         'django.request': {
             'handlers': ['mail_admins'],

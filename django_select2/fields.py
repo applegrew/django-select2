@@ -41,7 +41,12 @@ class AutoViewFieldMixin(object):
             logger.info("Registering auto field: %s", name)
 
         from . import util
-        id_ = util.register_field(name, self)
+
+        rf = util.register_field
+        if logger.isEnabledFor(logging.DEBUG):
+            rf = util.timer(rf)
+
+        id_ = rf(name, self)
         self.field_id = id_
         super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
 
