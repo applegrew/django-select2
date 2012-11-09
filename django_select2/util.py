@@ -1,10 +1,13 @@
-import types
+import datetime
 import logging
+import re
+import threading
+import types
 
-from django.utils.html import escape
 from django.utils.encoding import force_unicode
 
 logger = logging.getLogger(__name__)
+
 
 class JSVar(unicode):
     """
@@ -107,7 +110,7 @@ def convert_py_to_js_data(val, id_):
     elif isinstance(val, JSFunctionInContext):
         return u"django_select2.runInContextHelper(%s, '%s')" % (val, id_)
     elif isinstance(val, JSVar):
-        return val # No quotes here
+        return val  # No quotes here
     elif isinstance(val, dict):
         return convert_dict_to_js_map(val, id_)
     elif isinstance(val, list):
@@ -184,11 +187,6 @@ def convert_to_js_string_arr(lst):
 
 ### Auto view helper utils ###
 
-import re
-import threading
-import datetime
-
-
 def synchronized(f):
     "Decorator to synchronize multiple calls to a functions."
     f.__lock__ = threading.Lock()
@@ -200,9 +198,10 @@ def synchronized(f):
     synced_f.__doc__ = f.__doc__
     return synced_f
 
-
-__id_store = {} # Generated Id to field instance mapping.
-__field_store = {} # Field's key to generated Id mapping.
+# Generated Id to field instance mapping.
+__id_store = {}
+# Field's key to generated Id mapping.
+__field_store = {}
 
 
 ID_PATTERN = r"[0-9_a-zA-Z.:+\- ]+"
