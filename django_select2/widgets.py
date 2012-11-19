@@ -18,6 +18,7 @@ from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
 logger = logging.getLogger(__name__)
 
+
 def get_select2_js_path():
     from django.conf import settings
     if settings.configured and settings.DEBUG:
@@ -48,10 +49,10 @@ class Select2Mixin(object):
 
     # For details on these options refer: http://ivaynberg.github.com/select2/#documentation
     options = {
-        'minimumResultsForSearch': 6, # Only applicable for single value select.
-        'placeholder': '', # Empty text label
-        'allowClear': True, # Not allowed when field is multiple since there each value has a clear button.
-        'multiple': False, # Not allowed when attached to <select>
+        'minimumResultsForSearch': 6,  # Only applicable for single value select.
+        'placeholder': '',  # Empty text label
+        'allowClear': True,  # Not allowed when field is multiple since there each value has a clear button.
+        'multiple': False,  # Not allowed when attached to <select>
         'closeOnSelect': False,
     }
     """
@@ -60,7 +61,6 @@ class Select2Mixin(object):
 
     .. _Select2: http://ivaynberg.github.com/select2/#documentation.
     """
-
 
     def __init__(self, **kwargs):
         """
@@ -95,7 +95,8 @@ class Select2Mixin(object):
         :type select2_options: :py:obj:`dict` or None
 
         """
-        self.options = dict(self.options) # Making an instance specific copy
+        # Making an instance specific copy
+        self.options = dict(self.options)
         self.init_options()
         select2_options = kwargs.pop('select2_options', None)
         if select2_options:
@@ -126,7 +127,7 @@ class Select2Mixin(object):
     def set_placeholder(self, val):
         """
         Placeholder is a value which Select2 JS library shows when nothing is selected. This should be string.
-        
+
         :return: None
         """
         self.options['placeholder'] = val
@@ -134,7 +135,7 @@ class Select2Mixin(object):
     def get_options(self):
         """
         :return: Dictionary of options to be passed to Select2 JS.
-        
+
         :rtype: :py:obj:`dict`
         """
         options = dict(self.options)
@@ -145,7 +146,7 @@ class Select2Mixin(object):
     def render_select2_options_code(self, options, id_):
         """
         Renders options for Select2 JS.
-        
+
         :return: The rendered JS code.
         :rtype: :py:obj:`unicode`
         """
@@ -154,7 +155,7 @@ class Select2Mixin(object):
     def render_js_code(self, id_, *args):
         """
         Renders the ``<script>`` block which contains the JS code for this widget.
-        
+
         :return: The rendered JS code enclosed inside ``<script>`` block.
         :rtype: :py:obj:`unicode`
         """
@@ -165,7 +166,7 @@ class Select2Mixin(object):
     def render_inner_js_code(self, id_, *args):
         """
         Renders all the JS code required for this widget.
-        
+
         :return: The rendered JS code which will be later enclosed inside ``<script>`` block.
         :rtype: :py:obj:`unicode`
         """
@@ -177,14 +178,15 @@ class Select2Mixin(object):
     def render(self, name, value, attrs=None, choices=()):
         """
         Renders this widget. Html and JS code blocks all are rendered by this.
-        
+
         :return: The rendered markup.
         :rtype: :py:obj:`unicode`
         """
         args = [name, value, attrs]
-        if choices: args.append(choices)
+        if choices:
+            args.append(choices)
 
-        s = unicode(super(Select2Mixin, self).render(*args)) # Thanks to @ouhouhsami Issue#1
+        s = unicode(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
         if RENDER_SELECT2_STATICS:
             s += self.media.render()
         final_attrs = self.build_attrs(attrs)
@@ -217,7 +219,7 @@ class Select2Widget(Select2Mixin, forms.Select):
     def render_options(self, choices, selected_choices):
         if not self.is_required:
             choices = list(choices)
-            choices.append(('', '', )) # Adding an empty choice
+            choices.append(('', '', ))  # Adding an empty choice
         return super(Select2Widget, self).render_options(choices, selected_choices)
 
 
@@ -253,7 +255,9 @@ class MultipleSelect2HiddenInput(forms.TextInput):
     hidden input would be removed. This way, when submitted all the selected values
     would be available as list.
     """
-    input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
+    # We want it hidden but should be treated as if is_hidden is False
+    input_type = 'hidden'
+
     def render(self, name, value, attrs=None, choices=()):
         attrs = self.build_attrs(attrs, multiple='multiple')
         s = unicode(super(MultipleSelect2HiddenInput, self).render(name, u"", attrs))
@@ -334,7 +338,7 @@ class HeavySelect2Mixin(Select2Mixin):
                 when browser is closed.
         """
         self.field = None
-        self.options = dict(self.options) # Making an instance specific copy
+        self.options = dict(self.options)  # Making an instance specific copy
         self.view = kwargs.pop('data_view', None)
         self.url = kwargs.pop('data_url', None)
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', u'null')
@@ -342,6 +346,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
         if not self.view and not self.url:
             raise ValueError('data_view or data_url is required')
+
         self.options['ajax'] = {
             'dataType': 'json',
             'quietMillis': 100,
@@ -384,9 +389,12 @@ class HeavySelect2Mixin(Select2Mixin):
 
     def get_options(self):
         if self.url is None:
-            self.url = reverse(self.view) # We lazy resolve the view. By this time Url conf would been loaded fully.
+            # We lazy resolve the view. By this time Url conf would been loaded fully.
+            self.url = reverse(self.view)
+
         if self.options['ajax'].get('url', None) is None:
             self.options['ajax']['url'] = self.url
+
         return super(HeavySelect2Mixin, self).get_options()
 
     def render_texts_for_value(self, id_, value, choices):
@@ -408,7 +416,8 @@ class HeavySelect2Mixin(Select2Mixin):
         :rtype: :py:obj:`unicode`
         """
         if value is not None:
-            values = [value] # Just like forms.Select.render() it assumes that value will be single valued.
+            # Just like forms.Select.render() it assumes that value will be single valued.
+            values = [value]
             texts = self.render_texts(values, choices)
             if texts:
                 return u"$('#%s').txt(%s);" % (id_, texts)
@@ -436,8 +445,9 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
         * multiple: ``False``
 
     """
+    # We want it hidden but should be treated as if is_hidden is False
+    input_type = 'hidden'
 
-    input_type = 'hidden' # We want it hidden but should be treated as if is_hidden is False
     def init_options(self):
         self.options['multiple'] = False
 
@@ -464,7 +474,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
         self.options.pop('minimumResultsForSearch', None)
         self.options['separator'] = JSVar('django_select2.MULTISEPARATOR')
 
-    def render_texts_for_value(self, id_, value, choices): # value is expected to be a list of values
+    def render_texts_for_value(self, id_, value, choices):
         """
         Renders the JS code which sets the ``txt`` attribute on the field. It gets the array
         of lables from :py:meth:`.render_texts`.
@@ -482,7 +492,8 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
         :return: JS code which sets the ``txt`` attribute.
         :rtype: :py:obj:`unicode`
         """
-        if value: # Just like forms.SelectMultiple.render() it assumes that value will be multi-valued (list).
+        # Just like forms.SelectMultiple.render() it assumes that value will be multi-valued (list).
+        if value:
             texts = self.render_texts(value, choices)
             if texts:
                 return u"$('#%s').txt(%s);" % (id_, texts)
@@ -505,11 +516,12 @@ class AutoHeavySelect2Mixin(object):
         js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
         return js
 
+
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
     "Auto version of :py:class:`.HeavySelect2Widget`"
     pass
 
+
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
     pass
-

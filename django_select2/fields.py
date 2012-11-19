@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AutoViewFieldMixin(object):
     """
     Registers itself with AutoResponseView.
@@ -82,13 +83,13 @@ from django.forms.models import ModelChoiceIterator
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_unicode
-from django.core.validators import EMPTY_VALUES
 
 from .widgets import Select2Widget, Select2MultipleWidget,\
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
     AutoHeavySelect2MultipleWidget
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
+
 
 ### Light general fields ###
 
@@ -134,7 +135,7 @@ class ModelResultJsonMixin(object):
             value. (Default is ``pk``, i.e. the id field of the model)
         :type to_field_name: :py:obj:`str`
         """
-        if self.queryset is None and not kwargs.has_key('queryset'):
+        if self.queryset is None and not 'queryset' in kwargs:
             raise ValueError('queryset is required.')
 
         if not self.search_fields:
@@ -201,7 +202,7 @@ class ModelResultJsonMixin(object):
 
             | Assume, ``search_term == 'John'``
             | ``self.search_fields == ['first_name__icontains', 'last_name__icontains']``
-            
+
             So, the prepared query would be::
 
                 {
@@ -211,7 +212,7 @@ class ModelResultJsonMixin(object):
                     'and': {}
                 }
         :rtype: :py:obj:`dict`
-        """      
+        """
         q = None
         for field in search_fields:
             kwargs = {}
@@ -220,7 +221,7 @@ class ModelResultJsonMixin(object):
                 q = Q(**kwargs)
             else:
                 q = q | Q(**kwargs)
-        return {'or': [q], 'and': {},}
+        return {'or': [q], 'and': {}}
 
     def get_results(self, request, term, page, context):
         """
@@ -233,7 +234,7 @@ class ModelResultJsonMixin(object):
 
         if self.max_results:
             min_ = (page - 1) * self.max_results
-            max_ = min_ + self.max_results + 1 # fetching one extra row to check if it has more rows.
+            max_ = min_ + self.max_results + 1  # fetching one extra row to check if it has more rows.
             res = list(qs.filter(*params['or'], **params['and'])[min_:max_])
             has_more = len(res) == (max_ - min_)
             if has_more:
@@ -242,7 +243,7 @@ class ModelResultJsonMixin(object):
             res = list(qs.filter(*params['or'], **params['and']))
             has_more = False
 
-        res = [ (getattr(obj, self.to_field_name), self.label_from_instance(obj), ) for obj in res ]
+        res = [(getattr(obj, self.to_field_name), self.label_from_instance(obj), ) for obj in res]
         return (NO_ERR_RESP, has_more, res, )
 
 
@@ -263,7 +264,7 @@ class UnhideableQuerysetType(type):
             # class variable named - queryset, which will
             # effectively hide the queryset declared in this
             # mixin.
-            dct.pop('queryset') # Throwing away the sub-class queryset
+            dct.pop('queryset')  # Throwing away the sub-class queryset
             dct['_subclass_queryset'] = _q
 
         return type.__new__(cls, name, bases, dct)
@@ -331,10 +332,11 @@ class ModelChoiceFieldMixin(object):
             'empty_label', 'cache_choices', 'required', 'label', 'initial', 'help_text',
             ])
         kargs['widget'] = kwargs.pop('widget', getattr(self, 'widget', None))
-        kargs['to_field_name'] = kwargs.pop('to_field_name', 'pk')        
+        kargs['to_field_name'] = kwargs.pop('to_field_name', 'pk')
 
-        if hasattr(self, '_choices'): # If it exists then probably it is set by HeavySelect2FieldBase.
-                                      # We are not gonna use that anyway.
+        # If it exists then probably it is set by HeavySelect2FieldBase.
+        # We are not gonna use that anyway.
+        if hasattr(self, '_choices'):
             del self._choices
 
         super(ModelChoiceFieldMixin, self).__init__(queryset, **kargs)
@@ -357,9 +359,10 @@ class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceF
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
 
 
-### Light Fileds specialized for Models ###
+### Light Fields specialized for Models ###
 
-class ModelSelect2Field(ModelChoiceField) :
+
+class ModelSelect2Field(ModelChoiceField):
     """
     Light Select2 field, specialized for Models.
 
@@ -368,7 +371,7 @@ class ModelSelect2Field(ModelChoiceField) :
     widget = Select2Widget
 
 
-class ModelSelect2MultipleField(ModelMultipleChoiceField) :
+class ModelSelect2MultipleField(ModelMultipleChoiceField):
     """
     Light multiple-value Select2 field, specialized for Models.
 
@@ -426,7 +429,8 @@ class HeavySelect2FieldBaseMixin(object):
         if hasattr(self, 'field_id'):
             self.widget.field_id = self.field_id
 
-        if not choices and hasattr(self, 'choices'): # ModelChoiceField will set this to ModelChoiceIterator
+        # ModelChoiceField will set this to ModelChoiceIterator
+        if not choices and hasattr(self, 'choices'):
             choices = self.choices
         self.choices = choices
 
@@ -494,7 +498,7 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         try:
             value = self.coerce_value(value)
             self.validate_value(value)
-        except Exception, e:
+        except Exception:
             logger.exception("Exception while trying to get label for value")
             return None
         return self.get_val_txt(value)
@@ -511,6 +515,7 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         :rtype: :py:obj:`unicode` or None (when no possible label could be found)
         """
         return None
+
 
 class HeavyMultipleChoiceField(HeavyChoiceField):
     """
@@ -620,8 +625,9 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    __metaclass__ = UnhideableQuerysetType # Makes sure that user defined queryset class variable is replaced by
-                                           # queryset property (as it is needed by super classes).
+    # ModelChoiceField will set this to ModelChoiceIterator
+    # queryset property (as it is needed by super classes).
+    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2Widget
 
@@ -638,8 +644,9 @@ class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, He
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    __metaclass__ = UnhideableQuerysetType # Makes sure that user defined queryset class variable is replaced by
-                                           # queryset property (as it is needed by super classes).
+    # Makes sure that user defined queryset class variable is replaced by
+    # queryset property (as it is needed by super classes).
+    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2MultipleWidget
 
@@ -647,5 +654,3 @@ class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, He
         self.data_view = "django_select2_central_json"
         kwargs['data_view'] = self.data_view
         super(AutoModelSelect2MultipleField, self).__init__(*args, **kwargs)
-
-
