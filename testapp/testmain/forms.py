@@ -2,7 +2,7 @@ from django import forms
 
 from django_select2 import *
 
-from .models import Employee, Dept, ClassRoom, Lab
+from .models import Employee, Dept, ClassRoom, Lab, Word
 
 class EmployeeChoices(AutoModelSelect2Field):
     queryset = Employee.objects
@@ -15,6 +15,10 @@ class ClassRoomChoices(AutoModelSelect2MultipleField):
 class ClassRoomSingleChoices(AutoModelSelect2Field):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
+
+class WordChoices(AutoModelSelect2Field):
+    queryset = Word.objects
+    search_fields = ['word__icontains', ]
 
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
@@ -69,6 +73,7 @@ class MixedForm(forms.Form):
     emp2 = EmployeeChoices()
     rooms2 = ClassRoomChoices()
     rooms3 = ClassRoomSingleChoices()
+    any_word = WordChoices()
     self_choices = SelfChoices(label='Self copy choices')
     self_multi_choices = SelfMultiChoices(label='Self copy multi-choices')
 

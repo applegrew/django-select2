@@ -296,7 +296,8 @@ class ChoiceMixin(object):
 
     def __deepcopy__(self, memo):
         result = super(ChoiceMixin, self).__deepcopy__(memo)
-        result._choices = copy.deepcopy(self._choices, memo)
+        if hasattr(self, '_choices'):
+            result._choices = copy.deepcopy(self._choices, memo)
         return result
 
 
@@ -407,6 +408,10 @@ class HeavySelect2FieldBaseMixin(object):
             be raised.
 
         """
+        from . import util
+        if logger.isEnabledFor(logging.DEBUG):
+            t1 = util.timer_start('HeavySelect2FieldBaseMixin.__init__')
+
         data_view = kwargs.pop('data_view', None)
         choices = kwargs.pop('choices', [])
 
@@ -423,17 +428,22 @@ class HeavySelect2FieldBaseMixin(object):
 
         # This piece of code is needed here since (God knows why) Django's Field class does not call
         # super(); because of that __init__() of classes would get called after Field.__init__().
-        # If did had super() call there then we could have simply moved AutoViewFieldMixin at the
+        # If it did had super() call there then we could have simply moved AutoViewFieldMixin at the
         # end of the MRO list. This way it would have got widget instance instead of class and it
         # could have directly set field_id on it.
         if hasattr(self, 'field_id'):
             self.widget.field_id = self.field_id
 
-        # ModelChoiceField will set this to ModelChoiceIterator
-        if not choices and hasattr(self, 'choices'):
-            choices = self.choices
-        self.choices = choices
+        if logger.isEnabledFor(logging.DEBUG):
+            t2 = util.timer_start('HeavySelect2FieldBaseMixin.__init__:choices initialization')
 
+        # ModelChoiceField will set self.choices to ModelChoiceIterator
+        if choices and not (hasattr(self, 'choices') and isinstance(self.choices, forms.models.ModelChoiceIterator)):
+            self.choices = choices
+
+        if logger.isEnabledFor(logging.DEBUG):
+            util.timer_end(t2)
+            util.timer_end(t1)
 
 class HeavyChoiceField(ChoiceMixin, forms.Field):
     """

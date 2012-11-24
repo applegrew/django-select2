@@ -29,3 +29,8 @@ class Employee(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
+class Word(models.Model):
+    word = models.CharField(max_length=15)
+
+    def __unicode__(self):
+        return unicode(self.word)
