@@ -511,6 +511,11 @@ class AutoHeavySelect2Mixin(object):
     id along with the Ajax request, so that the central view can identify which field should be used to
     serve the request.
     """
+
+    def __init__(self, *args, **kwargs):
+        kwargs['data_view'] = "django_select2_central_json"
+        super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
+
     def render_inner_js_code(self, id_, *args):
         js = u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
         js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)

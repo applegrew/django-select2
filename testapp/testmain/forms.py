@@ -4,6 +4,8 @@ from django_select2 import *
 
 from .models import Employee, Dept, ClassRoom, Lab, Word
 
+############# Choice fields ###################
+
 class EmployeeChoices(AutoModelSelect2Field):
     queryset = Employee.objects
     search_fields = ['name__icontains', ]
@@ -19,20 +21,6 @@ class ClassRoomSingleChoices(AutoModelSelect2Field):
 class WordChoices(AutoModelSelect2Field):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
-
-class EmployeeForm(forms.ModelForm):
-    manager = EmployeeChoices(required=False)
-    dept = ModelSelect2Field(queryset=Dept.objects)
-    
-    class Meta:
-        model = Employee
-
-class DeptForm(forms.ModelForm):
-    allotted_rooms = ClassRoomChoices()
-    allotted_labs = ModelSelect2MultipleField(queryset=Lab.objects, required=False)
-
-    class Meta:
-        model = Dept
 
 class SelfChoices(AutoSelect2Field):
     def get_results(self, request, term, page, context):
@@ -67,6 +55,22 @@ class SelfMultiChoices(AutoSelect2MultipleField):
 
         return (NO_ERR_RESP, False, res)
 
+########### Forms ##############
+
+class EmployeeForm(forms.ModelForm):
+    manager = EmployeeChoices(required=False)
+    dept = ModelSelect2Field(queryset=Dept.objects)
+    
+    class Meta:
+        model = Employee
+
+class DeptForm(forms.ModelForm):
+    allotted_rooms = ClassRoomChoices()
+    allotted_labs = ModelSelect2MultipleField(queryset=Lab.objects, required=False)
+
+    class Meta:
+        model = Dept
+
 class MixedForm(forms.Form):
     emp1 = EmployeeChoices()
     rooms1 = ClassRoomChoices()
@@ -76,6 +80,15 @@ class MixedForm(forms.Form):
     any_word = WordChoices()
     self_choices = SelfChoices(label='Self copy choices')
     self_multi_choices = SelfMultiChoices(label='Self copy multi-choices')
+    issue11_test = EmployeeChoices(
+        label='Issue 11 Test (Employee)',
+        widget=AutoHeavySelect2Widget(
+            select2_options={
+                'width': '32em',
+                'placeHolder': u"Search foo"
+            }
+        )
+    )
 
 # These are just for testing Auto registration of fields
 EmployeeChoices() # Should already be registered

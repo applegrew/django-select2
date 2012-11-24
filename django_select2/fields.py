@@ -86,7 +86,7 @@ from django.utils.encoding import smart_unicode
 
 from .widgets import Select2Widget, Select2MultipleWidget,\
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
-    AutoHeavySelect2MultipleWidget
+    AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
 
@@ -118,6 +118,9 @@ class ModelResultJsonMixin(object):
 
     It is expected that sub-classes will defined a class field variable
     ``search_fields``, which should be a list of field names to search for.
+
+    ..note:: As of version 3.1.3, ``search_fields`` is optional if sub-class
+        overrides ``get_results``.
     """
 
     def __init__(self, *args, **kwargs):
@@ -137,9 +140,6 @@ class ModelResultJsonMixin(object):
         """
         if self.queryset is None and not 'queryset' in kwargs:
             raise ValueError('queryset is required.')
-
-        if not self.search_fields:
-            raise ValueError('search_fields is required.')
 
         self.max_results = getattr(self, 'max_results', None)
         self.to_field_name = getattr(self, 'to_field_name', 'pk')
@@ -229,6 +229,9 @@ class ModelResultJsonMixin(object):
 
         This implementation takes care of detecting if more results are available.
         """
+        if not hasattr(self, 'search_fields') or not self.search_fields:
+            raise ValueError('search_fields is required.')
+
         qs = copy.deepcopy(self.queryset)
         params = self.prepare_qs_params(request, term, self.search_fields)
 
@@ -416,10 +419,8 @@ class HeavySelect2FieldBaseMixin(object):
         choices = kwargs.pop('choices', [])
 
         kargs = {}
-        if data_view is not None:
+        if kwargs.get('widget', None) is None:
             kargs['widget'] = self.widget(data_view=data_view)
-        elif kwargs.get('widget', None) is None:
-            raise ValueError('data_view is required else you need to provide your own widget instance.')
 
         kargs.update(kwargs)
         super(HeavySelect2FieldBaseMixin, self).__init__(*args, **kargs)
@@ -602,11 +603,6 @@ class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
 
     widget = AutoHeavySelect2Widget
 
-    def __init__(self, *args, **kwargs):
-        self.data_view = "django_select2_central_json"
-        kwargs['data_view'] = self.data_view
-        super(AutoSelect2Field, self).__init__(*args, **kwargs)
-
 
 class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceField):
     """
@@ -619,11 +615,6 @@ class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceFie
     """
 
     widget = AutoHeavySelect2MultipleWidget
-
-    def __init__(self, *args, **kwargs):
-        self.data_view = "django_select2_central_json"
-        kwargs['data_view'] = self.data_view
-        super(AutoSelect2MultipleField, self).__init__(*args, **kwargs)
 
 
 ### Heavy field, specialized for Model, that uses central AutoView ###
@@ -641,11 +632,6 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
 
     widget = AutoHeavySelect2Widget
 
-    def __init__(self, *args, **kwargs):
-        self.data_view = "django_select2_central_json"
-        kwargs['data_view'] = self.data_view
-        super(AutoModelSelect2Field, self).__init__(*args, **kwargs)
-
 
 class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
     """
@@ -660,7 +646,3 @@ class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, He
 
     widget = AutoHeavySelect2MultipleWidget
 
-    def __init__(self, *args, **kwargs):
-        self.data_view = "django_select2_central_json"
-        kwargs['data_view'] = self.data_view
-        super(AutoModelSelect2MultipleField, self).__init__(*args, **kwargs)

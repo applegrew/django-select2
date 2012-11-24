@@ -48,6 +48,12 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.1.3
+
+* Addressed enhancement issue#12.
+* Addressed enhancement issue#11.
+* Possibly addressed performance issue#8.
+
 ### v3.1.2
 
 * Fixed issue#7.
