@@ -30,7 +30,7 @@
 			}
  		});
  	}
-})(jQuery);
+})(jQuery || django.jQuery);
 
 (function ($, undefined) {
     "use strict";
@@ -2404,4 +2404,4 @@
         }
     };
 
-}(jQuery));
+}(jQuery || django.jQuery));

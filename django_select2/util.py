@@ -59,9 +59,11 @@ def render_js_script(inner_code):
     """
     return u"""
     <script>
-        $(function () {
-            %s
-        });
+        (function ($) {
+            $(function () {
+                %s
+            });
+        })(jQuery || django.jQuery);
     </script>""" % inner_code
 
 
