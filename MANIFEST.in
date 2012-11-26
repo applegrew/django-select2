@@ -3,3 +3,5 @@ recursive-include django_select2/static *.*
 recursive-exclude django_select2/static .DS_Store
 recursive-include django_select2/templatetags *.*
 recursive-exclude django_select2/templatetags .DS_Store *.pyc
+exclude UK_Advanced_Cryptics_Dictionary_Licensing_Information.txt
+exclude Internal_Notes.md

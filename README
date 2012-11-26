@@ -52,7 +52,7 @@ Changelog Summary
 
 * Addressed enhancement issue#12.
 * Addressed enhancement issue#11.
-* Possibly addressed performance issue#8.
+* Addressed performance issue#8.
 
 ### v3.1.2
 
