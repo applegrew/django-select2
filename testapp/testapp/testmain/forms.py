@@ -40,7 +40,7 @@ class SelfChoices(AutoSelect2Field):
 class SelfMultiChoices(AutoSelect2MultipleField):
     big_data = {
         1: "First", 2: "Second", 3: "Third",
-        }
+    }
 
     def validate_value(self, value):
         if value in [v for v in self.big_data]:
@@ -79,6 +79,7 @@ class DeptForm(forms.ModelForm):
     class Meta:
         model = Dept
 
+
 class MixedForm(forms.Form):
     emp1 = EmployeeChoices()
     rooms1 = ClassRoomChoices()
@@ -93,20 +94,25 @@ class MixedForm(forms.Form):
         widget=AutoHeavySelect2Widget(
             select2_options={
                 'width': '32em',
-                'placeHolder': u"Search foo"
+                'placeholder': u"Search foo"
             }
         )
     )
 
 # These are just for testing Auto registration of fields
-EmployeeChoices() # Should already be registered
-EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId") # Should get registered
+EmployeeChoices()  # Should already be registered
+EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId")  # Should get registered
+
 
 class InitialValueForm(forms.Form):
-    select2Choice = Select2ChoiceField(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    select2MultipleChoice = Select2MultipleChoiceField(initial=[2,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    heavySelect2Choice = AutoSelect2Field(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    self_choices = SelfChoices(label='Self copy choices', initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2,3])
-
+    select2Choice = Select2ChoiceField(initial=2,
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    select2MultipleChoice = Select2MultipleChoiceField(initial=[2, 3],
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2Choice = AutoSelect2Field(initial=2,
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1, 3],
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_choices = SelfChoices(label='Self copy choices', initial=2,
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2, 3])

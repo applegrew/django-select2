@@ -138,7 +138,7 @@ class Select2Mixin(object):
         :rtype: :py:obj:`dict`
         """
         options = dict(self.options)
-        if options.get('allowClear', None) is not None:
+        if options.get('allowClear') is not None:
             options['allowClear'] = not self.is_required
         return options
 
