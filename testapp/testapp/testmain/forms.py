@@ -6,21 +6,26 @@ from .models import Employee, Dept, ClassRoom, Lab, Word
 
 ############# Choice fields ###################
 
+
 class EmployeeChoices(AutoModelSelect2Field):
     queryset = Employee.objects
     search_fields = ['name__icontains', ]
+
 
 class ClassRoomChoices(AutoModelSelect2MultipleField):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
 
+
 class ClassRoomSingleChoices(AutoModelSelect2Field):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
 
+
 class WordChoices(AutoModelSelect2Field):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
+
 
 class SelfChoices(AutoSelect2Field):
     def get_results(self, request, term, page, context):
@@ -30,6 +35,7 @@ class SelfChoices(AutoSelect2Field):
         self.choices = res
 
         return (NO_ERR_RESP, False, res)
+
 
 class SelfMultiChoices(AutoSelect2MultipleField):
     big_data = {
@@ -57,12 +63,14 @@ class SelfMultiChoices(AutoSelect2MultipleField):
 
 ########### Forms ##############
 
+
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
     dept = ModelSelect2Field(queryset=Dept.objects)
 
     class Meta:
         model = Employee
+
 
 class DeptForm(forms.ModelForm):
     allotted_rooms = ClassRoomChoices()
