@@ -60,7 +60,7 @@ class SelfMultiChoices(AutoSelect2MultipleField):
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
     dept = ModelSelect2Field(queryset=Dept.objects)
-    
+
     class Meta:
         model = Employee
 
