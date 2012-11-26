@@ -143,15 +143,6 @@ class Select2Mixin(object):
             options['allowClear'] = not self.is_required
         return options
 
-    def render_select2_options_code(self, options, id_):
-        """
-        Renders options for Select2 JS.
-
-        :return: The rendered JS code.
-        :rtype: :py:obj:`unicode`
-        """
-        return convert_dict_to_js_map(options, id_)
-
     def render_js_code(self, id_, *args):
         """
         Renders the ``<script>`` block which contains the JS code for this widget.
@@ -171,7 +162,7 @@ class Select2Mixin(object):
         :rtype: :py:obj:`unicode`
         """
         options = dict(self.get_options())
-        options = self.render_select2_options_code(options, id_)
+        options = convert_dict_to_js_map(options, id_)
 
         return u'$("#%s").select2(%s);' % (id_, options)
 
