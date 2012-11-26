@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('testapp.testmain.views',
     url(r'single/model/field/$', 'test_single_value_model_field', name='test_single_value_model_field'),
