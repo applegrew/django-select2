@@ -7,7 +7,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 import os, sys
 
-# Including the great parent so that djang_select2 can be found.
+# Including the great parent so that django_select2 can be found.
 parent_folder = PROJECT_ROOT
 parent_folder = parent_folder.split('/')[:-2]
 parent_folder = '/'.join(parent_folder)
@@ -130,8 +130,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    "django_select2",
-    "testmain",
+    'django_select2',
+    'testapp.testmain',
 )
 
 # A sample logging configuration. The only tangible logging
