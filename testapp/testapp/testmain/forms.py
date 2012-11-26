@@ -6,21 +6,26 @@ from .models import Employee, Dept, ClassRoom, Lab, Word
 
 ############# Choice fields ###################
 
+
 class EmployeeChoices(AutoModelSelect2Field):
     queryset = Employee.objects
     search_fields = ['name__icontains', ]
+
 
 class ClassRoomChoices(AutoModelSelect2MultipleField):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
 
+
 class ClassRoomSingleChoices(AutoModelSelect2Field):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
 
+
 class WordChoices(AutoModelSelect2Field):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
+
 
 class SelfChoices(AutoSelect2Field):
     def get_results(self, request, term, page, context):
@@ -31,10 +36,11 @@ class SelfChoices(AutoSelect2Field):
 
         return (NO_ERR_RESP, False, res)
 
+
 class SelfMultiChoices(AutoSelect2MultipleField):
     big_data = {
         1: "First", 2: "Second", 3: "Third",
-        }
+    }
 
     def validate_value(self, value):
         if value in [v for v in self.big_data]:
@@ -57,12 +63,14 @@ class SelfMultiChoices(AutoSelect2MultipleField):
 
 ########### Forms ##############
 
+
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
     dept = ModelSelect2Field(queryset=Dept.objects)
-    
+
     class Meta:
         model = Employee
+
 
 class DeptForm(forms.ModelForm):
     allotted_rooms = ClassRoomChoices()
@@ -70,6 +78,7 @@ class DeptForm(forms.ModelForm):
 
     class Meta:
         model = Dept
+
 
 class MixedForm(forms.Form):
     emp1 = EmployeeChoices()
@@ -85,20 +94,25 @@ class MixedForm(forms.Form):
         widget=AutoHeavySelect2Widget(
             select2_options={
                 'width': '32em',
-                'placeHolder': u"Search foo"
+                'placeholder': u"Search foo"
             }
         )
     )
 
 # These are just for testing Auto registration of fields
-EmployeeChoices() # Should already be registered
-EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId") # Should get registered
+EmployeeChoices()  # Should already be registered
+EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId")  # Should get registered
+
 
 class InitialValueForm(forms.Form):
-    select2Choice = Select2ChoiceField(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    select2MultipleChoice = Select2MultipleChoiceField(initial=[2,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    heavySelect2Choice = AutoSelect2Field(initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1,3], choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    self_choices = SelfChoices(label='Self copy choices', initial=2, choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2,3])
-
+    select2Choice = Select2ChoiceField(initial=2,
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    select2MultipleChoice = Select2MultipleChoiceField(initial=[2, 3],
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2Choice = AutoSelect2Field(initial=2,
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1, 3],
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_choices = SelfChoices(label='Self copy choices', initial=2,
+        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2, 3])

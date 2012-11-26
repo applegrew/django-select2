@@ -290,7 +290,6 @@ def timer_end(t):
 
 def timer(f):
     def inner(*args, **kwargs):
-        
         t = timer_start(f.func_name)
         ret = f(*args, **kwargs)
         timer_end(t)

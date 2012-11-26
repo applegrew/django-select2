@@ -56,8 +56,8 @@ class Select2Mixin(object):
         'closeOnSelect': False,
     }
     """
-    The options listed in this are rendered as JS map and passed to Select2 JS code.
-    The complete description of theses options are available in Select2_ JS' site.
+    The options listed here are rendered as JS map and passed to Select2 JS code.
+    Complete description of these options are available in Select2_ JS' site.
 
     .. _Select2: http://ivaynberg.github.com/select2/#documentation.
     """
@@ -80,7 +80,7 @@ class Select2Mixin(object):
                             'name': Select2WidgetName(select2_options={
                                 'minimumResultsForSearch': 10,
                                 'closeOnSelect': True,
-                                })
+                            })
                         }
 
             .. tip:: You cannot introduce new options using this. For that you should sub-class and overried
@@ -98,12 +98,11 @@ class Select2Mixin(object):
         # Making an instance specific copy
         self.options = dict(self.options)
         self.init_options()
+
         select2_options = kwargs.pop('select2_options', None)
         if select2_options:
-            for name in self.options:
-                val = self.options[name]
-                self.options[name] = select2_options.get(name, val)
-
+            for name, value in select2_options.items():
+                self.options[name] = value
         super(Select2Mixin, self).__init__(**kwargs)
 
     def init_options(self):
@@ -139,18 +138,9 @@ class Select2Mixin(object):
         :rtype: :py:obj:`dict`
         """
         options = dict(self.options)
-        if options.get('allowClear', None) is not None:
+        if options.get('allowClear') is not None:
             options['allowClear'] = not self.is_required
         return options
-
-    def render_select2_options_code(self, options, id_):
-        """
-        Renders options for Select2 JS.
-
-        :return: The rendered JS code.
-        :rtype: :py:obj:`unicode`
-        """
-        return convert_dict_to_js_map(options, id_)
 
     def render_js_code(self, id_, *args):
         """
@@ -171,7 +161,7 @@ class Select2Mixin(object):
         :rtype: :py:obj:`unicode`
         """
         options = dict(self.get_options())
-        options = self.render_select2_options_code(options, id_)
+        options = convert_dict_to_js_map(options, id_)
 
         return u'$("#%s").select2(%s);' % (id_, options)
 
