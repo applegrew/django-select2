@@ -56,8 +56,8 @@ class Select2Mixin(object):
         'closeOnSelect': False,
     }
     """
-    The options listed in this are rendered as JS map and passed to Select2 JS code.
-    The complete description of theses options are available in Select2_ JS' site.
+    The options listed here are rendered as JS map and passed to Select2 JS code.
+    Complete description of theses options are available in Select2_ JS' site.
 
     .. _Select2: http://ivaynberg.github.com/select2/#documentation.
     """
@@ -97,18 +97,17 @@ class Select2Mixin(object):
         """
         # Making an instance specific copy
         self.options = dict(self.options)
-        self.init_options()
         select2_options = kwargs.pop('select2_options', None)
         if select2_options:
-            for name in self.options:
-                val = self.options[name]
-                self.options[name] = select2_options.get(name, val)
+            for name, value in select2_options.items():
+                self.options[name] = value
+        self.init_options()
 
         super(Select2Mixin, self).__init__(**kwargs)
 
     def init_options(self):
         """
-        Sub-classes can use this to pass additional options to Select2 JS library.
+        Sub-classes can use this to suppress or override options passed to Select2 JS library.
 
         Example::
 
