@@ -48,6 +48,11 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.1.4
+
+* Manually merged changes from pull request (issue#16).
+* Django Select2 widgets now allow passing of any Select2 Js options. Previously it used to allow only white-listed options. Now it will block only black-listed options. For example, Light Select2 widgets won't allow you to set `multiple` option, since it is an error to set them when Select2 Js is bound to `<select>` fields.
+
 ### v3.1.3
 
 * Addressed enhancement issue#12.
