@@ -6,3 +6,5 @@ testapp/tt.py
 Django_Select2.egg-info
 dist
 build
+
+docs/_build
