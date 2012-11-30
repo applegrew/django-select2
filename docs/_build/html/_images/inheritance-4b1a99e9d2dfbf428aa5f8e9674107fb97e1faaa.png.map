@@ -1,7 +1,0 @@
-<map id="inheritance0bde21cdb9" name="inheritance0bde21cdb9">
-<area shape="poly" id="node2" href="#django_select2.fields.ModelResultJsonMixin" title="ModelResultJsonMixin" alt="" coords="705,271,700,265,684,261,660,257,630,255,596,254,562,255,532,257,508,261,492,265,487,271,492,276,508,281,532,284,562,287,596,288,630,287,660,284,684,281,700,276"/>
-<area shape="poly" id="node15" href="#django_select2.fields.AutoModelSelect2Field" title="AutoModelSelect2Field" alt="" coords="712,353,706,348,690,343,664,340,632,337,596,336,560,337,528,340,502,343,486,348,480,353,486,359,502,363,528,367,560,369,596,370,632,369,664,367,690,363,706,359"/>
-<area shape="poly" id="node3" href="#django_select2.fields.AutoViewFieldMixin" title="AutoViewFieldMixin" alt="" coords="926,271,921,265,907,261,886,257,858,255,828,254,798,255,770,257,749,261,735,265,730,271,735,276,749,281,770,284,798,287,828,288,858,287,886,284,907,281,921,276"/>
-<area shape="poly" id="node8" href="#django_select2.fields.HeavyModelSelect2ChoiceField" title="HeavyModelSelect2ChoiceField" alt="" coords="462,271,455,265,433,261,400,257,358,255,311,254,264,255,221,257,188,261,166,265,159,271,166,276,188,281,221,284,264,287,311,288,358,287,400,284,433,281,455,276"/>
-<area shape="poly" id="node9" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="HeavySelect2FieldBaseMixin" alt="" coords="589,188,582,183,563,178,532,174,493,172,451,171,408,172,369,174,339,178,319,183,312,188,319,193,339,198,369,202,408,204,451,205,493,204,532,202,563,198,582,193"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="inheritance4f5879fafb" name="inheritance4f5879fafb">
-<area shape="poly" id="node9" href="#django_select2.fields.HeavyModelSelect2ChoiceField" title="HeavyModelSelect2ChoiceField" alt="" coords="454,271,447,265,425,261,392,257,350,255,303,254,256,255,213,257,180,261,158,265,151,271,158,276,180,281,213,284,256,287,303,288,350,287,392,284,425,281,447,276"/>
-<area shape="poly" id="node4" href="#django_select2.fields.HeavyModelSelect2MultipleChoiceField" title="HeavyModelSelect2MultipleChoiceField" alt="" coords="544,353,535,348,509,343,468,340,416,337,359,336,301,337,249,340,208,343,182,348,173,353,182,359,208,363,249,367,301,369,359,370,416,369,468,367,509,363,535,359"/>
-<area shape="poly" id="node5" href="#django_select2.fields.HeavySelect2FieldBaseMixin" title="HeavySelect2FieldBaseMixin" alt="" coords="281,188,274,183,255,178,224,174,185,172,143,171,100,172,61,174,31,178,11,183,4,188,11,193,31,198,61,202,100,204,143,205,185,204,224,202,255,198,274,193"/>
-</map>
