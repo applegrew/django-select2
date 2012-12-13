@@ -98,8 +98,13 @@ class Select2View(JSONResponseMixin, View):
         err, has_more, results = output
         res = []
         if err == NO_ERR_RESP:
-            for id_, text in results:
-                res.append({'id': id_, 'text': text})
+            for result in results:
+                id_, text = result[:2]
+                if len(result)>2:
+                    extra_data = result[2]
+                else:
+                    extra_data = {}
+                res.append(dict(id=id_, text=text, **extra_data))
         return {
             'err': err,
             'more': has_more,
