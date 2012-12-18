@@ -60,13 +60,13 @@ Changelog Summary
 
 ### v3.1.3
 
-* Addressed enhancement issue#12.
-* Addressed enhancement issue#11.
-* Addressed performance issue#8.
+* Addressed enhancement issue[#12](https://github.com/applegrew/django-select2/issues/12).
+* Addressed enhancement issue[#11](https://github.com/applegrew/django-select2/issues/11).
+* Addressed performance issue[#8](https://github.com/applegrew/django-select2/issues/8).
 
 ### v3.1.2
 
-* Fixed issue#7.
+* Fixed issue[#7](https://github.com/applegrew/django-select2/issues/7).
 
 ### v3.1.1
 
@@ -82,13 +82,13 @@ Changelog Summary
 
 * Revised the design of heavy fields. The previous design didn't quite make it easy to back heavy fields by big data sources. See `fields.HeavyChoiceField` class and its methods' docs for more info.
 * Updated docs.
-* Some more fixes for issue#4.
+* Some more fixes for issue[#4](https://github.com/applegrew/django-select2/issues/4).
 * Updated Select2 JS to version 3.1.
 
 ### v3.0
 
 * Added docs.
-* Some bug fixes. See issue#4.
+* Some bug fixes. See issue[#4](https://github.com/applegrew/django-select2/issues/4).
 * `widgets.Select2Mixin.__init__` now accepts `select2_options` kwarg to override its `options` settings. Previously `attrs` were being used for this too. This means backward compatibility has been broken here. `attrs` will no longer override `options` values. **The major release version has been changed to 3, because of this backward incompatible change.**
 
 ### v2.0.1
