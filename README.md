@@ -48,9 +48,14 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.1.5
+
+* Merged pull request (issue[#17](https://github.com/applegrew/django-select2/issues/17)). Which allows the user to pass some extra data to Select2 clients-side component.
+* Updated License. The previous one was inadequently worded. Now this project use Apache 2.0 license.
+
 ### v3.1.4
 
-* Manually merged changes from pull request (issue#16).
+* Manually merged changes from pull request (issue[#16](https://github.com/applegrew/django-select2/issues/16)).
 * Django Select2 widgets now allow passing of any Select2 Js options. Previously it used to allow only white-listed options. Now it will block only black-listed options. For example, Light Select2 widgets won't allow you to set `multiple` option, since it is an error to set them when Select2 Js is bound to `<select>` fields.
 
 ### v3.1.3
@@ -95,3 +100,20 @@ Changelog Summary
 * Mostly major bug fixes in code and design. The changes were many, raising the possibility of backward incompatibility. However, the backward incompatibility would be subtle.
 
 * Auto fields (sub-classes of AutoViewFieldMixin) now accepts `auto_id` parameter. This can be used to provide custom id for the field. The default is 'module.field_class_name'. Ideally only the first instance of an auto field is registered. This parameter can be used to force registration of additional instances by passing a unique value.
+
+License
+=======
+
+Copyright 2012 Nirupam Biswas
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this project except in compliance with the License.
+You may obtain a copy of the License at
+
+    [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
