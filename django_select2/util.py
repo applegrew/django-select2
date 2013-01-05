@@ -85,6 +85,10 @@ def extract_some_key_val(dct, keys):
     return edct
 
 
+def convert_to_js_str(val):
+    val = force_unicode(val).replace('\'', '\\\'')
+    return u"'%s'" % val
+
 def convert_py_to_js_data(val, id_):
     """
     Converts Python data type to JS data type.
@@ -116,7 +120,7 @@ def convert_py_to_js_data(val, id_):
     elif isinstance(val, list):
         return convert_to_js_arr(val, id_)
     else:
-        return u"'%s'" % force_unicode(val)
+        return convert_to_js_str(val)
 
 
 def convert_dict_to_js_map(dct, id_):
@@ -140,7 +144,7 @@ def convert_dict_to_js_map(dct, id_):
         else:
             is_first = False
 
-        out += u"'%s': " % name
+        out += u"%s: " % convert_to_js_str(name)
         out += convert_py_to_js_data(dct[name], id_)
 
     return out + u'}'
@@ -181,7 +185,7 @@ def convert_to_js_string_arr(lst):
 
     :rtype: :py:obj:`unicode`
     """
-    lst = [u'"%s"' % force_unicode(l) for l in lst]
+    lst = [convert_to_js_str(l) for l in lst]
     return u"[%s]" % (",".join(lst))
 
 

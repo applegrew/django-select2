@@ -106,4 +106,8 @@ class InitialValueForm(forms.Form):
     self_choices = SelfChoices(label='Self copy choices', initial=2,
         choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2,3])
+    select2ChoiceWithQuotes = Select2ChoiceField(initial=2,
+        choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""), (3, "\"Mixed-Quotes'"), ))
+    heavySelect2ChoiceWithQuotes = AutoSelect2Field(initial=2,
+        choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""), (3, "\"Mixed-Quotes'"), ))
 
