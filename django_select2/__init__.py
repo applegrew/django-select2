@@ -74,7 +74,7 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 
 """
 
-__version__ = "3.1.5"
+__version__ = "3.2.0"
 
 __RENDER_SELECT2_STATICS = False
 

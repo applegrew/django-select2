@@ -38,91 +38,8 @@ if (!window['django_select2']) {
 			}
 			return results;
 		},
-		/*setCookie: function (c_name, value) {
-			document.cookie = c_name + "=" + escape(value);
-		},
-		getCookie: function (c_name) {
-			var i, x, y,
-				ARRcookies = document.cookie.split(";");
-
-			for (i = 0; i < ARRcookies.length; i++) {
-				x = ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-				y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
-				x = x.replace(/^\s+|\s+$/g,"");
-				if (x == c_name) {
-					return unescape(y);
-				}
-			}
-		},
-		delCookie: function (c_name, isStartsWithPattern) {
-			var i, x, ARRcookies;
-			if (!isStartsWithPattern) {
-					document.cookie = c_name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-			} else {
-				ARRcookies = document.cookie.split(";");
-
-				for (i = 0; i < ARRcookies.length; i++) {
-					x = ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-					x = x.replace(/^\s+|\s+$/g,"");
-					if (x.indexOf(c_name) == 0) {
-						document.cookie = c_name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-					}
-				}
-			}
-		},
-		setData: function (c_name, value) {
-			var store = django_select2.store;
-			
-			django_select2.setCookie(django_select2.HEAVY_VAL_TXT_SET_KEY, true);
-			if (store && store.enabled) {
-				store.set(c_name, value);
-			} else {
-				django_select2.setCookie(c_name, value);
-			}
-		},
-		getData: function (c_name) {
-			var store = django_select2.store;
-
-			if (store && store.enabled) {
-				return store.get(c_name);
-			} else {
-				return django_select2.getCookie(c_name);
-			}
-		},
-		delData: function (c_name, isStartsWithPattern) {
-			isStartsWithPattern = typeof(isStartsWithPattern) === 'undefined' ? true : isStartsWithPattern;
-			var store = django_select2.store;
-
-			if (store && store.enabled) {
-				if (!isStartsWithPattern) {
-					store.remove(c_name);
-				} else {
-					store.removeAllStartsWith(c_name);
-				}
-			} else {
-				django_select2.delCookie(c_name, isStartsWithPattern);
-			}
-		},*/
 		onValChange: function () {
-			var e = $(this);//, res, id = e.attr('id');
-			django_select2.updateText(e);
-
-			//django_select2.delData('heavy_val:' + id + ':');
-			//django_select2.delData('heavy_txt:' + id + ':');
-
-			/*res = django_select2.getValText(e, false);
-			if (res && res[1]) {
-				// HTML5 localstore or cookies are used to persist selection's text.
-				// This is needed when the form springs back if there are any
-				// validation failures.
-				$(res[0]).each(function (idx) {
-					var txt = res[1][idx];
-					if (typeof(txt) !== 'undefined') {
-						django_select2.setData('heavy_val:' + id + ':' + idx, this);
-						django_select2.setData('heavy_txt:' + id + ':' + idx, txt);
-					}
-				});
-			}*/
+			django_select2.updateText($(this));
 		},
 		prepareValText: function (vals, txts, isMultiple) {
 			var data = []
@@ -169,7 +86,7 @@ if (!window['django_select2']) {
 				$e.txt('');
 			}
 		},
-		getValText: function ($e, isGetFromClientStoreAllowed) {
+		getValText: function ($e) {
 			var val = $e.select2('val'), res = $e.data('results'), txt = $e.txt(), isMultiple = !!$e.attr('multiple'),
 				f, id = $e.attr('id');
 			if (val || val === 0) { // Means value is set. A numerical 0 is also a valid value.
@@ -209,23 +126,6 @@ if (!window['django_select2']) {
 						return [val, txt];
 					}
 				}
-
-				/*if (isGetFromClientStoreAllowed) {
-					txt = [];
-					$(val).each(function (idx) {
-						var value = this, clientLocalVal;
-
-						clientLocalVal = django_select2.getData('heavy_val:' + id + ':' + idx);
-						
-						if (clientLocalVal == value) {
-							txt.push(django_select2.getData('heavy_txt:' + id + ':' + idx));
-						}
-					});
-					if (txt || txt === 0) {
-						return [val, txt];
-					}
-				}*/
-
 			}
 			return null;
 		},
@@ -239,7 +139,7 @@ if (!window['django_select2']) {
 
 			if (val || val === 0) {
 				// Value is set so need to get the text.
-				data = django_select2.getValText(e, false);
+				data = django_select2.getValText(e);
 				if (data && data[0]) {
 					data = django_select2.prepareValText(data[0], data[1], !!e.attr('multiple'));
 				}
