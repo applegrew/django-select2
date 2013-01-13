@@ -110,6 +110,53 @@ AUTHOR_EMAIL = "admin@applegrew.com"
 URL = "https://github.com/applegrew/django-select2"
 VERSION = __import__(PACKAGE).__version__
 
+def getPkgPath():
+    return __import__(PACKAGE).__path__[0] + '/'
+
+def minify(files, outfile, ftype):
+    import urllib, json
+
+    content = u''
+    for filename in files:
+        with open(getPkgPath() + filename) as f:
+            for line in f.xreadlines():
+                content = content + line
+
+    data = urllib.urlencode([
+        ('code', content),
+        ('type', ftype),
+      ])
+    data.encode('utf-8')
+
+    f = urllib.urlopen('http://api.applegrew.com/minify', data)
+    data = u''
+    while 1:
+        line = f.readline()
+        if line:
+            data = data + unicode(line)
+        else:
+            break
+    f.close()
+
+    data = json.loads(data)
+    for key in data:
+        value = data[key]
+        if isinstance(value, str) or isinstance(value, unicode):
+            data[key] = unicode(value).decode("string-escape").replace(r'\/', '/')
+
+    if data['success']:
+        with open(getPkgPath() + outfile, 'w') as f:
+            f.write(data['compiled_code'])
+    else:
+        print data['error_code']
+        print data['error']
+        raise Exception('Could not minify.')
+
+
+if 'sdist' == sys.argv[1]:
+    minify(['static/js/select2.js'], 'static/js/select2.min.js', 'js')
+    minify(['static/js/heavy_data.js'], 'static/js/heavy_data.min.js', 'js')
+    minify(['static/css/select2.css', 'static/css/extra.css'], 'static/css/all.min.css', 'css')
 
 setup(
     name=NAME,

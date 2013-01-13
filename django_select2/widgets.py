@@ -35,6 +35,13 @@ def get_select2_heavy_js_libs():
     else:
         return libs + ('js/heavy_data.min.js', )
 
+def get_select2_css_libs():
+    from django.conf import settings
+    if settings.configured and settings.DEBUG:
+        return ('css/select2.css', 'css/extra.css', )
+    else:
+        return ('css/all.min.js', )
+
 ### Light mixin and widgets ###
 
 class Select2Mixin(object):
@@ -207,7 +214,7 @@ class Select2Mixin(object):
 
     class Media:
         js = get_select2_js_libs()
-        css = {'screen': ('css/select2.css', 'css/extra.css', )}
+        css = {'screen': get_select2_css_libs()}
 
 
 class Select2Widget(Select2Mixin, forms.Select):
