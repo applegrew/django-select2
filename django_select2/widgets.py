@@ -19,13 +19,21 @@ from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 logger = logging.getLogger(__name__)
 
 
-def get_select2_js_path():
+def get_select2_js_libs():
     from django.conf import settings
     if settings.configured and settings.DEBUG:
-        return 'js/select2.js'
+        return ('js/select2.js', )
     else:
-        return 'js/select2.min.js'
+        return ('js/select2.min.js', )
 
+def get_select2_heavy_js_libs():
+    libs = get_select2_js_libs()
+
+    from django.conf import settings
+    if settings.configured and settings.DEBUG:
+        return libs + ('js/heavy_data.js', 'js/store.js', )
+    else:
+        return libs + ('js/heavy_data.min.js', )
 
 ### Light mixin and widgets ###
 
@@ -198,7 +206,7 @@ class Select2Mixin(object):
         return mark_safe(s)
 
     class Media:
-        js = (get_select2_js_path(), )
+        js = get_select2_js_libs()
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
 
@@ -332,9 +340,9 @@ class HeavySelect2Mixin(Select2Mixin):
                 3. Otherwise, check the cached results. When the user searches in the fields then all the returned
                 responses from server, which has the value and label mapping, are cached by ``heavy_data.js``.
 
-                4. If we still do not have the label then check the cookies. When user selects some value then
-                ``heavy_data.js`` stores the selected values and their labels in the cookies. These are cleared
-                when browser is closed.
+                4. If we still do not have the label then check the browser localStorage/cookies. When user selects
+                some value then ``heavy_data.js`` stores the selected values and their labels in the browser
+                localStorage/cookies.
         """
         self.field = None
         self.options = dict(self.options)  # Making an instance specific copy
@@ -431,7 +439,7 @@ class HeavySelect2Mixin(Select2Mixin):
         return js
 
     class Media:
-        js = (get_select2_js_path(), 'js/heavy_data.js', )
+        js = get_select2_heavy_js_libs()
         css = {'screen': ('css/select2.css', 'css/extra.css', )}
 
 

@@ -38,11 +38,12 @@ if (!window['django_select2']) {
 			}
 			return results;
 		},
-		setCookie: function (c_name, value) {
+		/*setCookie: function (c_name, value) {
 			document.cookie = c_name + "=" + escape(value);
 		},
 		getCookie: function (c_name) {
-			var i, x, y, ARRcookies = document.cookie.split(";");
+			var i, x, y,
+				ARRcookies = document.cookie.split(";");
 
 			for (i = 0; i < ARRcookies.length; i++) {
 				x = ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
@@ -55,9 +56,8 @@ if (!window['django_select2']) {
 		},
 		delCookie: function (c_name, isStartsWithPattern) {
 			var i, x, ARRcookies;
-
 			if (!isStartsWithPattern) {
-				document.cookie = c_name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+					document.cookie = c_name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 			} else {
 				ARRcookies = document.cookie.split(";");
 
@@ -70,25 +70,59 @@ if (!window['django_select2']) {
 				}
 			}
 		},
-		onValChange: function () {
-			var e = $(this), res, id = e.attr('id');
-
-			res = django_select2.getValText(e, false);
+		setData: function (c_name, value) {
+			var store = django_select2.store;
 			
+			django_select2.setCookie(django_select2.HEAVY_VAL_TXT_SET_KEY, true);
+			if (store && store.enabled) {
+				store.set(c_name, value);
+			} else {
+				django_select2.setCookie(c_name, value);
+			}
+		},
+		getData: function (c_name) {
+			var store = django_select2.store;
+
+			if (store && store.enabled) {
+				return store.get(c_name);
+			} else {
+				return django_select2.getCookie(c_name);
+			}
+		},
+		delData: function (c_name, isStartsWithPattern) {
+			isStartsWithPattern = typeof(isStartsWithPattern) === 'undefined' ? true : isStartsWithPattern;
+			var store = django_select2.store;
+
+			if (store && store.enabled) {
+				if (!isStartsWithPattern) {
+					store.remove(c_name);
+				} else {
+					store.removeAllStartsWith(c_name);
+				}
+			} else {
+				django_select2.delCookie(c_name, isStartsWithPattern);
+			}
+		},*/
+		onValChange: function () {
+			var e = $(this);//, res, id = e.attr('id');
+			django_select2.updateText(e);
+
+			//django_select2.delData('heavy_val:' + id + ':');
+			//django_select2.delData('heavy_txt:' + id + ':');
+
+			/*res = django_select2.getValText(e, false);
 			if (res && res[1]) {
-				// Cookies are used to persist selection's text. This is needed
-				// when the form springs back if there is any validation failure.
+				// HTML5 localstore or cookies are used to persist selection's text.
+				// This is needed when the form springs back if there are any
+				// validation failures.
 				$(res[0]).each(function (idx) {
 					var txt = res[1][idx];
 					if (typeof(txt) !== 'undefined') {
-						django_select2.setCookie(id + '_heavy_val:' + idx, this);
-						django_select2.setCookie(id + '_heavy_txt:' + idx, txt);
+						django_select2.setData('heavy_val:' + id + ':' + idx, this);
+						django_select2.setData('heavy_txt:' + id + ':' + idx, txt);
 					}
 				});
-			} else {
-				django_select2.delCookie(id + '_heavy_val:', true);
-				django_select2.delCookie(id + '_heavy_txt:', true);
-			}
+			}*/
 		},
 		prepareValText: function (vals, txts, isMultiple) {
 			var data = []
@@ -105,7 +139,37 @@ if (!window['django_select2']) {
 				}
 			}
 		},
-		getValText: function ($e, isGetFromCookieAllowed) {
+		updateText: function ($e) {
+			var val = $e.select2('val'), data = $e.select2('data'), txt = $e.txt(), isMultiple = !!$e.attr('multiple'),
+				diff;
+			
+			if (val || val === 0) { // Means value is set. A numerical 0 is also a valid value.
+				if (isMultiple) {
+					if (val.length !== txt.length) {
+						txt = [];
+						$(val).each(function (idx) {
+							var i, value = this, id;
+							
+							for (i in data) {
+								id = data [i].id;
+								if (id instanceof String) {
+									id = id.valueOf();
+								}
+								if (id == value) {
+									txt.push(data[i].text);
+								}
+							}
+						});
+					}
+				} else {
+					txt = data.text;
+				}
+				$e.txt(txt);
+			} else {
+				$e.txt('');
+			}
+		},
+		getValText: function ($e, isGetFromClientStoreAllowed) {
 			var val = $e.select2('val'), res = $e.data('results'), txt = $e.txt(), isMultiple = !!$e.attr('multiple'),
 				f, id = $e.attr('id');
 			if (val || val === 0) { // Means value is set. A numerical 0 is also a valid value.
@@ -117,7 +181,7 @@ if (!window['django_select2']) {
 					}
 				}
 
-				if (txt || txt === 0) {
+				if (txt === 0 || (txt && val.length === txt.length)) {
 					return [val, txt];
 				}
 
@@ -146,21 +210,21 @@ if (!window['django_select2']) {
 					}
 				}
 
-				if (isGetFromCookieAllowed) {
+				/*if (isGetFromClientStoreAllowed) {
 					txt = [];
 					$(val).each(function (idx) {
-						var value = this, cookieVal;
+						var value = this, clientLocalVal;
 
-						cookieVal = django_select2.getCookie(id + '_heavy_val:' + idx);
+						clientLocalVal = django_select2.getData('heavy_val:' + id + ':' + idx);
 						
-						if (cookieVal == value) {
-							txt.push(django_select2.getCookie(id + '_heavy_txt:' + idx));
+						if (clientLocalVal == value) {
+							txt.push(django_select2.getData('heavy_txt:' + id + ':' + idx));
 						}
 					});
 					if (txt || txt === 0) {
 						return [val, txt];
 					}
-				}
+				}*/
 
 			}
 			return null;
@@ -175,7 +239,7 @@ if (!window['django_select2']) {
 
 			if (val || val === 0) {
 				// Value is set so need to get the text.
-				data = django_select2.getValText(e);
+				data = django_select2.getValText(e, false);
 				if (data && data[0]) {
 					data = django_select2.prepareValText(data[0], data[1], !!e.attr('multiple'));
 				}
@@ -184,6 +248,7 @@ if (!window['django_select2']) {
 				e.val(null); // Nulling out set value so as not to confuse users.
 			}
 			callback(data); // Change for 2.3.x
+			django_select2.updateText(e);
 		},
 		onMultipleHiddenChange: function () {
 			var $e = $(this), valContainer = $e.data('valContainer'), name = $e.data('name'), vals = $e.val();
@@ -219,7 +284,13 @@ if (!window['django_select2']) {
 				var args = Array.prototype.slice.call(arguments);
 		        return f.apply($('#' + id).get(0), args);
 		    }
-		}
+		},
+		logErr: function () {
+			if (console && console.error) {
+	            args = Array.prototype.slice.call(arguments);
+	            console.error.apply(console, args);
+	        }
+		},
 	};
 
 	(function( $ ){
@@ -236,12 +307,18 @@ if (!window['django_select2']) {
 						}
 					}
 					this.attr('txt', val);
+				} else {
+					this.removeAttr('txt');
 				}
 				return this;
 			} else {
 				val = this.attr('txt');
-				if (val && this.attr('multiple')) {
-					val = val.split(django_select2.MULTISEPARATOR);
+				if (this.attr('multiple')) {
+					if (val) {
+						val = val.split(django_select2.MULTISEPARATOR);
+					} else {
+						val = [];
+					}
 				}
 				return val;
 			}

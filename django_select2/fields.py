@@ -346,8 +346,11 @@ class ModelChoiceFieldMixin(object):
 
     def __init__(self, *args, **kwargs):
         queryset = kwargs.pop('queryset', None)
+        # This filters out kwargs not supported by Field but are still passed as it is required
+        # by other codes. If new args are added to Field then make sure they are added here too.
         kargs = extract_some_key_val(kwargs, [
             'empty_label', 'cache_choices', 'required', 'label', 'initial', 'help_text',
+            'validators', 'localize',
             ])
         kargs['widget'] = kwargs.pop('widget', getattr(self, 'widget', None))
         kargs['to_field_name'] = kwargs.pop('to_field_name', 'pk')

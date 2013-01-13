@@ -4,6 +4,11 @@ from django_select2 import *
 
 from .models import Employee, Dept, ClassRoom, Lab, Word
 
+from django.core.exceptions import ValidationError
+
+def validate_fail_always(value):
+    raise ValidationError(u'%s not valid. Infact nothing is valid!' % value)
+
 ############# Choice fields ###################
 
 class EmployeeChoices(AutoModelSelect2Field):
@@ -23,17 +28,27 @@ class WordChoices(AutoModelSelect2Field):
     search_fields = ['word__icontains', ]
 
 class SelfChoices(AutoSelect2Field):
+    def get_val_txt(self, value):
+        if not hasattr(self, 'res_map'):
+            self.res_map = {}
+        return self.res_map.get(value, None)
+
     def get_results(self, request, term, page, context):
+        if not hasattr(self, 'res_map'):
+            self.res_map = {}
+        mlen = len(self.res_map)
         res = []
         for i in range(1, 6):
-            res.append((i, term * i,))
+            idx = i + mlen
+            res.append((idx, term * i,))
+            self.res_map[idx] = term * i
         self.choices = res
 
         return (NO_ERR_RESP, False, res)
 
 class SelfMultiChoices(AutoSelect2MultipleField):
     big_data = {
-        1: "First", 2: "Second", 3: "Third",
+        1: u"First", 2: u"Second", 3: u"Third",
     }
 
     def validate_value(self, value):
@@ -46,12 +61,20 @@ class SelfMultiChoices(AutoSelect2MultipleField):
         return int(value)
 
     def get_val_txt(self, value):
-        return self.big_data.get(value, None)
+        if not hasattr(self, '_big_data'):
+            self._big_data = dict(self.big_data)
+        return self._big_data.get(value, None)
 
     def get_results(self, request, term, page, context):
-        res = [(v, self.big_data[v]) for v in self.big_data]
-        for i in range(len(res), 6):
-            res.append((i, term * i,))
+        if not hasattr(self, '_big_data'):
+            self._big_data = dict(self.big_data)
+        res = [(v, self._big_data[v]) for v in self._big_data]
+        blen = len(res)
+        for i in range(1, 6):
+            idx = i + blen
+            res.append((idx, term * i,))
+            self._big_data[idx] = term * i
+        self.choices = res
 
         return (NO_ERR_RESP, False, res)
 
@@ -89,6 +112,10 @@ class MixedForm(forms.Form):
             }
         )
     )
+    always_fail_rooms = ClassRoomSingleChoices(validators=[validate_fail_always])
+    always_fail_rooms_multi = ClassRoomChoices(validators=[validate_fail_always])
+    always_fail_self_choice = SelfChoices(validators=[validate_fail_always], auto_id='always_fail_self_choice')
+    always_fail_self_choice_multi = SelfMultiChoices(validators=[validate_fail_always], auto_id='always_fail_self_choice_multi')
 
 # These are just for testing Auto registration of fields
 EmployeeChoices() # Should already be registered
