@@ -48,6 +48,13 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.2.0
+
+* Fixed issue[#20](https://github.com/applegrew/django-select2/issues/20). Infact while fixing that I realised that heavy components do not need the help of cookies, infact due to a logic error in previous code the cookies were not being used anyway. Now Django Select2 does not use cookies etc.
+* Few more bugs fixed in `heav_data.js`.
+* Now production code will use minimized versions of js and css files.
+* Codes added in `setup.py` to automate the task of minimizing js and css files, using a web service.
+
 ### v3.1.5
 
 * Merged pull request (issue[#17](https://github.com/applegrew/django-select2/issues/17)). Which allows the user to pass some extra data to Select2 clients-side component.
