@@ -347,9 +347,9 @@ class HeavySelect2Mixin(Select2Mixin):
                 3. Otherwise, check the cached results. When the user searches in the fields then all the returned
                 responses from server, which has the value and label mapping, are cached by ``heavy_data.js``.
 
-                .. note:: Since version 3.2.0, cookies or localStorage are no longer checked or used. All
-                    :py:class:`~.field.HeavyChoiceField` must override :py:meth:`~.fields.HeavyChoiceField.get_val_txt`.
-                    If you are only using heavy widgets in your own fields then you should override :py:meth:`.render_texts`.
+        .. note:: Since version 3.2.0, cookies or localStorage are no longer checked or used. All
+            :py:class:`~.field.HeavyChoiceField` must override :py:meth:`~.fields.HeavyChoiceField.get_val_txt`.
+            If you are only using heavy widgets in your own fields then you should override :py:meth:`.render_texts`.
         """
         self.field = None
         self.options = dict(self.options)  # Making an instance specific copy
