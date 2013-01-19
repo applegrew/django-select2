@@ -40,7 +40,7 @@ def get_select2_css_libs():
     if settings.configured and settings.DEBUG:
         return ('css/select2.css', 'css/extra.css', )
     else:
-        return ('css/all.min.js', )
+        return ('css/all.min.css', )
 
 ### Light mixin and widgets ###
 
