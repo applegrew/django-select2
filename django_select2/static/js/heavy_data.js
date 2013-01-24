@@ -190,7 +190,7 @@ if (!window['django_select2']) {
 	            args = Array.prototype.slice.call(arguments);
 	            console.error.apply(console, args);
 	        }
-		},
+		}
 	};
 
 	(function( $ ){
