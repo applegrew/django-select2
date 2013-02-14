@@ -49,7 +49,7 @@ def render_js_script(inner_code):
     """
     This wraps ``inner_code`` string inside the following code block::
 
-        <script>
+        <script type="text/javascript">
             $(function () {
                 // inner_code here
             });
@@ -58,7 +58,7 @@ def render_js_script(inner_code):
     :rtype: :py:obj:`unicode`
     """
     return u"""
-    <script>
+    <script type="text/javascript">
         $(function () {
             %s
         });
