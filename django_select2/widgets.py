@@ -390,11 +390,16 @@ class HeavySelect2Mixin(Select2Mixin):
         selected_choices = list(force_unicode(v) for v in selected_choices)
         txts = []
         all_choices = choices if choices else []
+        choices_dict = dict()
         for val, txt in chain(self.choices, all_choices):
             val = force_unicode(val)
-            if val in selected_choices:
-                selected_choices = [v for v in selected_choices if v != val]
-                txts.append(txt)
+            choices_dict[val] = txt
+        for val in selected_choices:
+            try:
+                txts.append(choices_dict[val])
+            except KeyError:
+                logger.error("Value '%s' is not a valid choice.", val)
+
         if hasattr(self.field, '_get_val_txt') and selected_choices:
             for val in selected_choices:
                 txt = self.field._get_val_txt(val)
