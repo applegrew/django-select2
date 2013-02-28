@@ -116,6 +116,8 @@ class MixedForm(forms.Form):
     always_fail_rooms_multi = ClassRoomChoices(validators=[validate_fail_always])
     always_fail_self_choice = SelfChoices(validators=[validate_fail_always], auto_id='always_fail_self_choice')
     always_fail_self_choice_multi = SelfMultiChoices(validators=[validate_fail_always], auto_id='always_fail_self_choice_multi')
+    model_with_both_required_and_empty_label_false = ModelSelect2Field(
+        queryset=Employee.objects, empty_label=None, required=False) #issue#26
 
 # These are just for testing Auto registration of fields
 EmployeeChoices() # Should already be registered
