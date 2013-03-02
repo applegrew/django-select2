@@ -191,6 +191,9 @@ def convert_to_js_string_arr(lst):
 
 ### Auto view helper utils ###
 
+from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT, \
+    __MEMCACHE_HOST as MEMCACHE_HOST, __MEMCACHE_PORT as MEMCACHE_PORT, __MEMCACHE_TTL as MEMCACHE_TTL
+
 def synchronized(f):
     "Decorator to synchronize multiple calls to a functions."
     f.__lock__ = threading.Lock()
@@ -225,6 +228,9 @@ def is_valid_id(val):
     else:
         return True
 
+if ENABLE_MULTI_PROCESS_SUPPORT:
+    from memcache_wrapped_db_client import Client
+    remote_server = Client(MEMCACHE_HOST, str(MEMCACHE_PORT), MEMCACHE_TTL)
 
 @synchronized
 def register_field(key, field):
@@ -256,6 +262,10 @@ def register_field(key, field):
 
         if logger.isEnabledFor(logging.INFO):
             logger.info("Registering new field: %s; With actual id: %s", key, id_)
+
+        if ENABLE_MULTI_PROCESS_SUPPORT:
+            logger.info("Multi process support is enabled. Adding id-key mapping to remote server.")
+            remote_server.set(id_, key)
     else:
         id_ = __field_store[key]
         if logger.isEnabledFor(logging.INFO):
@@ -272,7 +282,22 @@ def get_field(id_):
 
     :rtype: :py:class:`AutoViewFieldMixin` or None
     """
-    return __id_store.get(id_, None)
+    field = __id_store.get(id_, None)
+    if field is None and ENABLE_MULTI_PROCESS_SUPPORT:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('Id "%s" not found in this process. Looking up in remote server.', id_)
+        key = remote_server.get(id_)
+        if key is not None:
+            id_in_current_instance = __field_store[key]
+            if id_in_current_instance:
+                field = __id_store.get(id_in_current_instance, None)
+                if field:
+                    __id_store[id_] = field
+            else:
+                logger.error('Unknown id "%s".', id_in_current_instance)
+        else:
+            logger.error('Unknown id "%s".', id_)
+    return field
 
 def timer_start(name):
     import sys, time

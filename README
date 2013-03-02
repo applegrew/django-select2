@@ -33,6 +33,7 @@ External Dependencies
 
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.
+* Memcached (python-memcached) - If you plan on running multiple python processes, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
 
 Example Application
 ===================
@@ -47,6 +48,15 @@ Special Thanks
 
 Changelog Summary
 =================
+
+### v3.3.0
+
+* Updated Select2 to version 3.3.1.
+* Added multi-process support. ([Issue#28](https://github.com/applegrew/django-select2/issues/28)).
+* Addressed issue[#26](https://github.com/applegrew/django-select2/issues/26).
+* Addressed issue[#24](https://github.com/applegrew/django-select2/issues/24).
+* Addressed issue[#23](https://github.com/applegrew/django-select2/issues/23).
+* Addressed some typos.
 
 ### v3.2.0
 

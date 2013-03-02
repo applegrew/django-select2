@@ -74,14 +74,22 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 
 """
 
-__version__ = "3.2.1"
+__version__ = "3.3.0"
 
 __RENDER_SELECT2_STATICS = False
+__ENABLE_MULTI_PROCESS_SUPPORT = False
+__MEMCACHE_HOST = None
+__MEMCACHE_PORT = None
+__MEMCACHE_TTL = 900
 
 try:
     from django.conf import settings
     if settings.configured:
         __RENDER_SELECT2_STATICS = getattr(settings, 'AUTO_RENDER_SELECT2_STATICS', True)
+        __ENABLE_MULTI_PROCESS_SUPPORT = getattr(settings, 'ENABLE_SELECT2_MULTI_PROCESS_SUPPORT', False)
+        __MEMCACHE_HOST = getattr(settings, 'SELECT2_MEMCACHE_HOST', None)
+        __MEMCACHE_PORT = getattr(settings, 'SELECT2_MEMCACHE_PORT', None)
+        __MEMCACHE_TTL = getattr(settings, 'SELECT2_MEMCACHE_TTL', 900)
 
         from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
             AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
