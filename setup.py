@@ -181,6 +181,6 @@ setup(
         "Framework :: Django",
     ],
     install_requires=[
-        "Django",
+        "Django>=1.3",
     ],
 )
