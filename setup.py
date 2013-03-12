@@ -142,7 +142,7 @@ def minify(files, outfile, ftype):
     for key in data:
         value = data[key]
         if isinstance(value, str) or isinstance(value, unicode):
-            data[key] = unicode(value).decode("string-escape").replace(r'\/', '/')
+            data[key] = unicode(value).replace(r'\/', '/') #.decode("unicode_escape").replace(r'\/', '/')
 
     if data['success']:
         with open(getPkgPath() + outfile, 'w') as f:
@@ -156,6 +156,7 @@ def minify(files, outfile, ftype):
 if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:
     minify(['static/js/select2.js'], 'static/js/select2.min.js', 'js')
     minify(['static/js/heavy_data.js'], 'static/js/heavy_data.min.js', 'js')
+    minify(['static/css/select2.css'], 'static/css/select2.min.css', 'css')
     minify(['static/css/select2.css', 'static/css/extra.css'], 'static/css/all.min.css', 'css')
 
 setup(

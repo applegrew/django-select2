@@ -39,7 +39,11 @@ When this settings is ``False`` then you are responsible for including the JS an
     * ``import_django_select2_css`` - Outputs ``<link>`` tags to include all the CSS files, required by Light and Heavy widgets.
     * ``import_django_select2_js_css`` - Outputs both ``<script>`` and ``<link>`` tags to include all the JS and CSS files, required by Light and Heavy widgets.
 
-Make sure to include them at the top of the page, prefereably in ``<head>...</head>``.
+.. tip:: Make sure to include them at the top of the page, prefereably in ``<head>...</head>``.
+
+.. note:: (Since version 3.3.1) The above temaple tags accept one argument ``light``. Default value for that is ``0``.
+	If that is set to ``1`` then only the JS and CSS libraries needed by Select2Widget (Light field) is rendered.
+	That effectively leaves out ``heavy.js`` and ``extra.css``.
 
 
 ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`` [Default ``False``]

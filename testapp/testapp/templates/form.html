@@ -6,7 +6,8 @@
 	<script src="{{ STATIC_URL }}jquery-1.7.2.min.js"></script>
 	{% import_django_select2_js %}
 	{% import_django_select2_css %}
-	{% import_django_select2_js_css %} <!-- For testing importing it again, but with another tag -->
+	<!-- For testing importing it again, but with another tag and light=1 -->
+	{% import_django_select2_js_css light=1 %}
 </head>
 <body>
 <form method="post" action="">

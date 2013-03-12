@@ -49,6 +49,12 @@ Special Thanks
 Changelog Summary
 =================
 
+### v3.3.1
+
+* Addressed issue[#30](https://github.com/applegrew/django-select2/issues/30).
+* Merged pull request[#31](https://github.com/applegrew/django-select2/issues/31).
+* Added `light` parameter to `import_django_select2_js`, `import_django_select2_css` and `import_django_select2_js_css` template tags. Please see doc's "Getting Started", for more details.
+
 ### v3.3.0
 
 * Updated Select2 to version 3.3.1.
