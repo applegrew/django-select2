@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 import logging
 import re
 import threading
@@ -194,6 +195,8 @@ def convert_to_js_string_arr(lst):
 from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT, \
     __MEMCACHE_HOST as MEMCACHE_HOST, __MEMCACHE_PORT as MEMCACHE_PORT, __MEMCACHE_TTL as MEMCACHE_TTL
 
+from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID, __SECRET_SALT as SECRET_SALT
+
 def synchronized(f):
     "Decorator to synchronize multiple calls to a functions."
     f.__lock__ = threading.Lock()
@@ -255,7 +258,10 @@ def register_field(key, field):
 
     if key not in __field_store:
         # Generating id
-        id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
+        if GENERATE_RANDOM_ID:
+            id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
+        else:
+            id_ = unicode(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
 
         __field_store[key] = id_
         __id_store[id_] = field

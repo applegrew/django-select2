@@ -33,7 +33,7 @@ External Dependencies
 
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.
-* Memcached (python-memcached) - If you plan on running multiple python processes, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
+* Memcached (python-memcached) - If you plan on running multiple python processes with `GENERATE_RANDOM_SELECT2_ID` enabled, then you need to turn on `ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
 
 Example Application
 ===================
@@ -48,6 +48,10 @@ Special Thanks
 
 Changelog Summary
 =================
+
+### v4.0.0
+
+* Main version number bumped to bring your attention to the fact that the default Id generation scheme has now changed. Now Django Select2 will use hashed paths of fields to generate their Ids. The old scheme of generating random Ids are still there. You can enable that by setting `GENERATE_RANDOM_SELECT2_ID` to `True`.
 
 ### v3.3.1
 

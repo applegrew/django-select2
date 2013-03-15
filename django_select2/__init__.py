@@ -74,13 +74,18 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 
 """
 
-__version__ = "3.3.1"
+import logging
+logger = logging.getLogger(__name__)
+
+__version__ = "4.0.0"
 
 __RENDER_SELECT2_STATICS = False
 __ENABLE_MULTI_PROCESS_SUPPORT = False
 __MEMCACHE_HOST = None
 __MEMCACHE_PORT = None
 __MEMCACHE_TTL = 900
+__GENERATE_RANDOM_ID = False
+__SECRET_SALT = ''
 
 try:
     from django.conf import settings
@@ -90,6 +95,12 @@ try:
         __MEMCACHE_HOST = getattr(settings, 'SELECT2_MEMCACHE_HOST', None)
         __MEMCACHE_PORT = getattr(settings, 'SELECT2_MEMCACHE_PORT', None)
         __MEMCACHE_TTL = getattr(settings, 'SELECT2_MEMCACHE_TTL', 900)
+        __GENERATE_RANDOM_ID = getattr(settings, 'GENERATE_RANDOM_SELECT2_ID', False)
+        __SECRET_SALT = getattr(settings, 'SECRET_KEY', '')
+
+        if not __GENERATE_RANDOM_ID and __ENABLE_MULTI_PROCESS_SUPPORT:
+            logger.warn("You need not turn on ENABLE_SELECT2_MULTI_PROCESS_SUPPORT when GENERATE_RANDOM_SELECT2_ID is disabled.")
+            __ENABLE_MULTI_PROCESS_SUPPORT = False
 
         from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
             AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
@@ -99,9 +110,6 @@ try:
             AutoModelSelect2Field, AutoModelSelect2MultipleField 
         from .views import Select2View, NO_ERR_RESP
 except ImportError:
-    import logging
-    logger = logging.getLogger(__name__)
-
     if logger.isEnabledFor(logging.INFO):
         logger.info("Django not found.")
 

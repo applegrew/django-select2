@@ -25,8 +25,8 @@ Installation
 
         python manage.py syncdb
 
-Available Setting
------------------
+Available Settings
+------------------
 
 ``AUTO_RENDER_SELECT2_STATICS`` [Default ``True``]
 ..................................................
@@ -45,13 +45,23 @@ When this settings is ``False`` then you are responsible for including the JS an
 	If that is set to ``1`` then only the JS and CSS libraries needed by Select2Widget (Light fields) are rendered.
 	That effectively leaves out ``heavy.js`` and ``extra.css``.
 
+``GENERATE_RANDOM_SELECT2_ID`` [Default ``False``]
+..................................................
+
+As of version 4.0.0 the field's Ids are their paths which have been hashed by SHA1. This Id generation scheme should be sufficient for most applications.
+
+However, if you have a secret government project and fear that SHA1 hashes could be cracked (which is not impossible) to reveal the path and names of your fields then you can enable this mode. This will use timestamps as Ids which have no correlation to the field's name or path.
+
+.. tip:: The field's paths are first salted with Django generated ``SECRET_KEY`` before hashing them.
 
 ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`` [Default ``False``]
 ............................................................
 
-In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime. The clients can identify the fields in ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to ajax queries.
+This setting cannot be enabled as it is not required when ``GENERATE_RANDOM_SELECT2_ID`` is ``False``.
 
-When this mode is enabled then Django Select2 maintains an id to field key mapping in DB for all processes. Whenever a process does not find an id in its internal map it looks-up in the central DB. From DB it finds the field key. Using the key the process then looks-up a field instance with that key, since all instaces with same key are assumed to be equivalent.
+In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime when ``GENERATE_RANDOM_SELECT2_ID`` is enabled. The clients can identify the fields in ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to ajax queries.
+
+When this mode is enabled then Django Select2 maintains an id to field key mapping in DB for all processes. Whenever a process does not find an id in its internal map it looks-up in the central DB. From DB it finds the field key. Using the key, the process then looks-up a field instance with that key, since all instaces with same key are assumed to be equivalent.
 
 .. tip:: Make sure to run ``python manage.py syncdb`` to create the ``KeyMap`` table.
 
