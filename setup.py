@@ -120,20 +120,23 @@ def minify(files, outfile, ftype):
     for filename in files:
         with open(getPkgPath() + filename) as f:
             for line in f.xreadlines():
+                if isinstance(line, str):
+                    line = line.decode('utf-8')
                 content = content + line
 
     data = urllib.urlencode([
-        ('code', content),
+        ('code', content.encode('utf-8')),
         ('type', ftype),
       ])
-    data.encode('utf-8')
 
     f = urllib.urlopen('http://api.applegrew.com/minify', data)
     data = u''
     while 1:
         line = f.readline()
         if line:
-            data = data + unicode(line)
+            if isinstance(line, str):
+                line = line.decode('utf-8')
+            data = data + line
         else:
             break
     f.close()
@@ -141,17 +144,16 @@ def minify(files, outfile, ftype):
     data = json.loads(data)
     for key in data:
         value = data[key]
-        if isinstance(value, str) or isinstance(value, unicode):
-            data[key] = unicode(value).replace(r'\/', '/') #.decode("unicode_escape").replace(r'\/', '/')
+        if isinstance(value, str):
+            value = value.decode('utf-8')
 
     if data['success']:
         with open(getPkgPath() + outfile, 'w') as f:
-            f.write(data['compiled_code'])
+            f.write(data['compiled_code'].encode('utf8'))
     else:
         print data['error_code']
         print data['error']
         raise Exception('Could not minify.')
-
 
 if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:
     minify(['static/js/select2.js'], 'static/js/select2.min.js', 'js')
