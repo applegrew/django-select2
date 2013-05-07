@@ -376,7 +376,7 @@ class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
 
     def __init__(self, *args, **kwargs):
-        super(HeavyChoiceField, self).__init__(*args, **kwargs)
+        super(ModelChoiceField, self).__init__(*args, **kwargs)
         # Widget should have been instantiated by now.
         self.widget.field = self
 
