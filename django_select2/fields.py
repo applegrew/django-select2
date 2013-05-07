@@ -375,6 +375,52 @@ class ModelChoiceFieldMixin(object):
 class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
 
+    def __init__(self, *args, **kwargs):
+        super(HeavyChoiceField, self).__init__(*args, **kwargs)
+        # Widget should have been instantiated by now.
+        self.widget.field = self
+
+    def coerce_value(self, value):
+        """
+        Coerces ``value`` to a Python data type.
+
+        Sub-classes should override this if they do not want unicode values.
+        """
+        return smart_unicode(value)
+
+    def validate_value(self, value):
+        """
+        Sub-classes can override this to validate the value entered against the big data.
+
+        :param value: Value entered by the user.
+        :type value: As coerced by :py:meth:`.coerce_value`.
+
+        :return: ``True`` means the ``value`` is valid.
+        """
+        return True
+
+    def _get_val_txt(self, value):
+        try:
+            value = self.coerce_value(value)
+            self.validate_value(value)
+        except Exception:
+            logger.exception("Exception while trying to get label for value")
+            return None
+        return self.get_val_txt(value)
+
+    def get_val_txt(self, value):
+        """
+        If Heavy widgets encounter any value which it can't find in ``choices`` then it calls
+        this method to get the label for the value.
+
+        :param value: Value entered by the user.
+        :type value: As coerced by :py:meth:`.coerce_value`.
+
+        :return: The label for this value.
+        :rtype: :py:obj:`unicode` or None (when no possible label could be found)
+        """
+        return None
+
 
 class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
