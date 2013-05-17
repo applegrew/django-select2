@@ -356,7 +356,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
                 3. Otherwise, check the cached results. When the user searches in the fields then all the returned
                 responses from server, which has the value and label mapping, are cached by ``heavy_data.js``.
-                
+
         :type userGetValTextFuncName: :py:obj:`str`
 
         .. tip:: Since version 3.2.0, cookies or localStorage are no longer checked or used. All
@@ -408,7 +408,9 @@ class HeavySelect2Mixin(Select2Mixin):
             try:
                 txts.append(choices_dict[val])
             except KeyError:
-                logger.error("Value '%s' is not a valid choice.", val)
+                print choices_dict.keys()
+                logger.warning("django_select2.widgets.render_texts "
+                             "Value '%s' is not a valid choice.", val)
 
         if hasattr(self.field, '_get_val_txt') and selected_choices:
             for val in selected_choices:
