@@ -409,8 +409,7 @@ class HeavySelect2Mixin(Select2Mixin):
                 txts.append(choices_dict[val])
             except KeyError:
                 print choices_dict.keys()
-                logger.warning("django_select2.widgets.render_texts "
-                             "Value '%s' is not a valid choice.", val)
+                logger.warning("Value '%s' is not a valid choice.", val)
 
         if hasattr(self.field, '_get_val_txt') and selected_choices:
             for val in selected_choices:
