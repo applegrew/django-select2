@@ -3,6 +3,7 @@ Contains all the Django fields for Select2.
 """
 
 import logging
+import operator
 
 logger = logging.getLogger(__name__)
 
@@ -233,7 +234,13 @@ class ModelResultJsonMixin(object):
             if q is None:
                 q = Q(**kwargs)
             else:
-                q = q | Q(**kwargs)
+                # q = q | Q(**kwargs)
+                split_terms = [{field: term} for term in search_term.split(" ")]
+                _q = reduce(operator.or_, (Q(**trm) for trm in split_terms))
+                print(_q)
+                q = q | _q
+                old_q = q | Q(**kwargs)
+                print old_q
         return {'or': [q], 'and': {}}
 
     def get_results(self, request, term, page, context):
