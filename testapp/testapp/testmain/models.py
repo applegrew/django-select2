@@ -34,3 +34,8 @@ class Word(models.Model):
 
     def __unicode__(self):
         return unicode(self.word)
+
+
+class School(models.Model):
+
+    classes = models.ManyToManyField(ClassRoom)
