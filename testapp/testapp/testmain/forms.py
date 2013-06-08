@@ -2,7 +2,7 @@ from django import forms
 
 from django_select2 import *
 
-from .models import Employee, Dept, ClassRoom, Lab, Word
+from .models import Employee, Dept, ClassRoom, Lab, Word, School
 
 from django.core.exceptions import ValidationError
 
@@ -78,12 +78,19 @@ class SelfMultiChoices(AutoSelect2MultipleField):
 
         return (NO_ERR_RESP, False, res)
 
-########### Forms ##############
+########### Forms ##############]
+
+class SchoolForm(forms.ModelForm):
+
+    classes = ClassRoomChoices()
+
+    class Meta:
+        model = School
 
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
     dept = ModelSelect2Field(queryset=Dept.objects)
-    
+
     class Meta:
         model = Employee
 
