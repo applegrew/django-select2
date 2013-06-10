@@ -372,20 +372,11 @@ class ModelChoiceFieldMixin(object):
         if hasattr(self, 'set_placeholder'):
             self.widget.set_placeholder(self.empty_label)
 
+        self.widget.field = self
+
     def _get_queryset(self):
         if hasattr(self, '_queryset'):
             return self._queryset
-
-
-### Slightly altered versions of the Django counterparts with the same name in forms module. ###
-
-class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
-    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
-
-    def __init__(self, *args, **kwargs):
-        super(ModelChoiceField, self).__init__(*args, **kwargs)
-        # Widget should have been instantiated by now.
-        self.widget.field = self
 
     def coerce_value(self, value):
         """
@@ -427,6 +418,16 @@ class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
         :rtype: :py:obj:`unicode` or None (when no possible label could be found)
         """
         return None
+
+
+### Slightly altered versions of the Django counterparts with the same name in forms module. ###
+
+class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
+    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
+
+    def __init__(self, *args, **kwargs):
+        super(ModelChoiceField, self).__init__(*args, **kwargs)
+        # Widget should have been instantiated by now.
 
 
 class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
