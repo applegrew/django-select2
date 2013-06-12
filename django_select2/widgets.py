@@ -300,6 +300,16 @@ class MultipleSelect2HiddenInput(forms.TextInput):
             return data.getlist(name)
         return data.get(name, None)
 
+    def _has_changed(self, initial, data):
+        if initial is None:
+            initial = []
+        if data is None:
+            data = []
+        if len(initial) != len(data):
+            return True
+        initial_set = set([force_unicode(value) for value in initial])
+        data_set = set([force_unicode(value) for value in data])
+        return data_set != initial_set
 
 ### Heavy mixins and widgets ###
 
@@ -356,7 +366,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
                 3. Otherwise, check the cached results. When the user searches in the fields then all the returned
                 responses from server, which has the value and label mapping, are cached by ``heavy_data.js``.
-                
+
         :type userGetValTextFuncName: :py:obj:`str`
 
         .. tip:: Since version 3.2.0, cookies or localStorage are no longer checked or used. All
