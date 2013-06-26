@@ -1,10 +1,14 @@
 
 testapp/tt.py
 
+.*
+!.gitignore
+
 *.pyc
 
 Django_Select2.egg-info
 dist
 build
+env/
 
 docs/_build
