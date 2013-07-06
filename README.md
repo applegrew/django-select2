@@ -49,6 +49,14 @@ Special Thanks
 Changelog Summary
 =================
 
+### v4.1.0
+
+* Updated Select2 to version 3.4.1. **Please note**, that if you need any of the Select2 locale files, then you need to download them yourself from http://ivaynberg.github.com/select2/ and add to your project.
+* Address isssue[#36](https://github.com/applegrew/django-select2/issues/36) - Fix importerror under django1.6.
+* Fuxed the way `setup.py` handles unicode files while minfying them during package build.
+* Address isssue[#39](https://github.com/applegrew/django-select2/issues/39) - MultipleSelect2HiddenInput.render() should use mark_safe().
+* Address isssue[#45](https://github.com/applegrew/django-select2/issues/45) - MultipleSelect2HiddenInput returns bad has_changed value.
+
 ### v4.0.0
 
 * Main version number bumped to bring your attention to the fact that the default Id generation scheme has now changed. Now Django Select2 will use hashed paths of fields to generate their Ids. The old scheme of generating random Ids are still there. You can enable that by setting `GENERATE_RANDOM_SELECT2_ID` to `True`.
