@@ -181,7 +181,7 @@ if (!window['django_select2']) {
 		},
 		runInContextHelper: function (f, id) {
 			return function () {
-				var args = Array.prototype.slice.call(arguments);
+				var args = Array.prototype.slice.call(arguments, 0);
 		        return f.apply($('#' + id).get(0), args);
 		    }
 		},
@@ -192,6 +192,22 @@ if (!window['django_select2']) {
 	        }
 		}
 	};
+
+	(function (isDebug) { // Only used for debugging.
+		if (isDebug) {
+			for (var i in django_select2) {
+				var f = django_select2[i];
+				if (typeof(f) == "function") {
+					django_select2[i] = (function (i, f) {
+						return function () {
+							console.log('Function ' + i + ' called for object: ', this);
+							return f.apply(this, arguments);
+						};
+					}(i, f));
+				}
+			}
+		}
+	}(false));
 
 	(function( $ ){
 		// This sets or gets the text lables for an element. It merely takes care returing array or single
