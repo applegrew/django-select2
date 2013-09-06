@@ -56,8 +56,6 @@ class Select2View(JSONResponseMixin, View):
             term = request.GET.get('term', None)
             if term is None:
                 return self.render_to_response(self._results_to_context(('missing term', False, [], )))
-            if not term:
-                return self.render_to_response(self._results_to_context((NO_ERR_RESP, False, [], )))
 
             try:
                 page = int(request.GET.get('page', None))
