@@ -37,7 +37,7 @@ class JSFunctionInContext(JSVar):
     """
     A JS function name to run in context of some other Html DOM element.
 
-    Like :py:class:JSFunction`, this too flags the string as JS function, but with a special requirement. The JS function
+    Like :py:class:`JSFunction`, this too flags the string as JS function, but with a special requirement. The JS function
     needs to be invoked in the context of a Html DOM, such that, ``this`` inside the function refers to that DOM instead of
     ``window``.
 

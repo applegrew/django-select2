@@ -49,6 +49,10 @@ Special Thanks
 Changelog Summary
 =================
 
+### v4.1.1
+
+* Updated Select2 to version 3.4.2. **Please note**, that if you need any of the Select2 locale files, then you need to download them yourself from http://ivaynberg.github.com/select2/ and add to your project.
+
 ### v4.1.0
 
 * Updated Select2 to version 3.4.1. **Please note**, that if you need any of the Select2 locale files, then you need to download them yourself from http://ivaynberg.github.com/select2/ and add to your project.
