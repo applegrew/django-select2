@@ -2,15 +2,16 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
-from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm
-from .models import Employee, Dept
+from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm, QuestionForm
+from .models import Employee, Dept, Question
 
 def test_single_value_model_field(request):
     return render(request, 'list.html', {
     	'title': 'Employees',
     	'href': 'test_single_value_model_field1',
-    	'object_list': Employee.objects.all()
-	})  
+    	'object_list': Employee.objects.all(),
+        'create_new_href': ''
+	})
 
 def test_single_value_model_field1(request, id):
     emp =  get_object_or_404(Employee, pk=id)
@@ -28,7 +29,8 @@ def test_multi_values_model_field(request):
     return render(request, 'list.html', {
     	'title': 'Departments',
     	'href': 'test_multi_values_model_field1',
-    	'object_list': Dept.objects.all()
+    	'object_list': Dept.objects.all(),
+        'create_new_href': ''
 	})  
 
 def test_multi_values_model_field1(request, id):
@@ -53,4 +55,28 @@ def test_mixed_form(request):
 def test_init_values(request):
     return render(request, 'form.html', {'form': InitialValueForm()})
 
+def test_list_questions(request):
+    return render(request, 'list.html', {
+        'title': 'Questions',
+        'href': 'test_tagging',
+        'object_list': Question.objects.all(),
+        'create_new_href': 'test_tagging_new'
+    })
+
+def test_tagging_new(request):
+    return test_tagging(request, None)
+
+def test_tagging(request, id):
+    if id is None:
+        question = Question()
+    else:
+        question =  get_object_or_404(Question, pk=id)
+    if request.POST:
+        form = QuestionForm(data=request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = QuestionForm(instance=question)
+    return render(request, 'form.html', {'form': form})
 

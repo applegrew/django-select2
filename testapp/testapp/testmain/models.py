@@ -37,5 +37,18 @@ class Word(models.Model):
 
 
 class School(models.Model):
-
     classes = models.ManyToManyField(ClassRoom)
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=10, unique=True)
+
+    def __unicode__(self):
+        return unicode(self.tag)
+
+class Question(models.Model):
+    question = models.CharField(max_length=200)
+    description = models.CharField(max_length=800)
+    tags = models.ManyToManyField(Tag)
+
+    def __unicode__(self):
+        return unicode(self.question)

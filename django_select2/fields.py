@@ -82,11 +82,12 @@ from django.core.exceptions import ValidationError
 from django.forms.models import ModelChoiceIterator
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_unicode, force_unicode
 
 from .widgets import Select2Widget, Select2MultipleWidget,\
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
-    AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin
+    AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin, AutoHeavySelect2TagWidget, \
+    HeavySelect2TagWidget
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
 
@@ -585,6 +586,38 @@ class HeavySelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, HeavyMultipleC
     "Heavy Select2 Multiple Choice field."
     widget = HeavySelect2MultipleWidget
 
+class HeavySelect2TagField(HeavySelect2MultipleChoiceField):
+    """
+    Heavy Select2 field for tagging.
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`create_new_value` is not implemented.
+    """
+    widget = HeavySelect2TagWidget
+
+    def validate(self, value):
+        if self.required and not value:
+            raise ValidationError(self.error_messages['required'])
+        # Check if each value in the value list is in self.choices or
+        # the big data (i.e. validate_value() returns True).
+        # If not then calls create_new_value() to create the new value.
+        for i in range(0, len(value)):
+            val = value[i]
+            if not self.valid_value(val):
+                value[i] = self.create_new_value(val)
+
+    def create_new_value(self, value):
+        """
+        This is called when the input value is not valid. This
+        allows you to add the value into the data-store. If that
+        is not done then eventually the validation will fail.
+
+        :param value: Invalid value entered by the user.
+        :type value: As coerced by :py:meth:`HeavyChoiceField.coerce_value`.
+
+        :return: The a new value, which could be the id (pk) of the created value.
+        :rtype: Any
+        """
+        raise NotImplementedError
 
 ### Heavy field specialized for Models ###
 
@@ -605,6 +638,92 @@ class HeavyModelSelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, ModelMult
         kwargs.pop('choices', None)
         super(HeavyModelSelect2MultipleChoiceField, self).__init__(*args, **kwargs)
 
+class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceField):
+    """
+    Heavy Select2 field for tagging, specialized for Models.
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_model_field_values` is not implemented.
+    """
+    widget = HeavySelect2TagWidget
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('choices', None)
+        super(HeavyModelSelect2TagField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if value in EMPTY_VALUES:
+            return None
+        try:
+            key = self.to_field_name or 'pk'
+            value = self.queryset.get(**{key: value})
+        except ValueError, e:
+            raise ValidationError(self.error_messages['invalid_choice'])
+        except self.queryset.model.DoesNotExist:
+            value = self.create_new_value(value)
+        return value
+
+    def clean(self, value):
+        if self.required and not value:
+            raise ValidationError(self.error_messages['required'])
+        elif not self.required and not value:
+            return []
+        if not isinstance(value, (list, tuple)):
+            raise ValidationError(self.error_messages['list'])
+        new_values = []
+        key = self.to_field_name or 'pk'
+        for pk in list(value):
+            try:
+                self.queryset.filter(**{key: pk})
+            except ValueError:
+                value.remove(pk)
+                new_values.append(pk)
+
+        for val in new_values:
+            value.append(self.create_new_value(force_unicode(val)))
+
+        # Usually new_values will have list of new tags, but if the tag is
+        # suppose of type int then that could be interpreted as valid pk
+        # value and ValueError above won't be triggered.
+        # Below we find such tags and create them, by check if the pk
+        # actually exists.
+        qs = self.queryset.filter(**{'%s__in' % key: value})
+        pks = set([force_unicode(getattr(o, key)) for o in qs])
+        for i in range(0, len(value)):
+            val = force_unicode(value[i])
+            if val not in pks:
+                value[i] = self.create_new_value(val)
+        # Since this overrides the inherited ModelChoiceField.clean
+        # we run custom validators here
+        self.run_validators(value)
+        return qs
+
+    def create_new_value(self, value):
+        """
+        This is called when the input value is not valid. This
+        allows you to add the value into the data-store. If that
+        is not done then eventually the validation will fail.
+
+        :param value: Invalid value entered by the user.
+        :type value: As coerced by :py:meth:`HeavyChoiceField.coerce_value`.
+
+        :return: The a new value, which could be the id (pk) of the created value.
+        :rtype: Any
+        """
+        obj = self.queryset.create(**self.get_model_field_values(value))
+        return getattr(obj, self.to_field_name or 'pk')
+
+    def get_model_field_values(self, value):
+        """
+        This is called when the input value is not valid and the field
+        tries to create a new model instance. 
+
+        :param value: Invalid value entered by the user.
+        :type value: unicode
+
+        :return: Dict with attribute name - attribute value pair.
+        :rtype: dict
+        """
+        raise NotImplementedError
 
 ### Heavy general field that uses central AutoView ###
 
@@ -633,6 +752,17 @@ class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceFie
 
     widget = AutoHeavySelect2MultipleWidget
 
+class AutoSelect2TagField(AutoViewFieldMixin, HeavySelect2TagField):
+    """
+    Auto Heavy Select2 field for tagging.
+
+    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
+    json query requests for that type (class).
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_results` is not implemented.
+    """
+
+    widget = AutoHeavySelect2TagWidget
 
 ### Heavy field, specialized for Model, that uses central AutoView ###
 
@@ -663,3 +793,30 @@ class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, He
 
     widget = AutoHeavySelect2MultipleWidget
 
+class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2TagField):
+    """
+    Auto Heavy Select2 field for tagging, specialized for Models.
+
+    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
+    json query requests for that type (class).
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_model_field_values` is not implemented.
+
+    Example::
+        class Tag(models.Model):
+            tag = models.CharField(max_length=10, unique=True)
+            def __unicode__(self):
+                return unicode(self.tag)
+
+        class TagField(AutoModelSelect2TagField):
+            queryset = Tag.objects
+            search_fields = ['tag__icontains', ]
+            def get_model_field_values(self, value):
+                return {'tag': value}
+
+    """
+    # Makes sure that user defined queryset class variable is replaced by
+    # queryset property (as it is needed by super classes).
+    __metaclass__ = UnhideableQuerysetType
+
+    widget = AutoHeavySelect2TagWidget

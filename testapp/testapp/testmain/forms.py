@@ -2,7 +2,7 @@ from django import forms
 
 from django_select2 import *
 
-from .models import Employee, Dept, ClassRoom, Lab, Word, School
+from .models import Employee, Dept, ClassRoom, Lab, Word, School, Tag, Question
 
 from django.core.exceptions import ValidationError
 
@@ -26,6 +26,12 @@ class ClassRoomSingleChoices(AutoModelSelect2Field):
 class WordChoices(AutoModelSelect2Field):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
+
+class TagField(AutoModelSelect2TagField):
+    queryset = Tag.objects
+    search_fields = ['tag__icontains', ]
+    def get_model_field_values(self, value):
+        return {'tag': value}
 
 class SelfChoices(AutoSelect2Field):
     def get_val_txt(self, value):
@@ -146,4 +152,12 @@ class InitialValueForm(forms.Form):
         choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""), (3, "\"Mixed-Quotes'"), ))
     heavySelect2ChoiceWithQuotes = AutoSelect2Field(initial=2,
         choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""), (3, "\"Mixed-Quotes'"), ))
+
+class QuestionForm(forms.ModelForm):
+    question = forms.CharField()
+    description = forms.CharField(widget=forms.Textarea)
+    tags = TagField()
+
+    class Meta:
+        model = Question
 

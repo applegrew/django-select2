@@ -10,4 +10,8 @@ urlpatterns = patterns('testapp.testmain.views',
     url(r'mixed/form/$', 'test_mixed_form', name='test_mixed_form'),
 
     url(r'initial/form/$', 'test_init_values', name='test_init_values'),
+
+    url(r'question/$', 'test_list_questions', name='test_list_questions'),
+    url(r'question/form/([0-9]+)/$', 'test_tagging', name='test_tagging'),
+    url(r'question/form/$', 'test_tagging_new', name='test_tagging_new'),
 )

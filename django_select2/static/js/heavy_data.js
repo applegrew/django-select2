@@ -150,6 +150,16 @@ if (!window['django_select2']) {
 			callback(data); // Change for 2.3.x
 			django_select2.updateText(e);
 		},
+		createSearchChoice: function(term, data) {
+			if (!data || $(data).filter(function () {
+				return this.text.localeCompare(term) === 0;
+			}).length === 0) {
+				return {
+					id: term,
+					text: term
+				};
+			}
+		},
 		onMultipleHiddenChange: function () {
 			var $e = $(this), valContainer = $e.data('valContainer'), name = $e.data('name'), vals = $e.val();
 			valContainer.empty();

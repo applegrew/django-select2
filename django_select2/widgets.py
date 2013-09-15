@@ -504,7 +504,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
 
     Following Select2 options from :py:attr:`.Select2Mixin.options` are added or set:-
 
-        * multiple: ``False``
+        * multiple: ``True``
         * separator: ``JSVar('django_select2.MULTISEPARATOR')``
 
     """
@@ -539,6 +539,34 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             if texts:
                 return u"$('#%s').txt(%s);" % (id_, texts)
 
+class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
+    """
+    Heavy widget with tagging support. Based on :py:class:`HeavySelect2MultipleWidget`,
+    unlike other widgets this allows users to create new options (tags).
+
+    Following Select2 options from :py:attr:`.Select2Mixin.options` are removed:-
+
+        * allowClear
+        * minimumResultsForSearch
+        * closeOnSelect
+
+    Following Select2 options from :py:attr:`.Select2Mixin.options` are added or set:-
+
+        * multiple: ``True``
+        * separator: ``JSVar('django_select2.MULTISEPARATOR')``
+        * tags: ``True``
+        * tokenSeparators: ``,`` and `` ``
+        * createSearchChoice: ``JSFunctionInContext('django_select2.createSearchChoice')``
+        * minimumInputLength: ``1``
+
+    """
+    def init_options(self):
+        super(HeavySelect2TagWidget, self).init_options()
+        self.options.pop('closeOnSelect', None)
+        self.options['minimumInputLength'] = 1
+        self.options['tags'] = True
+        self.options['tokenSeparators'] = [",", " "]
+        self.options['createSearchChoice'] = JSFunctionInContext('django_select2.createSearchChoice')
 
 ### Auto Heavy widgets ###
 
@@ -570,4 +598,8 @@ class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
 
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
+    pass
+
+class AutoHeavySelect2TagWidget(AutoHeavySelect2Mixin, HeavySelect2TagWidget):
+    "Auto version of :py:class:`.HeavySelect2TagWidget`"
     pass
