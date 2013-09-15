@@ -803,6 +803,7 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
     .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_model_field_values` is not implemented.
 
     Example::
+    
         class Tag(models.Model):
             tag = models.CharField(max_length=10, unique=True)
             def __unicode__(self):
