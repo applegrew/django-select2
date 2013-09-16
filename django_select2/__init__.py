@@ -91,8 +91,8 @@ __SECRET_SALT = ''
 
 try:
     from django.conf import settings
-    if logger.isEnabledFor(logging.INFO):
-        logger.info("Django found.")
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug("Django found.")
     if settings.configured:
         __RENDER_SELECT2_STATICS = getattr(settings, 'AUTO_RENDER_SELECT2_STATICS', True)
         __ENABLE_MULTI_PROCESS_SUPPORT = getattr(settings, 'ENABLE_SELECT2_MULTI_PROCESS_SUPPORT', False)
@@ -115,8 +115,8 @@ try:
             HeavyModelSelect2TagField, AutoModelSelect2TagField
         from .views import Select2View, NO_ERR_RESP
 
-        if logger.isEnabledFor(logging.INFO):
-            logger.info("Django found and fields and widgest loaded.")
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Django found and fields and widgest loaded.")
 except ImportError:
     if logger.isEnabledFor(logging.INFO):
         logger.info("Django not found.")
