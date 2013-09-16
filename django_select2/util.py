@@ -300,9 +300,9 @@ def get_field(id_):
                 if field:
                     __id_store[id_] = field
             else:
-                logger.error('Unknown id "%s".', id_in_current_instance)
+                logger.warning('Unknown id "%s".', id_in_current_instance)
         else:
-            logger.error('Unknown id "%s".', id_)
+            logger.warning('Unknown id "%s".', id_)
     return field
 
 def timer_start(name):
@@ -325,7 +325,7 @@ def timer_end(t):
 
 def timer(f):
     def inner(*args, **kwargs):
-        
+
         t = timer_start(f.func_name)
         ret = f(*args, **kwargs)
         timer_end(t)
