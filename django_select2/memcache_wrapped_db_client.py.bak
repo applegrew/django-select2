@@ -3,10 +3,10 @@ class Client(object):
     db = None
     def __init__(self, hostname="127.0.0.1", port="11211", expiry=900):
         if hostname and port:
-            from . import memcache_client
+            import memcache_client
             self.cache = memcache_client.Client(hostname, port, expiry)
             
-        from . import db_client
+        import db_client
         self.db = db_client.Client()
  
     def set(self, key, value):
