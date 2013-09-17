@@ -318,10 +318,30 @@ class ChoiceMixin(object):
             result._choices = copy.deepcopy(self._choices, memo)
         return result
 
+class FilterableModelChoiceIterator(ModelChoiceIterator):
+    """
+    Extends ModelChoiceIterator to add the capability to apply additional
+    filter on the passed queryset.
+    """
+
+    def set_extra_filter(self, **filter_map):
+        """
+        Applies additional filter on the queryset. This can be called multiple times.
+
+        :param kwargs: The ``**kwargs`` to pass to :py:meth:`django.db.models.query.QuerySet.filter`.
+        If this is not set then additional filter (if) applied before is removed.
+        """
+        if not hasattr(self, '_original_queryset'):
+            import copy
+            self._original_queryset = copy.deepcopy(self.queryset)
+        if filter_map:
+            self.queryset = self._original_queryset.filter(**filter_map)
+        else:
+            self.queryset = self._original_queryset
 
 class QuerysetChoiceMixin(ChoiceMixin):
     """
-    Overrides ``choices``' getter to return instance of :py:class:`.ModelChoiceIterator`
+    Overrides ``choices``' getter to return instance of :py:class:`.FilterableModelChoiceIterator`
     instead.
     """
 
@@ -338,12 +358,17 @@ class QuerysetChoiceMixin(ChoiceMixin):
         # accessed) so that we can ensure the QuerySet has not been consumed. This
         # construct might look complicated but it allows for lazy evaluation of
         # the queryset.
-        return ModelChoiceIterator(self)
+        return FilterableModelChoiceIterator(self)
 
     choices = property(_get_choices, ChoiceMixin._set_choices)
 
+    def __deepcopy__(self, memo):
+        result = super(QuerysetChoiceMixin, self).__deepcopy__(memo)
+        # Need to force a new ModelChoiceIterator to be created, bug #11183
+        result.queryset = result.queryset
+        return result
 
-class ModelChoiceFieldMixin(object):
+class ModelChoiceFieldMixin(QuerysetChoiceMixin):
 
     def __init__(self, *args, **kwargs):
         queryset = kwargs.pop('queryset', None)
@@ -370,6 +395,8 @@ class ModelChoiceFieldMixin(object):
         if hasattr(self, '_queryset'):
             return self._queryset
 
+    def get_pk_field_name(self):
+        return self.to_field_name or 'pk'
 
 ### Slightly altered versions of the Django counterparts with the same name in forms module. ###
 
@@ -452,6 +479,9 @@ class HeavySelect2FieldBaseMixin(object):
         # could have directly set field_id on it.
         if hasattr(self, 'field_id'):
             self.widget.field_id = self.field_id
+
+        # Widget should have been instantiated by now.
+        self.widget.field = self
 
         if logger.isEnabledFor(logging.DEBUG):
             t2 = util.timer_start('HeavySelect2FieldBaseMixin.__init__:choices initialization')

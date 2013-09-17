@@ -116,7 +116,7 @@ try:
         from .views import Select2View, NO_ERR_RESP
 
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug("Django found and fields and widgest loaded.")
+            logger.debug("Django found and fields and widgets loaded.")
 except ImportError:
     if logger.isEnabledFor(logging.INFO):
         logger.info("Django not found.")

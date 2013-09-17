@@ -2,8 +2,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
-from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm, QuestionForm
-from .models import Employee, Dept, Question
+from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm, QuestionForm, WordsForm, SchoolForm
+from .models import Employee, Dept, Question, WordList, School
 
 def test_single_value_model_field(request):
     return render(request, 'list.html', {
@@ -80,3 +80,32 @@ def test_tagging(request, id):
         form = QuestionForm(instance=question)
     return render(request, 'form.html', {'form': form})
 
+def test_auto_multivalue_field(request):
+    try:
+        s = School.objects.get(id=1)
+    except School.DoesNotExist:
+        s = School(id=1)
+
+    if request.POST:
+        form = SchoolForm(data=request.POST, instance=s)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = SchoolForm(instance=s)
+    return render(request, 'form.html', {'form': form})
+
+def test_auto_heavy_perf(request):
+    try:
+        word = WordList.objects.get(kind='Word_Of_Day')
+    except WordList.DoesNotExist:
+        word = WordList(kind='Word_Of_Day')
+
+    if request.POST:
+        form = WordsForm(data=request.POST, instance=word)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = WordsForm(instance=word)
+    return render(request, 'form.html', {'form': form})

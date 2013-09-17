@@ -52,3 +52,15 @@ class Question(models.Model):
 
     def __unicode__(self):
         return unicode(self.question)
+
+class KeyValueMap(models.Model):
+    key = models.CharField(max_length=200)
+    value = models.CharField(max_length=300)
+
+    def __unicode__(self):
+        return u'%s=>%s' % (self.key, self.value)
+
+class WordList(models.Model):
+    kind = models.CharField(max_length=100)
+    word = models.ForeignKey(Word, null=True, blank=True, related_name='wordlist_word')
+    words = models.ManyToManyField(Word, null=True, blank=True, related_name='wordlist_words')

@@ -2,7 +2,7 @@ from django import forms
 
 from django_select2 import *
 
-from .models import Employee, Dept, ClassRoom, Lab, Word, School, Tag, Question
+from .models import Employee, Dept, ClassRoom, Lab, Word, School, Tag, Question, WordList
 
 from django.core.exceptions import ValidationError
 
@@ -24,6 +24,10 @@ class ClassRoomSingleChoices(AutoModelSelect2Field):
     search_fields = ['number__icontains', ]
 
 class WordChoices(AutoModelSelect2Field):
+    queryset = Word.objects
+    search_fields = ['word__icontains', ]
+
+class MultiWordChoices(AutoModelSelect2MultipleField):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
 
@@ -87,7 +91,6 @@ class SelfMultiChoices(AutoSelect2MultipleField):
 ########### Forms ##############]
 
 class SchoolForm(forms.ModelForm):
-
     classes = ClassRoomChoices()
 
     class Meta:
@@ -161,3 +164,10 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
 
+class WordsForm(forms.ModelForm):
+    word = WordChoices()
+    words = MultiWordChoices()
+
+    class Meta:
+        model = WordList
+        exclude = ['kind']

@@ -4,6 +4,7 @@ Contains all the Django widgets for Select2.
 
 import logging
 from itertools import chain
+import util
 
 from django import forms
 from django.utils.encoding import force_unicode
@@ -202,6 +203,9 @@ class Select2Mixin(object):
         :return: The rendered markup.
         :rtype: :py:obj:`unicode`
         """
+        if logger.isEnabledFor(logging.DEBUG):
+            t1 = util.timer_start('Select2Mixin.render')
+
         args = [name, value, attrs]
         if choices:
             args.append(choices)
@@ -214,6 +218,7 @@ class Select2Mixin(object):
         s += self.render_js_code(id_, name, value, attrs, choices)
 
         if logger.isEnabledFor(logging.DEBUG):
+            util.timer_end(t1)
             logger.debug("Generated widget code:-\n%s", s)
 
         return mark_safe(s)
@@ -411,9 +416,16 @@ class HeavySelect2Mixin(Select2Mixin):
         txts = []
         all_choices = choices if choices else []
         choices_dict = dict()
-        for val, txt in chain(self.choices, all_choices):
+        self_choices = self.choices
+
+        import fields
+        if isinstance(self_choices, fields.FilterableModelChoiceIterator):
+            self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
+
+        for val, txt in chain(self_choices, all_choices):
             val = force_unicode(val)
             choices_dict[val] = txt
+
         for val in selected_choices:
             try:
                 txts.append(choices_dict[val])
