@@ -51,7 +51,7 @@ Changelog Summary
 
 ### v4.2.1
 
-* Finally fixed performance issue[#54](https://github.com/applegrew/django-select2/issues/54) in widgets when backing field is based on models and the field has an initial value.
+* Finally fixed performance issue[#54](https://github.com/applegrew/django-select2/issues/54) (and issue[#41](https://github.com/applegrew/django-select2/issues/41)) in widgets when backing field is based on models and the field has an initial value.
 
 ### v4.2.0
 
