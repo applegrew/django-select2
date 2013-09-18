@@ -70,9 +70,9 @@ def find_package_data(
                         or fn.lower() == pattern.lower()):
                         bad_name = True
                         if show_ignored:
-                            print >> sys.stderr, (
+                            print((
                                 "Directory %s ignored by pattern %s"
-                                % (fn, pattern))
+                                % (fn, pattern)), file=sys.stderr)
                         break
                 if bad_name:
                     continue
@@ -93,9 +93,9 @@ def find_package_data(
                         or fn.lower() == pattern.lower()):
                         bad_name = True
                         if show_ignored:
-                            print >> sys.stderr, (
+                            print((
                                 "File %s ignored by pattern %s"
-                                % (fn, pattern))
+                                % (fn, pattern)), file=sys.stderr)
                         break
                 if bad_name:
                     continue
@@ -114,23 +114,23 @@ def getPkgPath():
     return __import__(PACKAGE).__path__[0] + '/'
 
 def minify(files, outfile, ftype):
-    import urllib, json
+    import urllib.request, urllib.parse, urllib.error, json
 
-    content = u''
+    content = ''
     for filename in files:
         with open(getPkgPath() + filename) as f:
-            for line in f.xreadlines():
+            for line in f:
                 if isinstance(line, str):
                     line = line.decode('utf-8')
                 content = content + line
 
-    data = urllib.urlencode([
+    data = urllib.parse.urlencode([
         ('code', content.encode('utf-8')),
         ('type', ftype),
       ])
 
-    f = urllib.urlopen('http://api.applegrew.com/minify', data)
-    data = u''
+    f = urllib.request.urlopen('http://api.applegrew.com/minify', data)
+    data = ''
     while 1:
         line = f.readline()
         if line:
@@ -151,8 +151,8 @@ def minify(files, outfile, ftype):
         with open(getPkgPath() + outfile, 'w') as f:
             f.write(data['compiled_code'].encode('utf8'))
     else:
-        print data['error_code']
-        print data['error']
+        print(data['error_code'])
+        print(data['error'])
         raise Exception('Could not minify.')
 
 if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:

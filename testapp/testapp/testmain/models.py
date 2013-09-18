@@ -4,13 +4,13 @@ class ClassRoom(models.Model):
     number = models.CharField(max_length=4)
 
     def __unicode__(self):
-        return unicode(self.number)
+        return str(self.number)
 
 class Lab(models.Model):
     name = models.CharField(max_length=10)
 
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class Dept(models.Model):
     name = models.CharField(max_length=10)
@@ -18,7 +18,7 @@ class Dept(models.Model):
     allotted_labs = models.ManyToManyField(Lab)
 
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class Employee(models.Model):
     name = models.CharField(max_length=30)
@@ -27,13 +27,13 @@ class Employee(models.Model):
     manager = models.ForeignKey('Employee', null=True, blank=True)
 
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class Word(models.Model):
     word = models.CharField(max_length=15)
 
     def __unicode__(self):
-        return unicode(self.word)
+        return str(self.word)
 
 
 class School(models.Model):
@@ -43,7 +43,7 @@ class Tag(models.Model):
     tag = models.CharField(max_length=10, unique=True)
 
     def __unicode__(self):
-        return unicode(self.tag)
+        return str(self.tag)
 
 class Question(models.Model):
     question = models.CharField(max_length=200)
@@ -51,14 +51,14 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
-        return unicode(self.question)
+        return str(self.question)
 
 class KeyValueMap(models.Model):
     key = models.CharField(max_length=200)
     value = models.CharField(max_length=300)
 
     def __unicode__(self):
-        return u'%s=>%s' % (self.key, self.value)
+        return '%s=>%s' % (self.key, self.value)
 
 class WordList(models.Model):
     kind = models.CharField(max_length=100)
