@@ -261,7 +261,7 @@ def register_field(key, field):
         if GENERATE_RANDOM_ID:
             id_ = "%d:%s" % (len(__id_store), str(datetime.datetime.now()))
         else:
-            id_ = str(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            id_ = str(hashlib.sha1(bytes("%s:%s" % (key, SECRET_SALT), encoding='utf-8')).hexdigest())
 
         __field_store[key] = id_
         __id_store[id_] = field
