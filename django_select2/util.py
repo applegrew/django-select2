@@ -5,7 +5,7 @@ import re
 import threading
 import types
 
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ def extract_some_key_val(dct, keys):
 
 
 def convert_to_js_str(val):
-    val = force_unicode(val).replace('\'', '\\\'')
+    val = force_text(val).replace('\'', '\\\'')
     return "'%s'" % val
 
 def convert_py_to_js_data(val, id_):
@@ -111,7 +111,7 @@ def convert_py_to_js_data(val, id_):
     if type(val) == bool:
         return 'true' if val else 'false'
     elif type(val) in [int, int, float]:
-        return force_unicode(val)
+        return force_text(val)
     elif isinstance(val, JSFunctionInContext):
         return "django_select2.runInContextHelper(%s, '%s')" % (val, id_)
     elif isinstance(val, JSVar):

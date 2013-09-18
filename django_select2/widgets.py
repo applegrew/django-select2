@@ -7,7 +7,7 @@ from itertools import chain
 from . import util
 
 from django import forms
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
@@ -312,8 +312,8 @@ class MultipleSelect2HiddenInput(forms.TextInput):
             data = []
         if len(initial) != len(data):
             return True
-        initial_set = set([force_unicode(value) for value in initial])
-        data_set = set([force_unicode(value) for value in data])
+        initial_set = set([force_text(value) for value in initial])
+        data_set = set([force_text(value) for value in data])
         return data_set != initial_set
 
 ### Heavy mixins and widgets ###
@@ -412,7 +412,7 @@ class HeavySelect2Mixin(Select2Mixin):
         :return: The rendered JS array code.
         :rtype: :py:obj:`unicode`
         """
-        selected_choices = list(force_unicode(v) for v in selected_choices)
+        selected_choices = list(force_text(v) for v in selected_choices)
         txts = []
         all_choices = choices if choices else []
         choices_dict = dict()
@@ -423,7 +423,7 @@ class HeavySelect2Mixin(Select2Mixin):
             self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
 
         for val, txt in chain(self_choices, all_choices):
-            val = force_unicode(val)
+            val = force_text(val)
             choices_dict[val] = txt
 
         for val in selected_choices:
