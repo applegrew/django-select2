@@ -59,8 +59,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Django-Select2'
-copyright = u'%s, Nirupam Biswas' % year
+project = 'Django-Select2'
+copyright = '%s, Nirupam Biswas' % year
 
 def get_version():
   import django_select2
@@ -226,8 +226,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Django-Select2.tex', u'Django-Select2 Documentation',
-   u'Nirupam Biswas', 'manual'),
+  ('index', 'Django-Select2.tex', 'Django-Select2 Documentation',
+   'Nirupam Biswas', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -256,8 +256,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-select2', u'Django-Select2 Documentation',
-     [u'Nirupam Biswas'], 1)
+    ('index', 'django-select2', 'Django-Select2 Documentation',
+     ['Nirupam Biswas'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -270,8 +270,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Django-Select2', u'Django-Select2 Documentation',
-   u'Nirupam Biswas', 'Django-Select2', 'One line description of project.',
+  ('index', 'Django-Select2', 'Django-Select2 Documentation',
+   'Nirupam Biswas', 'Django-Select2', 'One line description of project.',
    'Miscellaneous'),
 ]
 

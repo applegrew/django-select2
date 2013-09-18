@@ -11,17 +11,17 @@ __proxy_light_widget = Select2Widget()
 @register.simple_tag(name='import_django_select2_js')
 def import_js(light=0):
 	if light:
-		return u'\n'.join(__proxy_light_widget.media.render_js())
+		return '\n'.join(__proxy_light_widget.media.render_js())
 	else:
-	    return u'\n'.join(__proxy_widget.media.render_js())
+	    return '\n'.join(__proxy_widget.media.render_js())
 
 
 @register.simple_tag(name='import_django_select2_css')
 def import_css(light=0):
 	if light:
-		return u'\n'.join(__proxy_light_widget.media.render_css())
+		return '\n'.join(__proxy_light_widget.media.render_css())
 	else:
-	    return u'\n'.join(__proxy_widget.media.render_css())
+	    return '\n'.join(__proxy_widget.media.render_css())
 
 
 @register.simple_tag(name='import_django_select2_js_css')

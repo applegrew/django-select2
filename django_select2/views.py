@@ -47,7 +47,7 @@ class Select2View(JSONResponseMixin, View):
     def dispatch(self, request, *args, **kwargs):
         try:
             self.check_all_permissions(request, *args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             return self.respond_with_exception(e)
         return super(Select2View, self).dispatch(request, *args, **kwargs)
 

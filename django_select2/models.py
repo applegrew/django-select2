@@ -6,4 +6,4 @@ class KeyMap(models.Model):
     accessed_on = models.DateTimeField(auto_now_add=True, auto_now=True)
 
     def __unicode__(self):
-        return unicode("%s => %s" % (self.key, self.value))
+        return str("%s => %s" % (self.key, self.value))

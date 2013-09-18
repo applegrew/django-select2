@@ -4,10 +4,10 @@ Contains all the Django widgets for Select2.
 
 import logging
 from itertools import chain
-import util
+from . import util
 
 from django import forms
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
@@ -121,7 +121,7 @@ class Select2Mixin(object):
         self.options = dict(self.options)
         select2_options = kwargs.pop('select2_options', None)
         if select2_options:
-            for name, value in select2_options.items():
+            for name, value in list(select2_options.items()):
                 self.options[name] = value
         self.init_options()
 
@@ -182,7 +182,7 @@ class Select2Mixin(object):
         """
         if id_:
             return render_js_script(self.render_inner_js_code(id_, *args))
-        return u''
+        return ''
 
     def render_inner_js_code(self, id_, *args):
         """
@@ -194,7 +194,7 @@ class Select2Mixin(object):
         options = dict(self.get_options())
         options = self.render_select2_options_code(options, id_)
 
-        return u'$("#%s").select2(%s);' % (id_, options)
+        return '$("#%s").select2(%s);' % (id_, options)
 
     def render(self, name, value, attrs=None, choices=()):
         """
@@ -210,7 +210,7 @@ class Select2Mixin(object):
         if choices:
             args.append(choices)
 
-        s = unicode(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
+        s = str(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
         if RENDER_SELECT2_STATICS:
             s += self.media.render()
         final_attrs = self.build_attrs(attrs)
@@ -289,14 +289,14 @@ class MultipleSelect2HiddenInput(forms.TextInput):
 
     def render(self, name, value, attrs=None, choices=()):
         attrs = self.build_attrs(attrs, multiple='multiple')
-        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, u"", attrs))
+        s = str(super(MultipleSelect2HiddenInput, self).render(name, "", attrs))
         id_ = attrs.get('id', None)
         if id_:
-            jscode = u''
+            jscode = ''
             if value:
-                jscode = u"$('#%s').val(django_select2.convertArrToStr(%s));" \
+                jscode = "$('#%s').val(django_select2.convertArrToStr(%s));" \
                     % (id_, convert_to_js_arr(value, id_))
-            jscode += u"django_select2.initMultipleHidden($('#%s'));" % id_
+            jscode += "django_select2.initMultipleHidden($('#%s'));" % id_
             s += render_js_script(jscode)
         return mark_safe(s)
 
@@ -312,8 +312,8 @@ class MultipleSelect2HiddenInput(forms.TextInput):
             data = []
         if len(initial) != len(data):
             return True
-        initial_set = set([force_unicode(value) for value in initial])
-        data_set = set([force_unicode(value) for value in data])
+        initial_set = set([force_text(value) for value in initial])
+        data_set = set([force_text(value) for value in data])
         return data_set != initial_set
 
 ### Heavy mixins and widgets ###
@@ -382,7 +382,7 @@ class HeavySelect2Mixin(Select2Mixin):
         self.options = dict(self.options)  # Making an instance specific copy
         self.view = kwargs.pop('data_view', None)
         self.url = kwargs.pop('data_url', None)
-        self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', u'null')
+        self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
         self.choices = kwargs.pop('choices', [])
 
         if not self.view and not self.url:
@@ -412,18 +412,18 @@ class HeavySelect2Mixin(Select2Mixin):
         :return: The rendered JS array code.
         :rtype: :py:obj:`unicode`
         """
-        selected_choices = list(force_unicode(v) for v in selected_choices)
+        selected_choices = list(force_text(v) for v in selected_choices)
         txts = []
         all_choices = choices if choices else []
         choices_dict = dict()
         self_choices = self.choices
 
-        import fields
+        from . import fields
         if isinstance(self_choices, fields.FilterableModelChoiceIterator):
             self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
 
         for val, txt in chain(self_choices, all_choices):
-            val = force_unicode(val)
+            val = force_text(val)
             choices_dict[val] = txt
 
         for val in selected_choices:
@@ -473,10 +473,10 @@ class HeavySelect2Mixin(Select2Mixin):
             values = [value]
             texts = self.render_texts(values, choices)
             if texts:
-                return u"$('#%s').txt(%s);" % (id_, texts)
+                return "$('#%s').txt(%s);" % (id_, texts)
 
     def render_inner_js_code(self, id_, name, value, attrs=None, choices=(), *args):
-        js = u"$('#%s').change(django_select2.onValChange).data('userGetValText', %s);" \
+        js = "$('#%s').change(django_select2.onValChange).data('userGetValText', %s);" \
             % (id_, self.userGetValTextFuncName)
         texts = self.render_texts_for_value(id_, value, choices)
         if texts:
@@ -549,7 +549,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
         if value:
             texts = self.render_texts(value, choices)
             if texts:
-                return u"$('#%s').txt(%s);" % (id_, texts)
+                return "$('#%s').txt(%s);" % (id_, texts)
 
 class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
     """
@@ -598,7 +598,7 @@ class AutoHeavySelect2Mixin(object):
         super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
 
     def render_inner_js_code(self, id_, *args):
-        js = u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
+        js = "$('#%s').data('field_id', '%s');" % (id_, self.field_id)
         js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
         return js
 

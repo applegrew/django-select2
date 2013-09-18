@@ -1,4 +1,4 @@
-from models import KeyMap
+from .models import KeyMap
 
 class Client(object):
  

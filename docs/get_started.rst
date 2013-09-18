@@ -78,6 +78,7 @@ Also note that, when you set the above you need to install ``python-memcached`` 
 External Dependencies
 ---------------------
 
+* Python 3.x
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available. The above template tags also won't out ``<script>`` tag to include this. You need to do this yourself.
 * Memcached (python-memcached) - If you plan on running multiple python processes, which is usually the case in production, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
@@ -86,4 +87,4 @@ Example Application
 -------------------
 Please see ``testapp`` application. This application is used to manually test the functionalities of this package. This also serves as a good example.
 
-You need only Django 1.4 or above to run that. It might run on older versions but that is not tested.
+You need only Django 1.5 or above to run that. It might not run on older versions (Python 3.x not supported=.

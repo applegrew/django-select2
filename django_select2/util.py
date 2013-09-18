@@ -5,12 +5,12 @@ import re
 import threading
 import types
 
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 logger = logging.getLogger(__name__)
 
 
-class JSVar(unicode):
+class JSVar(str):
     """
     A JS variable.
 
@@ -58,7 +58,7 @@ def render_js_script(inner_code):
 
     :rtype: :py:obj:`unicode`
     """
-    return u"""
+    return """
     <script type="text/javascript">
         $(function () {
             %s
@@ -87,8 +87,8 @@ def extract_some_key_val(dct, keys):
 
 
 def convert_to_js_str(val):
-    val = force_unicode(val).replace('\'', '\\\'')
-    return u"'%s'" % val
+    val = force_text(val).replace('\'', '\\\'')
+    return "'%s'" % val
 
 def convert_py_to_js_data(val, id_):
     """
@@ -108,12 +108,12 @@ def convert_py_to_js_data(val, id_):
 
     :rtype: :py:obj:`unicode`
     """
-    if type(val) == types.BooleanType:
-        return u'true' if val else u'false'
-    elif type(val) in [types.IntType, types.LongType, types.FloatType]:
-        return force_unicode(val)
+    if type(val) == bool:
+        return 'true' if val else 'false'
+    elif type(val) in [int, int, float]:
+        return force_text(val)
     elif isinstance(val, JSFunctionInContext):
-        return u"django_select2.runInContextHelper(%s, '%s')" % (val, id_)
+        return "django_select2.runInContextHelper(%s, '%s')" % (val, id_)
     elif isinstance(val, JSVar):
         return val  # No quotes here
     elif isinstance(val, dict):
@@ -137,18 +137,18 @@ def convert_dict_to_js_map(dct, id_):
 
     :rtype: :py:obj:`unicode`
     """
-    out = u'{'
+    out = '{'
     is_first = True
     for name in dct:
         if not is_first:
-            out += u", "
+            out += ", "
         else:
             is_first = False
 
-        out += u"%s: " % convert_to_js_str(name)
+        out += "%s: " % convert_to_js_str(name)
         out += convert_py_to_js_data(dct[name], id_)
 
-    return out + u'}'
+    return out + '}'
 
 
 def convert_to_js_arr(lst, id_):
@@ -164,17 +164,17 @@ def convert_to_js_arr(lst, id_):
 
     :rtype: :py:obj:`unicode`
     """
-    out = u'['
+    out = '['
     is_first = True
     for val in lst:
         if not is_first:
-            out += u", "
+            out += ", "
         else:
             is_first = False
 
         out += convert_py_to_js_data(val, id_)
 
-    return out + u']'
+    return out + ']'
 
 
 def convert_to_js_string_arr(lst):
@@ -187,7 +187,7 @@ def convert_to_js_string_arr(lst):
     :rtype: :py:obj:`unicode`
     """
     lst = [convert_to_js_str(l) for l in lst]
-    return u"[%s]" % (",".join(lst))
+    return "[%s]" % (",".join(lst))
 
 
 ### Auto view helper utils ###
@@ -232,7 +232,7 @@ def is_valid_id(val):
         return True
 
 if ENABLE_MULTI_PROCESS_SUPPORT:
-    from memcache_wrapped_db_client import Client
+    from .memcache_wrapped_db_client import Client
     remote_server = Client(MEMCACHE_HOST, str(MEMCACHE_PORT), MEMCACHE_TTL)
 
 @synchronized
@@ -252,16 +252,16 @@ def register_field(key, field):
     """
     global __id_store, __field_store
 
-    from fields import AutoViewFieldMixin
+    from .fields import AutoViewFieldMixin
     if not isinstance(field, AutoViewFieldMixin):
         raise ValueError('Field must extend AutoViewFieldMixin')
 
     if key not in __field_store:
         # Generating id
         if GENERATE_RANDOM_ID:
-            id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
+            id_ = "%d:%s" % (len(__id_store), str(datetime.datetime.now()))
         else:
-            id_ = unicode(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            id_ = str(hashlib.sha1(bytes("%s:%s" % (key, SECRET_SALT), encoding='utf-8')).hexdigest())
 
         __field_store[key] = id_
         __id_store[id_] = field
@@ -326,7 +326,7 @@ def timer_end(t):
 def timer(f):
     def inner(*args, **kwargs):
         
-        t = timer_start(f.func_name)
+        t = timer_start(f.__name__)
         ret = f(*args, **kwargs)
         timer_end(t)
 
