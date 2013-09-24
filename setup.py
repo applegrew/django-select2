@@ -120,8 +120,6 @@ def minify(files, outfile, ftype):
     for filename in files:
         with open(getPkgPath() + filename) as f:
             for line in f:
-                if isinstance(line, str):
-                    line = line.decode('utf-8')
                 content = content + line
 
     data = urllib.parse.urlencode([
@@ -129,12 +127,12 @@ def minify(files, outfile, ftype):
         ('type', ftype),
       ])
 
-    f = urllib.request.urlopen('http://api.applegrew.com/minify', data)
+    f = urllib.request.urlopen('http://api.applegrew.com/minify', bytes(data, encoding='utf-8'))
     data = ''
     while 1:
         line = f.readline()
         if line:
-            if isinstance(line, str):
+            if isinstance(line, bytes):
                 line = line.decode('utf-8')
             data = data + line
         else:
@@ -144,12 +142,12 @@ def minify(files, outfile, ftype):
     data = json.loads(data)
     for key in data:
         value = data[key]
-        if isinstance(value, str):
-            value = value.decode('utf-8')
+        #if isinstance(value, str):
+        #    value = value.decode('utf-8')
 
     if data['success']:
         with open(getPkgPath() + outfile, 'w') as f:
-            f.write(data['compiled_code'].encode('utf8'))
+            f.write(data['compiled_code'])
     else:
         print(data['error_code'])
         print(data['error'])
@@ -165,7 +163,7 @@ setup(
     name=NAME,
     version=VERSION,
     description=DESCRIPTION,
-    long_description=read("README.md"),
+    long_description=read("README.md").decode('utf-8'),
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license="LICENSE.txt",
@@ -184,6 +182,6 @@ setup(
         "Framework :: Django",
     ],
     install_requires=[
-        "Django>=1.3",
+        "Django>=1.5",
     ],
 )
