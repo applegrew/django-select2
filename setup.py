@@ -102,10 +102,10 @@ def find_package_data(
                 out.setdefault(package, []).append(prefix+name)
     return out
 
-PACKAGE = "django_select2"
+PACKAGE = "django_select2_py3"
 NAME = "Django-Select2"
 DESCRIPTION = "Select2 option fields for Django"
-AUTHOR = "Nirupam Biswas"
+AUTHOR = "Nirupam Biswas, Nicolas Pantel"
 AUTHOR_EMAIL = "admin@applegrew.com"
 URL = "https://github.com/applegrew/django-select2"
 VERSION = __import__(PACKAGE).__version__
