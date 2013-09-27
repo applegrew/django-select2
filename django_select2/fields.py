@@ -139,13 +139,16 @@ class ModelResultJsonMixin(object):
             value. (Default is ``pk``, i.e. the id field of the model)
         :type to_field_name: :py:obj:`str`
         """
-        if self.queryset is None and not 'queryset' in kwargs:
-            raise ValueError('queryset is required.')
-
         self.max_results = getattr(self, 'max_results', None)
         self.to_field_name = getattr(self, 'to_field_name', 'pk')
 
         super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
+
+    def get_queryset(self):
+        if self.queryset is None:
+            raise ValueError('queryset is required.')
+
+        return self.queryset
 
     def label_from_instance(self, obj):
         """
@@ -246,7 +249,7 @@ class ModelResultJsonMixin(object):
         if not hasattr(self, 'search_fields') or not self.search_fields:
             raise ValueError('search_fields is required.')
 
-        qs = copy.deepcopy(self.queryset)
+        qs = copy.deepcopy(self.get_queryset())
         params = self.prepare_qs_params(request, term, self.search_fields)
 
         if self.max_results:
