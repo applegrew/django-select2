@@ -145,6 +145,16 @@ class ModelResultJsonMixin(object):
         super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
 
     def get_queryset(self):
+        """
+        Returns the queryset.
+        
+        The default implementation returns the ``self.queryset``, which is usually the
+        one set by sub-classes at class-level. However, if that is ``None``
+        then ``ValueError`` is thrown.
+        
+        :return: queryset
+        :rtype: :py:class:`django.db.models.QuerySet`
+        """
         if self.queryset is None:
             raise ValueError('queryset is required.')
 
