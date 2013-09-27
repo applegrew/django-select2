@@ -153,7 +153,7 @@ class ModelResultJsonMixin(object):
         then ``ValueError`` is thrown.
         
         :return: queryset
-        :rtype: :py:class:`django.db.models.QuerySet`
+        :rtype: :py:class:`django.db.models.query.QuerySet`
         """
         if self.queryset is None:
             raise ValueError('queryset is required.')
