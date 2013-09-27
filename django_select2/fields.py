@@ -341,8 +341,8 @@ class FilterableModelChoiceIterator(ModelChoiceIterator):
         """
         Applies additional filter on the queryset. This can be called multiple times.
 
-        :param kwargs: The ``**kwargs`` to pass to :py:meth:`django.db.models.query.QuerySet.filter`.
-        If this is not set then additional filter (if) applied before is removed.
+        :param filter_map: The ``**kwargs`` to pass to :py:meth:`django.db.models.query.QuerySet.filter`.
+            If this is not set then additional filter (if) applied before is removed.
         """
         if not hasattr(self, '_original_queryset'):
             import copy
