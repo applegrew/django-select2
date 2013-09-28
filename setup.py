@@ -104,7 +104,7 @@ def find_package_data(
 
 PACKAGE = "django_select2"
 NAME = "Django-Select2-Py3"
-DESCRIPTION = "Select2 option fields for Django"
+DESCRIPTION = "Select2 option fields for Django for Python3"
 AUTHOR = "Nirupam Biswas, Nicolas Pantel"
 AUTHOR_EMAIL = "admin@applegrew.com"
 URL = "https://github.com/applegrew/django-select2"
@@ -173,7 +173,7 @@ setup(
     exclude_package_data={ '': standard_exclude },
     include_package_data=True,
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
