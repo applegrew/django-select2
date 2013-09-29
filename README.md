@@ -17,6 +17,11 @@ Installation
 3. When deploying on production server, run :-
 
         python manage.py collectstatic
+        
+4. Add `django_select` to your urlconf for Ajax support
+   
+        url(r'^select2/', include('django_select2.urls')),
+
 
 Documentation
 =============
