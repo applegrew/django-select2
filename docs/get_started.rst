@@ -20,8 +20,12 @@ Installation
 3. When deploying on production server, run::
 
         python manage.py collectstatic
+        
+4. Add `django_select` to your urlconf **if** you use any 'Auto' fields.
+   
+        url(r'^select2/', include('django_select2.urls')),
 
-4. (Optionally) If you need multiple processes support, then::
+5. (Optionally) If you need multiple processes support, then::
 
         python manage.py syncdb
 
