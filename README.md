@@ -18,7 +18,7 @@ Installation
 
         python manage.py collectstatic
         
-4. Add `django_select` to your urlconf for Ajax support
+4. Add `django_select` to your urlconf if use any 'Auto' fields.
    
         url(r'^select2/', include('django_select2.urls')),
 
