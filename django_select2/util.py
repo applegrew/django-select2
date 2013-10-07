@@ -51,7 +51,7 @@ def render_js_script(inner_code):
     This wraps ``inner_code`` string inside the following code block::
 
         <script type="text/javascript">
-            $(function () {
+            jQuery(function ($) {
                 // inner_code here
             });
         </script>
@@ -60,7 +60,7 @@ def render_js_script(inner_code):
     """
     return u"""
     <script type="text/javascript">
-        $(function () {
+        jQuery(function ($) {
             %s
         });
     </script>""" % inner_code
