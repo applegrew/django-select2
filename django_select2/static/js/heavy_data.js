@@ -5,7 +5,7 @@ if (!window['django_select2']) {
 		MULTISEPARATOR: String.fromCharCode(0), // We use this unprintable char as separator,
 												// since this can't be entered by user.
 		get_url_params: function (term, page, context) {
-			var field_id = $(this).data('field_id'),
+			var field_id = jQuery(this).data('field_id'),
 				res = {
 					'term': term,
 					'page': page,
@@ -32,18 +32,18 @@ if (!window['django_select2']) {
 				results = {'results':[]};
 			}
 			if (results.results) {
-				$(this).data('results', results.results);
+				jQuery(this).data('results', results.results);
 			} else {
-				$(this).removeData('results');
+				jQuery(this).removeData('results');
 			}
 			return results;
 		},
 		onValChange: function () {
-			django_select2.updateText($(this));
+			django_select2.updateText(jQuery(this));
 		},
 		prepareValText: function (vals, txts, isMultiple) {
 			var data = []
-			$(vals).each(function (index) {
+			jQuery(vals).each(function (index) {
 				data.push({id: this, text: txts[index]});
 			});
 			if (isMultiple) {
@@ -64,7 +64,7 @@ if (!window['django_select2']) {
 				if (isMultiple) {
 					if (val.length !== txt.length) {
 						txt = [];
-						$(val).each(function (idx) {
+						jQuery(val).each(function (idx) {
 							var i, value = this, id;
 							
 							for (i in data) {
@@ -112,7 +112,7 @@ if (!window['django_select2']) {
 				
 				if (res) {
 					txt = [];
-					$(val).each(function (idx) {
+					jQuery(val).each(function (idx) {
 						var i, value = this;
 						
 						for (i in res) {
@@ -130,7 +130,7 @@ if (!window['django_select2']) {
 			return null;
 		},
 		onInit: function (e, callback) {
-			e = $(e);
+			e = jQuery(e);
 			var id = e.attr('id'), data = null, val = e.select2('val');
 
 			if (!val && val !== 0) {
@@ -151,7 +151,7 @@ if (!window['django_select2']) {
 			django_select2.updateText(e);
 		},
 		createSearchChoice: function(term, data) {
-			if (!data || $(data).filter(function () {
+			if (!data || jQuery(data).filter(function () {
 				return this.text.localeCompare(term) === 0;
 			}).length === 0) {
 				return {
@@ -161,12 +161,12 @@ if (!window['django_select2']) {
 			}
 		},
 		onMultipleHiddenChange: function () {
-			var $e = $(this), valContainer = $e.data('valContainer'), name = $e.data('name'), vals = $e.val();
+			var $e = jQuery(this), valContainer = $e.data('valContainer'), name = $e.data('name'), vals = $e.val();
 			valContainer.empty();
 			if (vals) {
 				vals = vals.split(django_select2.MULTISEPARATOR);
-				$(vals).each(function () {
-					var inp = $('<input type="hidden">').appendTo(valContainer);
+				jQuery(vals).each(function () {
+					var inp = jQuery('<input type="hidden">').appendTo(valContainer);
 					inp.attr('name', name);
 					inp.val(this);
 				});
@@ -178,7 +178,7 @@ if (!window['django_select2']) {
 			$e.data('name', $e.attr('name'));
 			$e.attr('name', '');
 
-			valContainer = $('<div>').insertAfter($e).css({'display': 'none'});
+			valContainer = jQuery('<div>').insertAfter($e).css({'display': 'none'});
 			$e.data('valContainer', valContainer);
 
 			$e.change(django_select2.onMultipleHiddenChange);
@@ -192,7 +192,7 @@ if (!window['django_select2']) {
 		runInContextHelper: function (f, id) {
 			return function () {
 				var args = Array.prototype.slice.call(arguments, 0);
-		        return f.apply($('#' + id).get(0), args);
+		        return f.apply(jQuery('#' + id).get(0), args);
 		    }
 		},
 		logErr: function () {
