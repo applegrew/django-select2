@@ -468,7 +468,7 @@ class HeavySelect2Mixin(Select2Mixin):
         :return: JS code which sets the ``txt`` attribute.
         :rtype: :py:obj:`unicode`
         """
-        if value is not None:
+        if value is not None and (self.field is None or value not in self.field.empty_values):
             # Just like forms.Select.render() it assumes that value will be single valued.
             values = [value]
             texts = self.render_texts(values, choices)
