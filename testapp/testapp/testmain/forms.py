@@ -4,6 +4,8 @@ from django_select2 import *
 
 from .models import Employee, Dept, ClassRoom, Lab, Word, School, Tag, Question, WordList
 
+from .fields import GetSearchTestField, GetModelSearchTestField
+
 from django.core.exceptions import ValidationError
 
 def validate_fail_always(value):
@@ -171,3 +173,7 @@ class WordsForm(forms.ModelForm):
     class Meta:
         model = WordList
         exclude = ['kind']
+
+class GetSearchTestForm(forms.Form):
+    name = GetSearchTestField(required=False, label='Name')
+    dept = GetModelSearchTestField(required=False, label='Department')
