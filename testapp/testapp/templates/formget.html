@@ -10,7 +10,7 @@
 	{% import_django_select2_js_css light=1 %}
 </head>
 <body>
-<form method="get" action="">
+<form method="post" action="">{% csrf_token %}
 	<table>
 		{{form}}
 	</table>
