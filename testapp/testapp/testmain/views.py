@@ -114,8 +114,8 @@ def test_get_search_form(request):
     """
     Test a search form using GET. Issue#66
     """
-    if request.POST:
-        form = GetSearchTestForm(request.POST)
+    if request.GET:
+        form = GetSearchTestForm(request.GET)
         if form.is_valid():
             results = Employee.objects.all()
             if form.cleaned_data['name'] != []:
