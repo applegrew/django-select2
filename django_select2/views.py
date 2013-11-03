@@ -66,12 +66,13 @@ class Select2View(JSONResponseMixin, View):
             if page == -1:
                 return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
             context = request.GET.get('context', None)
+            filter_by = request.GET.get('filter', None)
         else:
             return self.render_to_response(self._results_to_context(('not a get request', False, [], )))
 
         return self.render_to_response(
             self._results_to_context(
-                self.get_results(request, term, page, context)
+                self.get_results(request, term, page, context, filter_by)
                 )
             )
 
@@ -125,7 +126,7 @@ class Select2View(JSONResponseMixin, View):
         """
         pass
 
-    def get_results(self, request, term, page, context):
+    def get_results(self, request, term, page, context, filter_by):
         """
         Returns the result for the given search ``term``.
 
@@ -186,9 +187,7 @@ class AutoResponseView(Select2View):
 
         request.__django_select2_local = field
 
-    def get_results(self, request, term, page, context):
+    def get_results(self, request, term, page, context, filter_by):
         field = request.__django_select2_local
         del request.__django_select2_local
-        return field.get_results(request, term, page, context)
-
-
+        return field.get_results(request, term, page, context, filter_by)
