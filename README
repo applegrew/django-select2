@@ -17,10 +17,11 @@ Installation
 3. When deploying on production server, run :-
 
         python manage.py collectstatic
-
+        
 4. Add `django_select` to your urlconf if you use any 'Auto' fields.
    
         url(r'^select2/', include('django_select2.urls')),
+
 
 Documentation
 =============
@@ -52,6 +53,10 @@ Special Thanks
 
 Changelog Summary
 =================
+
+### v4.2.2
+
+* Misc fixes and enhancements - [61](https://github.com/applegrew/django-select2/pull/61), [64](https://github.com/applegrew/django-select2/issues/64).
 
 ### v4.2.1
 
