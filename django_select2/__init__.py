@@ -88,6 +88,7 @@ __MEMCACHE_PORT = None
 __MEMCACHE_TTL = 900
 __GENERATE_RANDOM_ID = False
 __SECRET_SALT = ''
+__BOOTSTRAP = False
 
 try:
     from django.conf import settings
@@ -101,6 +102,7 @@ try:
         __MEMCACHE_TTL = getattr(settings, 'SELECT2_MEMCACHE_TTL', 900)
         __GENERATE_RANDOM_ID = getattr(settings, 'GENERATE_RANDOM_SELECT2_ID', False)
         __SECRET_SALT = getattr(settings, 'SECRET_KEY', '')
+        __BOOTSTRAP = getattr(settings, 'SELECT2_BOOTSTRAP', False)
 
         if not __GENERATE_RANDOM_ID and __ENABLE_MULTI_PROCESS_SUPPORT:
             logger.warn("You need not turn on ENABLE_SELECT2_MULTI_PROCESS_SUPPORT when GENERATE_RANDOM_SELECT2_ID is disabled.")
