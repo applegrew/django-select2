@@ -160,6 +160,8 @@ if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:
     minify(['static/js/heavy_data.js'], 'static/js/heavy_data.min.js', 'js')
     minify(['static/css/select2.css'], 'static/css/select2.min.css', 'css')
     minify(['static/css/select2.css', 'static/css/extra.css'], 'static/css/all.min.css', 'css')
+    minify(['static/css/select2.css', 'static/css/select2-bootstrap.css'], 'static/css/select2-bootstrapped.min.css', 'css')
+    minify(['static/css/select2.css', 'static/css/extra.css', 'static/css/select2-bootstrap.css'], 'static/css/all-bootstrapped.min.css', 'css')
 
 setup(
     name=NAME,

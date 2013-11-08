@@ -44,23 +44,23 @@ def get_select2_css_libs(light=False):
             if light:
                 return ('css/select2.css', 'css/select2-bootstrap.css')
             else:
-                return ('css/select2.css', 'css/extra.css', 'css/select2-bootstrap.css' )
+                return ('css/select2.css', 'css/extra.css', 'css/select2-bootstrap.css')
         else:
             if light:
-                return ('css/select2.min.css', 'css/select2-bootstrap.min.css')
+                return ('css/select2-bootstrapped.min.css',)
             else:
-                return ('css/all.min.css',  'css/select2-bootstrap.min.css')
+                return ('css/all-bootstrapped.min.css',)
     else:
         if settings.configured and settings.DEBUG:
             if light:
                 return ('css/select2.css',)
             else:
-                return ('css/select2.css', 'css/extra.css', )
+                return ('css/select2.css', 'css/extra.css')
         else:
             if light:
                 return ('css/select2.min.css',)
             else:
-                return ('css/all.min.css', )
+                return ('css/all.min.css',)
 
 ### Light mixin and widgets ###
 
