@@ -20,4 +20,6 @@ urlpatterns = patterns('testapp.testmain.views',
     url(r'auto_heavy/perf_test/$', 'test_auto_heavy_perf', name='test_auto_heavy_perf'),
 
     url(r'get_search/get_search_test/$', 'test_get_search_form', name='test_get_search_form'),
+
+    url(r'issue76/$', 'test_issue_73', name='test_issue_73'),
 )

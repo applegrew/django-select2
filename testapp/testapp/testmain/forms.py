@@ -177,3 +177,10 @@ class WordsForm(forms.ModelForm):
 class GetSearchTestForm(forms.Form):
     name = GetSearchTestField(required=False, label='Name')
     dept = GetModelSearchTestField(required=False, label='Department')
+
+class AnotherWordForm(forms.ModelForm):
+    word = WordChoices(widget=AutoHeavySelect2Widget())
+
+    class Meta:
+        model = WordList
+        exclude = ['kind', 'words']
