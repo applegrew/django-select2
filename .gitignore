@@ -9,3 +9,8 @@ dist
 build
 
 docs/_build
+
+# Intellij
+.idea/
+*.iml
+*.iws

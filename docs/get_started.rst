@@ -79,6 +79,11 @@ When ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`` is enabled then all processes will
 
 Also note that, when you set the above you need to install ``python-memcached`` library too.
 
+``SELECT2_BOOTSTRAP`` [Default ``False``]
+............................................................
+
+Setting to True will include the CSS for making Select2 fit in with Bootstrap a bit better using the css found here https://github.com/fk/select2-bootstrap-css.
+
 External Dependencies
 ---------------------
 

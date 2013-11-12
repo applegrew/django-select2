@@ -38,16 +38,29 @@ def get_select2_heavy_js_libs():
 
 def get_select2_css_libs(light=False):
     from django.conf import settings
-    if settings.configured and settings.DEBUG:
-        if light:
-            return ('css/select2.css',)
+    from . import __BOOTSTRAP
+    if __BOOTSTRAP:
+        if settings.configured and settings.DEBUG:
+            if light:
+                return ('css/select2.css', 'css/select2-bootstrap.css')
+            else:
+                return ('css/select2.css', 'css/extra.css', 'css/select2-bootstrap.css')
         else:
-            return ('css/select2.css', 'css/extra.css', )
+            if light:
+                return ('css/select2-bootstrapped.min.css',)
+            else:
+                return ('css/all-bootstrapped.min.css',)
     else:
-        if light:
-            return ('css/select2.min.css',)
+        if settings.configured and settings.DEBUG:
+            if light:
+                return ('css/select2.css',)
+            else:
+                return ('css/select2.css', 'css/extra.css')
         else:
-            return ('css/all.min.css', )
+            if light:
+                return ('css/select2.min.css',)
+            else:
+                return ('css/all.min.css',)
 
 ### Light mixin and widgets ###
 
