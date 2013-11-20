@@ -17,9 +17,9 @@ Installation
 3. When deploying on production server, run :-
 
         python manage.py collectstatic
-        
+
 4. Add `django_select` to your urlconf if you use any 'Auto' fields.
-   
+
         url(r'^select2/', include('django_select2.urls')),
 
 
@@ -71,7 +71,7 @@ Changelog Summary
 
 * Updated Select2 to version 3.4.1. **Please note**, that if you need any of the Select2 locale files, then you need to download them yourself from http://ivaynberg.github.com/select2/ and add to your project.
 * Address isssue[#36](https://github.com/applegrew/django-select2/issues/36) - Fix importerror under django1.6.
-* Fuxed the way `setup.py` handles unicode files while minfying them during package build.
+* Fixed the way `setup.py` handles Unicode files while minifying them during package build.
 * Address isssue[#39](https://github.com/applegrew/django-select2/issues/39) - MultipleSelect2HiddenInput.render() should use mark_safe().
 * Address isssue[#45](https://github.com/applegrew/django-select2/issues/45) - MultipleSelect2HiddenInput returns bad has_changed value.
 

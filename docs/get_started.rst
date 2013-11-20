@@ -20,9 +20,9 @@ Installation
 3. When deploying on production server, run::
 
         python manage.py collectstatic
-        
+
 4. Add `django_select` to your urlconf **if** you use any 'Auto' fields::
-   
+
         url(r'^select2/', include('django_select2.urls')),
 
 5. (Optionally) If you need multiple processes support, then::
@@ -35,7 +35,7 @@ Available Settings
 ``AUTO_RENDER_SELECT2_STATICS`` [Default ``True``]
 ..................................................
 
-This, when specified and set to ``False`` in ``settings.py`` then Django_Select2 widgets won't automatically include the required scripts and stylesheets. When this setting is ``True`` then every Select2 field on the page will output ``<script>`` and ``<link>`` tags to include the required JS and CSS files. This is convinient but will output the same JS and CSS files multiple times if there are more than one Select2 fields on the page.
+This, when specified and set to ``False`` in ``settings.py`` then Django_Select2 widgets won't automatically include the required scripts and stylesheets. When this setting is ``True`` then every Select2 field on the page will output ``<script>`` and ``<link>`` tags to include the required JS and CSS files. This is convenient but will output the same JS and CSS files multiple times if there are more than one Select2 fields on the page.
 
 When this settings is ``False`` then you are responsible for including the JS and CSS files. To help you with this the following template tags are available in ``django_select2_tags``.
 
@@ -43,9 +43,9 @@ When this settings is ``False`` then you are responsible for including the JS an
     * ``import_django_select2_css`` - Outputs ``<link>`` tags to include all the CSS files, required by Light and Heavy widgets.
     * ``import_django_select2_js_css`` - Outputs both ``<script>`` and ``<link>`` tags to include all the JS and CSS files, required by Light and Heavy widgets.
 
-.. tip:: Make sure to include them at the top of the page, prefereably in ``<head>...</head>``.
+.. tip:: Make sure to include them at the top of the page, preferably in ``<head>...</head>``.
 
-.. note:: (Since version 3.3.1) The above temaple tags accept one argument ``light``. Default value for that is ``0``.
+.. note:: (Since version 3.3.1) The above template tags accept one argument ``light``. Default value for that is ``0``.
 	If that is set to ``1`` then only the JS and CSS libraries needed by Select2Widget (Light fields) are rendered.
 	That effectively leaves out ``heavy.js`` and ``extra.css``.
 
@@ -63,9 +63,9 @@ However, if you have a secret government project and fear that SHA1 hashes could
 
 This setting cannot be enabled as it is not required when ``GENERATE_RANDOM_SELECT2_ID`` is ``False``.
 
-In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime when ``GENERATE_RANDOM_SELECT2_ID`` is enabled. The clients can identify the fields in ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to ajax queries.
+In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime when ``GENERATE_RANDOM_SELECT2_ID`` is enabled. The clients can identify the fields in Ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to Ajax queries.
 
-When this mode is enabled then Django Select2 maintains an id to field key mapping in DB for all processes. Whenever a process does not find an id in its internal map it looks-up in the central DB. From DB it finds the field key. Using the key, the process then looks-up a field instance with that key, since all instaces with same key are assumed to be equivalent.
+When this mode is enabled then Django Select2 maintains an id to field key mapping in DB for all processes. Whenever a process does not find an id in its internal map it looks-up in the central DB. From DB it finds the field key. Using the key, the process then looks-up a field instance with that key, since all instances with same key are assumed to be equivalent.
 
 .. tip:: Make sure to run ``python manage.py syncdb`` to create the ``KeyMap`` table.
 
@@ -88,8 +88,8 @@ External Dependencies
 ---------------------
 
 * Django - This is obvious.
-* jQuery - This is not included in the package since it is expected that in most scenarios this would already be available. The above template tags also won't out ``<script>`` tag to include this. You need to do this yourself.
-* Memcached (python-memcached) - If you plan on running multiple python processes, which is usually the case in production, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
+* jQuery - This is not included in the package since it is expected that in most scenarios this would already be available. The above template tags also won't output ``<script>`` tag to include this. You need to do this yourself.
+* Memcached (python-memcached) - If you plan on running multiple Python processes, which is usually the case in production, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
 
 Example Application
 -------------------

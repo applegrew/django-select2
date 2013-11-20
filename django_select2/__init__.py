@@ -9,27 +9,27 @@ The app includes Select2 driven Django Widgets and Form Fields.
 Widgets
 -------
 
-These components are responsible for rendering the necessary Javascript and HTML markups. Since this whole
-package is to render choices using Select2 Javascript library, hence these components are meant to be used
+These components are responsible for rendering the necessary JavaScript and HTML markups. Since this whole
+package is to render choices using Select2 JavaScript library, hence these components are meant to be used
 with choice fields.
 
 Widgets are generally of two types :-
 
     1. **Light** --
     They are not meant to be used when there are too many options, say, in thousands. This
-    is because all those options would have to be pre-rendered onto the page and Javascript would
+    is because all those options would have to be pre-rendered onto the page and JavaScript would
     be used to search through them. Said that, they are also one the most easiest to use. They are almost
     drop-in-replacement for Django's default select widgets.
 
     2. **Heavy** --
     They are suited for scenarios when the number of options are large and need complex queries
-    (from maybe different sources) to get the options. This dynamic fetching of options undoubtably requires
+    (from maybe different sources) to get the options. This dynamic fetching of options undoubtedly requires
     Ajax communication with the server. Django-Select2 includes a helper JS file which is included automatically,
     so you need not worry about writing any Ajax related JS code. Although on the server side you do need to
     create a view specifically to respond to the queries.
 
     Heavies have further specialized versions called -- **Auto Heavy**. These do not require views to server Ajax
-    request. When they are instantiated, they register themselves with one central view which handels Ajax requests
+    request. When they are instantiated, they register themselves with one central view which handles Ajax requests
     for them.
 
 Heavy widgets have the word 'Heavy' in their name. Light widgets are normally named, i.e. there is no 'Light' word
