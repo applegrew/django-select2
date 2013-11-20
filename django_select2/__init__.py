@@ -9,15 +9,15 @@ The app includes Select2 driven Django Widgets and Form Fields.
 Widgets
 -------
 
-These components are responsible for rendering the necessary Javascript and HTML markups. Since this whole
-package is to render choices using Select2 Javascript library, hence these components are meant to be used
+These components are responsible for rendering the necessary JavaScript and HTML markups. Since this whole
+package is to render choices using Select2 JavaScript library, hence these components are meant to be used
 with choice fields.
 
 Widgets are generally of two types :-
 
     1. **Light** --
     They are not meant to be used when there are too many options, say, in thousands. This
-    is because all those options would have to be pre-rendered onto the page and Javascript would
+    is because all those options would have to be pre-rendered onto the page and JavaScript would
     be used to search through them. Said that, they are also one the most easiest to use. They are almost
     drop-in-replacement for Django's default select widgets.
 

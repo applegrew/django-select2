@@ -63,7 +63,7 @@ However, if you have a secret government project and fear that SHA1 hashes could
 
 This setting cannot be enabled as it is not required when ``GENERATE_RANDOM_SELECT2_ID`` is ``False``.
 
-In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime when ``GENERATE_RANDOM_SELECT2_ID`` is enabled. The clients can identify the fields in ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to ajax queries.
+In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime when ``GENERATE_RANDOM_SELECT2_ID`` is enabled. The clients can identify the fields in Ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to Ajax queries.
 
 When this mode is enabled then Django Select2 maintains an id to field key mapping in DB for all processes. Whenever a process does not find an id in its internal map it looks-up in the central DB. From DB it finds the field key. Using the key, the process then looks-up a field instance with that key, since all instances with same key are assumed to be equivalent.
 
@@ -89,7 +89,7 @@ External Dependencies
 
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available. The above template tags also won't output ``<script>`` tag to include this. You need to do this yourself.
-* Memcached (python-memcached) - If you plan on running multiple python processes, which is usually the case in production, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
+* Memcached (python-memcached) - If you plan on running multiple Python processes, which is usually the case in production, then you need to turn on ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT``. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
 
 Example Application
 -------------------

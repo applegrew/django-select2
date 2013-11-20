@@ -14,7 +14,7 @@ class JSVar(unicode):
     """
     A JS variable.
 
-    This is a simple unicode string. This class type acts as a marker that this string is a JS variable name,
+    This is a simple Unicode string. This class type acts as a marker that this string is a JS variable name,
     so it must not be quoted by :py:func:`.convert_py_to_js_data` while rendering the JS code.
     """
     pass
@@ -35,10 +35,10 @@ class JSFunction(JSVar):
 
 class JSFunctionInContext(JSVar):
     """
-    A JS function name to run in context of some other Html DOM element.
+    A JS function name to run in context of some other HTML DOM element.
 
     Like :py:class:`JSFunction`, this too flags the string as JS function, but with a special requirement. The JS function
-    needs to be invoked in the context of a Html DOM, such that, ``this`` inside the function refers to that DOM instead of
+    needs to be invoked in the context of a HTML DOM, such that, ``this`` inside the function refers to that DOM instead of
     ``window``.
 
     .. tip:: JS functions of this type are wrapped inside special another JS function -- ``django_select2.runInContextHelper``.
@@ -325,7 +325,7 @@ def timer_end(t):
 
 def timer(f):
     def inner(*args, **kwargs):
-        
+
         t = timer_start(f.func_name)
         ret = f(*args, **kwargs)
         timer_end(t)

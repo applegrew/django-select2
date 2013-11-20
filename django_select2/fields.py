@@ -147,11 +147,11 @@ class ModelResultJsonMixin(object):
     def get_queryset(self):
         """
         Returns the queryset.
-        
+
         The default implementation returns the ``self.queryset``, which is usually the
         one set by sub-classes at class-level. However, if that is ``None``
         then ``ValueError`` is thrown.
-        
+
         :return: queryset
         :rtype: :py:class:`django.db.models.query.QuerySet`
         """
@@ -175,7 +175,7 @@ class ModelResultJsonMixin(object):
     def extra_data_from_instance(self, obj):
         """
         Sub-classes should override this to generate extra data for values. These are passed to
-        Javascript and can be used for custom rendering.
+        JavaScript and can be used for custom rendering.
 
         :param obj: The model object.
         :type obj: :py:class:`django.model.Model`
@@ -551,7 +551,7 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         """
         Coerces ``value`` to a Python data type.
 
-        Sub-classes should override this if they do not want unicode values.
+        Sub-classes should override this if they do not want Unicode values.
         """
         return smart_unicode(value)
 
@@ -758,7 +758,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
     def get_model_field_values(self, value):
         """
         This is called when the input value is not valid and the field
-        tries to create a new model instance. 
+        tries to create a new model instance.
 
         :param value: Invalid value entered by the user.
         :type value: unicode
@@ -846,7 +846,7 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
     .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_model_field_values` is not implemented.
 
     Example::
-    
+
         class Tag(models.Model):
             tag = models.CharField(max_length=10, unique=True)
             def __unicode__(self):
