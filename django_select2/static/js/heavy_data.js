@@ -1,4 +1,4 @@
-if (!window['django_select2']) {
+if (!window.django_select2) {
 	// This JS file can be included multiple times. So, as not to overwrite previous states, we run this only once.
 
 	var django_select2 = {
@@ -12,7 +12,7 @@ if (!window['django_select2']) {
 					'context': context
 				};
 			if (field_id) {
-				res['field_id'] = field_id;
+				res.field_id = field_id;
 			}
 			return res;
 		},
@@ -23,10 +23,10 @@ if (!window['django_select2']) {
 					'results': data.results
 				};
 				if (context) {
-					results['context'] = context;
+					results.context = context;
 				}
 				if (data.more === true || data.more === false) {
-					results['more'] = data.more;
+					results.more = data.more;
 				}
 			} else {
 				results = {'results':[]};
