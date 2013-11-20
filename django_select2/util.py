@@ -24,8 +24,8 @@ class JSFunction(JSVar):
     """
     A JS function name.
 
-    From rendering point of view, rendering this is no different from :py:class:`JSVar`. After all, a JS varible
-    can refer a function instance, primitive constant or any other object. They are still all varibles.
+    From rendering point of view, rendering this is no different from :py:class:`JSVar`. After all, a JS variable
+    can refer a function instance, primitive constant or any other object. They are still all variables.
 
     .. tip:: Do use this marker for JS functions. This will make the code clearer, and the purpose more easier to
         understand.
@@ -41,7 +41,7 @@ class JSFunctionInContext(JSVar):
     needs to be invoked in the context of a Html DOM, such that, ``this`` inside the function refers to that DOM instead of
     ``window``.
 
-    .. tip:: JS functions of this type are warapped inside special another JS function -- ``django_select2.runInContextHelper``.
+    .. tip:: JS functions of this type are wrapped inside special another JS function -- ``django_select2.runInContextHelper``.
     """
     pass
 

@@ -71,7 +71,7 @@ class Select2Mixin(object):
     This mixin is responsible for rendering the necessary Javascript and CSS codes which turns normal ``<select>``
     markups into Select2 choice list.
 
-    The following Select2 otions are added by this mixin:-
+    The following Select2 options are added by this mixin:-
 
         * minimumResultsForSearch: ``6``
         * placeholder: ``''``

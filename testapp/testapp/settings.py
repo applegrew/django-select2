@@ -177,7 +177,7 @@ AUTO_RENDER_SELECT2_STATICS = False
 #GENERATE_RANDOM_SELECT2_ID = True
 
 ##
-# To test for multiple processes in developement system w/o WSGI, runserver at
+# To test for multiple processes in development system w/o WSGI, runserver at
 # different ports. Use $('#select2_field_html_id').data('field_id') to get the id
 # in one process. Now switch to another port and use
 # $('#select2_field_html_id').data('field_id', "id from previous process") to set

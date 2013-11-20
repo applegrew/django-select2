@@ -23,13 +23,13 @@ Widgets are generally of two types :-
 
     2. **Heavy** --
     They are suited for scenarios when the number of options are large and need complex queries
-    (from maybe different sources) to get the options. This dynamic fetching of options undoubtably requires
+    (from maybe different sources) to get the options. This dynamic fetching of options undoubtedly requires
     Ajax communication with the server. Django-Select2 includes a helper JS file which is included automatically,
     so you need not worry about writing any Ajax related JS code. Although on the server side you do need to
     create a view specifically to respond to the queries.
 
     Heavies have further specialized versions called -- **Auto Heavy**. These do not require views to server Ajax
-    request. When they are instantiated, they register themselves with one central view which handels Ajax requests
+    request. When they are instantiated, they register themselves with one central view which handles Ajax requests
     for them.
 
 Heavy widgets have the word 'Heavy' in their name. Light widgets are normally named, i.e. there is no 'Light' word
