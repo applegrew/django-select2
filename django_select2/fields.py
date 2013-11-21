@@ -673,6 +673,87 @@ class HeavyModelSelect2ChoiceField(HeavySelect2FieldBaseMixin, ModelChoiceField)
         super(HeavyModelSelect2ChoiceField, self).__init__(*args, **kwargs)
 
 
+class HeavyModelSelect2SingleTagField(HeavySelect2FieldBaseMixin, ModelChoiceField):
+    """
+    Heavy Select2 field for single tagging, specialized for Models.
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_model_field_values` is not implemented.
+    """
+    widget = HeavySelect2SingleTagWidget
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('choices', None)
+        super(HeavyModelSelect2SingleTagField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if value in EMPTY_VALUES:
+            return None
+        try:
+            key = self.to_field_name or 'pk'
+            value = self.queryset.get(**{key: value})
+        except ValueError, e:
+            raise ValidationError(self.error_messages['invalid_choice'])
+        except self.queryset.model.DoesNotExist:
+            value = self.create_new_value(value)
+        return value
+
+    def clean(self, value):
+        if self.required and not value:
+            raise ValidationError(self.error_messages['required'])
+        elif not self.required and not value:
+            return None
+        
+        key = self.to_field_name or 'pk'
+
+        try:
+            self.queryset.get(**{key: value})
+        except ValueError:
+            value = self.create_new_value(force_unicode(value))
+
+        # Usually value is a pk or a new tag, but if the tag is
+        # of type int then that could be interpreted as valid pk
+        # value and ValueError above won't be triggered.
+        # Below we check if the pk actually exists.
+        o = self.queryset.get(**{key: value})
+        pk = force_unicode(getattr(o, key))
+        value = force_unicode(value)
+        if value != pk:
+            value = self.create_new_value(value)
+
+        # Since this overrides the inherited ModelChoiceField.clean
+        # we run custom validators here
+        self.run_validators(value)
+        return o
+
+    def create_new_value(self, value):
+        """
+        This is called when the input value is not valid. This
+        allows you to add the value into the data-store. If that
+        is not done then eventually the validation will fail.
+
+        :param value: Invalid value entered by the user.
+        :type value: As coerced by :py:meth:`HeavyChoiceField.coerce_value`.
+
+        :return: The a new value, which could be the id (pk) of the created value.
+        :rtype: Any
+        """
+        obj = self.queryset.create(**self.get_model_field_values(value))
+        return getattr(obj, self.to_field_name or 'pk')
+
+    def get_model_field_values(self, value):
+        """
+        This is called when the input value is not valid and the field
+        tries to create a new model instance. 
+
+        :param value: Invalid value entered by the user.
+        :type value: unicode
+
+        :return: Dict with attribute name - attribute value pair.
+        :rtype: dict
+        """
+        raise NotImplementedError
+
+
 class HeavyModelSelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceField):
     "Heavy Select2 Multiple Choice field, specialized for Models."
     widget = HeavySelect2MultipleWidget
@@ -724,10 +805,10 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         for val in new_values:
             value.append(self.create_new_value(force_unicode(val)))
 
-        # Usually new_values will have list of new tags, but if the tag is
-        # suppose of type int then that could be interpreted as valid pk
+        # Usually new_values will be a list of new tags, but if the tag is
+        # of type int then that could be interpreted as valid pk
         # value and ValueError above won't be triggered.
-        # Below we find such tags and create them, by check if the pk
+        # Below we find such tags and create them, by checking if the pk
         # actually exists.
         qs = self.queryset.filter(**{'%s__in' % key: value})
         pks = set([force_unicode(getattr(o, key)) for o in qs])
@@ -781,6 +862,36 @@ class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
     """
 
     widget = AutoHeavySelect2Widget
+
+
+class AutoModelSelect2SingleTagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2SingleTagField):
+    """
+    Auto Heavy Select2 field for tagging, specialized for Models.
+
+    This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
+    json query requests for that type (class).
+
+    .. warning:: :py:exc:`NotImplementedError` would be thrown if :py:meth:`get_model_field_values` is not implemented.
+
+    Example::
+    
+        class Tag(models.Model):
+            tag = models.CharField(max_length=10, unique=True)
+            def __unicode__(self):
+                return unicode(self.tag)
+
+        class TagField(AutoModelSelect2TagField):
+            queryset = Tag.objects
+            search_fields = ['tag__icontains', ]
+            def get_model_field_values(self, value):
+                return {'tag': value}
+
+    """
+    # Makes sure that user defined queryset class variable is replaced by
+    # queryset property (as it is needed by super classes).
+    __metaclass__ = UnhideableQuerysetType
+
+    widget = AutoHeavySelect2SingleTagWidget
 
 
 class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceField):
