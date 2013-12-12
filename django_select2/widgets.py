@@ -4,6 +4,7 @@ Contains all the Django widgets for Select2.
 
 import logging
 from itertools import chain
+from django_select2.media import get_select2_js_libs, get_select2_css_libs, get_select2_heavy_js_libs
 import util
 
 from django import forms
@@ -19,48 +20,6 @@ from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
 logger = logging.getLogger(__name__)
 
-
-def get_select2_js_libs():
-    from django.conf import settings
-    if settings.configured and settings.DEBUG:
-        return ('js/select2.js', )
-    else:
-        return ('js/select2.min.js', )
-
-def get_select2_heavy_js_libs():
-    libs = get_select2_js_libs()
-
-    from django.conf import settings
-    if settings.configured and settings.DEBUG:
-        return libs + ('js/heavy_data.js', )
-    else:
-        return libs + ('js/heavy_data.min.js', )
-
-def get_select2_css_libs(light=False):
-    from django.conf import settings
-    from . import __BOOTSTRAP
-    if __BOOTSTRAP:
-        if settings.configured and settings.DEBUG:
-            if light:
-                return ('css/select2.css', 'css/select2-bootstrap.css')
-            else:
-                return ('css/select2.css', 'css/extra.css', 'css/select2-bootstrap.css')
-        else:
-            if light:
-                return ('css/select2-bootstrapped.min.css',)
-            else:
-                return ('css/all-bootstrapped.min.css',)
-    else:
-        if settings.configured and settings.DEBUG:
-            if light:
-                return ('css/select2.css',)
-            else:
-                return ('css/select2.css', 'css/extra.css')
-        else:
-            if light:
-                return ('css/select2.min.css',)
-            else:
-                return ('css/all.min.css',)
 
 ### Light mixin and widgets ###
 
@@ -84,10 +43,10 @@ class Select2Mixin(object):
 
     # For details on these options refer: http://ivaynberg.github.com/select2/#documentation
     options = {
-        'minimumResultsForSearch': 6,  # Only applicable for single value select.
-        'placeholder': '',  # Empty text label
-        'allowClear': True,  # Not allowed when field is multiple since there each value has a clear button.
-        'multiple': False,  # Not allowed when attached to <select>
+        'minimumResultsForSearch': 6, # Only applicable for single value select.
+        'placeholder': '', # Empty text label
+        'allowClear': True, # Not allowed when field is multiple since there each value has a clear button.
+        'multiple': False, # Not allowed when attached to <select>
         'closeOnSelect': False,
     }
     """
@@ -258,8 +217,9 @@ class Select2Widget(Select2Mixin, forms.Select):
     def render_options(self, choices, selected_choices):
         all_choices = chain(self.choices, choices)
         if not self.is_required and \
-            len([value for value, txt in all_choices if value == '']) == 0: # Checking if list already has empty choice
-                                                                            # as in the case of Model based Light fields.
+                        len([value for value, txt in all_choices if
+                             value == '']) == 0: # Checking if list already has empty choice
+        # as in the case of Model based Light fields.
 
             choices = list(choices)
             choices.append(('', '', ))  # Adding an empty choice
@@ -309,7 +269,7 @@ class MultipleSelect2HiddenInput(forms.TextInput):
             jscode = u''
             if value:
                 jscode = u"$('#%s').val(django_select2.convertArrToStr(%s));" \
-                    % (id_, convert_to_js_arr(value, id_))
+                         % (id_, convert_to_js_arr(value, id_))
             jscode += u"django_select2.initMultipleHidden($('#%s'));" % id_
             s += render_js_script(jscode)
         return mark_safe(s)
@@ -433,6 +393,7 @@ class HeavySelect2Mixin(Select2Mixin):
         self_choices = self.choices
 
         import fields
+
         if isinstance(self_choices, fields.FilterableModelChoiceIterator):
             self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
 
@@ -491,7 +452,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
     def render_inner_js_code(self, id_, name, value, attrs=None, choices=(), *args):
         js = u"$('#%s').change(django_select2.onValChange).data('userGetValText', %s);" \
-            % (id_, self.userGetValTextFuncName)
+             % (id_, self.userGetValTextFuncName)
         texts = self.render_texts_for_value(id_, value, choices)
         if texts:
             js += texts
@@ -501,7 +462,9 @@ class HeavySelect2Mixin(Select2Mixin):
     class Media:
         if RENDER_SELECT2_STATICS:
             js = get_select2_heavy_js_libs()
-            css = {'screen': get_select2_css_libs()}
+            css = {
+                'screen': get_select2_css_libs()
+            }
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
@@ -566,6 +529,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             if texts:
                 return u"$('#%s').txt(%s);" % (id_, texts)
 
+
 class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
     """
     Heavy widget with tagging support. Based on :py:class:`HeavySelect2MultipleWidget`,
@@ -587,6 +551,7 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
         * minimumInputLength: ``1``
 
     """
+
     def init_options(self):
         super(HeavySelect2TagWidget, self).init_options()
         self.options.pop('closeOnSelect', None)
@@ -626,6 +591,7 @@ class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
     pass
+
 
 class AutoHeavySelect2TagWidget(AutoHeavySelect2Mixin, HeavySelect2TagWidget):
     "Auto version of :py:class:`.HeavySelect2TagWidget`"
