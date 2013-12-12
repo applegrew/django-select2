@@ -224,8 +224,6 @@ class Select2Mixin(object):
             args.append(choices)
 
         s = unicode(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
-        if RENDER_SELECT2_STATICS:
-            s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         s += self.render_js_code(id_, name, value, attrs, choices)
@@ -237,8 +235,11 @@ class Select2Mixin(object):
         return mark_safe(s)
 
     class Media:
-        js = get_select2_js_libs()
-        css = {'screen': get_select2_css_libs(light=True)}
+        if RENDER_SELECT2_STATICS:
+            js = get_select2_js_libs()
+            css = {
+                'screen': get_select2_css_libs(light=True),
+            }
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -498,8 +499,9 @@ class HeavySelect2Mixin(Select2Mixin):
         return js
 
     class Media:
-        js = get_select2_heavy_js_libs()
-        css = {'screen': get_select2_css_libs()}
+        if RENDER_SELECT2_STATICS:
+            js = get_select2_heavy_js_libs()
+            css = {'screen': get_select2_css_libs()}
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
