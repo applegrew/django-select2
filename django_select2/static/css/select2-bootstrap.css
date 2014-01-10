@@ -98,7 +98,7 @@
 }
 
 /**
- * Adjust height and line-height for .select2-search-field amd multi-select Select2 widgets.
+ * Adjust height and line-height for .select2-search-field and multi-select Select2 widgets.
  *
  * 1. Class repetition to address missing .select2-chosen in Select2 < 3.3.2.
  */
