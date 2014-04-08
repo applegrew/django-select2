@@ -7,6 +7,7 @@ from itertools import chain
 import util
 
 from django import forms
+from django.core.validators import EMPTY_VALUES
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
@@ -481,7 +482,8 @@ class HeavySelect2Mixin(Select2Mixin):
         :return: JS code which sets the ``txt`` attribute.
         :rtype: :py:obj:`unicode`
         """
-        if value is not None and (self.field is None or value not in self.field.empty_values):
+        empty_values = getattr(self.field, 'empty_values', EMPTY_VALUES)
+        if value is not None and (self.field is None or value not in empty_values):
             # Just like forms.Select.render() it assumes that value will be single valued.
             values = [value]
             texts = self.render_texts(values, choices)
