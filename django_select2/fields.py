@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
 """
 Contains all the Django fields for Select2.
 """
 
+from __future__ import unicode_literals
+
 import logging
+import six
 
 logger = logging.getLogger(__name__)
 
@@ -82,12 +86,12 @@ from django.core.exceptions import ValidationError
 from django.forms.models import ModelChoiceIterator
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_unicode, force_unicode
+from django.utils.encoding import smart_text, force_text
 
-from .widgets import Select2Widget, Select2MultipleWidget,\
-    HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
-    AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin, AutoHeavySelect2TagWidget, \
-    HeavySelect2TagWidget
+from .widgets import (Select2Widget, Select2MultipleWidget, HeavySelect2Widget,
+    HeavySelect2MultipleWidget, AutoHeavySelect2Widget,
+    AutoHeavySelect2MultipleWidget, AutoHeavySelect2TagWidget,
+    HeavySelect2TagWidget)
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
 
@@ -170,7 +174,7 @@ class ModelResultJsonMixin(object):
         :return: The label string.
         :rtype: :py:obj:`unicode`
         """
-        return smart_unicode(obj)
+        return smart_text(obj)
 
     def extra_data_from_instance(self, obj):
         """
@@ -273,8 +277,9 @@ class ModelResultJsonMixin(object):
             res = list(qs.filter(*params['or'], **params['and']))
             has_more = False
 
-        res = [(getattr(obj, self.to_field_name), self.label_from_instance(obj), self.extra_data_from_instance(obj))
-                for obj in res]
+        res = [
+            (getattr(obj, self.to_field_name), self.label_from_instance(obj), self.extra_data_from_instance(obj))
+            for obj in res]
         return (NO_ERR_RESP, has_more, res, )
 
 
@@ -331,6 +336,7 @@ class ChoiceMixin(object):
             result._choices = copy.deepcopy(self._choices, memo)
         return result
 
+
 class FilterableModelChoiceIterator(ModelChoiceIterator):
     """
     Extends ModelChoiceIterator to add the capability to apply additional
@@ -351,6 +357,7 @@ class FilterableModelChoiceIterator(ModelChoiceIterator):
             self.queryset = self._original_queryset.filter(**filter_map)
         else:
             self.queryset = self._original_queryset
+
 
 class QuerysetChoiceMixin(ChoiceMixin):
     """
@@ -381,16 +388,20 @@ class QuerysetChoiceMixin(ChoiceMixin):
         result.queryset = result.queryset
         return result
 
+
 class ModelChoiceFieldMixin(QuerysetChoiceMixin):
 
     def __init__(self, *args, **kwargs):
         queryset = kwargs.pop('queryset', None)
         # This filters out kwargs not supported by Field but are still passed as it is required
         # by other codes. If new args are added to Field then make sure they are added here too.
-        kargs = extract_some_key_val(kwargs, [
-            'empty_label', 'cache_choices', 'required', 'label', 'initial', 'help_text',
-            'validators', 'localize',
-            ])
+        kargs = extract_some_key_val(
+            kwargs,
+            [
+                'empty_label', 'cache_choices', 'required', 'label', 'initial',
+                'help_text', 'validators', 'localize',
+            ]
+        )
         kargs['widget'] = kwargs.pop('widget', getattr(self, 'widget', None))
         kargs['to_field_name'] = kwargs.pop('to_field_name', 'pk')
 
@@ -412,6 +423,7 @@ class ModelChoiceFieldMixin(QuerysetChoiceMixin):
         return self.to_field_name or 'pk'
 
 ### Slightly altered versions of the Django counterparts with the same name in forms module. ###
+
 
 class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
     queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
@@ -507,6 +519,7 @@ class HeavySelect2FieldBaseMixin(object):
             util.timer_end(t2)
             util.timer_end(t1)
 
+
 class HeavyChoiceField(ChoiceMixin, forms.Field):
     """
     Reimplements :py:class:`django.forms.TypedChoiceField` in a way which suites the use of big data.
@@ -541,9 +554,9 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
             raise ValidationError(self.error_messages['invalid_choice'] % {'value': value})
 
     def valid_value(self, value):
-        uvalue = smart_unicode(value)
+        uvalue = smart_text(value)
         for k, v in self.choices:
-            if uvalue == smart_unicode(k):
+            if uvalue == smart_text(k):
                 return True
         return self.validate_value(value)
 
@@ -553,7 +566,7 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
 
         Sub-classes should override this if they do not want Unicode values.
         """
-        return smart_unicode(value)
+        return smart_text(value)
 
     def validate_value(self, value):
         """
@@ -629,6 +642,7 @@ class HeavySelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, HeavyMultipleC
     "Heavy Select2 Multiple Choice field."
     widget = HeavySelect2MultipleWidget
 
+
 class HeavySelect2TagField(HeavySelect2MultipleChoiceField):
     """
     Heavy Select2 field for tagging.
@@ -664,6 +678,7 @@ class HeavySelect2TagField(HeavySelect2MultipleChoiceField):
 
 ### Heavy field specialized for Models ###
 
+
 class HeavyModelSelect2ChoiceField(HeavySelect2FieldBaseMixin, ModelChoiceField):
     "Heavy Select2 Choice field, specialized for Models."
     widget = HeavySelect2Widget
@@ -681,6 +696,7 @@ class HeavyModelSelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, ModelMult
         kwargs.pop('choices', None)
         super(HeavyModelSelect2MultipleChoiceField, self).__init__(*args, **kwargs)
 
+
 class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceField):
     """
     Heavy Select2 field for tagging, specialized for Models.
@@ -694,12 +710,12 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         super(HeavyModelSelect2TagField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
-        if value in EMPTY_VALUES:
+        if value in validators.EMPTY_VALUES:
             return None
         try:
             key = self.to_field_name or 'pk'
             value = self.queryset.get(**{key: value})
-        except ValueError, e:
+        except ValueError:
             raise ValidationError(self.error_messages['invalid_choice'])
         except self.queryset.model.DoesNotExist:
             value = self.create_new_value(value)
@@ -722,7 +738,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
                 new_values.append(pk)
 
         for val in new_values:
-            value.append(self.create_new_value(force_unicode(val)))
+            value.append(self.create_new_value(force_text(val)))
 
         # Usually new_values will have list of new tags, but if the tag is
         # suppose of type int then that could be interpreted as valid pk
@@ -730,9 +746,9 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         # Below we find such tags and create them, by check if the pk
         # actually exists.
         qs = self.queryset.filter(**{'%s__in' % key: value})
-        pks = set([force_unicode(getattr(o, key)) for o in qs])
+        pks = set([force_text(getattr(o, key)) for o in qs])
         for i in range(0, len(value)):
-            val = force_unicode(value[i])
+            val = force_text(value[i])
             if val not in pks:
                 value[i] = self.create_new_value(val)
         # Since this overrides the inherited ModelChoiceField.clean
@@ -770,6 +786,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
 
 ### Heavy general field that uses central AutoView ###
 
+
 class AutoSelect2Field(AutoViewFieldMixin, HeavySelect2ChoiceField):
     """
     Auto Heavy Select2 field.
@@ -795,6 +812,7 @@ class AutoSelect2MultipleField(AutoViewFieldMixin, HeavySelect2MultipleChoiceFie
 
     widget = AutoHeavySelect2MultipleWidget
 
+
 class AutoSelect2TagField(AutoViewFieldMixin, HeavySelect2TagField):
     """
     Auto Heavy Select2 field for tagging.
@@ -809,6 +827,8 @@ class AutoSelect2TagField(AutoViewFieldMixin, HeavySelect2TagField):
 
 ### Heavy field, specialized for Model, that uses central AutoView ###
 
+
+@six.add_metaclass(UnhideableQuerysetType)
 class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField):
     """
     Auto Heavy Select2 field, specialized for Models.
@@ -818,11 +838,11 @@ class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModel
     """
     # ModelChoiceField will set this to ModelChoiceIterator
     # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2Widget
 
 
+@six.add_metaclass(UnhideableQuerysetType)
 class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
     """
     Auto Heavy Select2 field for multiple choices, specialized for Models.
@@ -832,10 +852,11 @@ class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, He
     """
     # Makes sure that user defined queryset class variable is replaced by
     # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2MultipleWidget
 
+
+@six.add_metaclass(UnhideableQuerysetType)
 class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2TagField):
     """
     Auto Heavy Select2 field for tagging, specialized for Models.
@@ -847,10 +868,13 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
 
     Example::
 
+        from django.utils.encoding import force_text, python_2_unicode_compatible
+
+        @python_2_unicode_compatible
         class Tag(models.Model):
             tag = models.CharField(max_length=10, unique=True)
-            def __unicode__(self):
-                return unicode(self.tag)
+            def __str__(self):
+                return force_text(self.tag)
 
         class TagField(AutoModelSelect2TagField):
             queryset = Tag.objects
@@ -861,6 +885,5 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
     """
     # Makes sure that user defined queryset class variable is replaced by
     # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2TagWidget

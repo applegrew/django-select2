@@ -1,20 +1,24 @@
+# -*- coding: utf-8 -*-
 """
 Contains all the Django widgets for Select2.
 """
 
+from __future__ import unicode_literals
+
 import logging
+import six
+
 from itertools import chain
-import util
 
 from django import forms
 from django.core.validators import EMPTY_VALUES
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
 
 from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext, \
-    convert_dict_to_js_map, convert_to_js_arr
+    convert_dict_to_js_map, convert_to_js_arr, timer_start, timer_end
 
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
@@ -28,6 +32,7 @@ def get_select2_js_libs():
     else:
         return ('js/select2.min.js', )
 
+
 def get_select2_heavy_js_libs():
     libs = get_select2_js_libs()
 
@@ -36,6 +41,7 @@ def get_select2_heavy_js_libs():
         return libs + ('js/heavy_data.js', )
     else:
         return libs + ('js/heavy_data.min.js', )
+
 
 def get_select2_css_libs(light=False):
     from django.conf import settings
@@ -64,6 +70,7 @@ def get_select2_css_libs(light=False):
                 return ('css/all.min.css',)
 
 ### Light mixin and widgets ###
+
 
 class Select2Mixin(object):
     """
@@ -127,12 +134,12 @@ class Select2Mixin(object):
 
                 There are other such intricacies, based on which some options are removed. By enforcing this
                 restriction we make sure to not break the code by passing some wrong concotion of options.
-                
-            .. tip:: According to the select2 documentation, in order to get the ``placeholder`` and ``allowClear`` 
-                settings working, you have to specify an empty ``<option></option>`` as the first entry in your 
+
+            .. tip:: According to the select2 documentation, in order to get the ``placeholder`` and ``allowClear``
+                settings working, you have to specify an empty ``<option></option>`` as the first entry in your
                 ``<select>`` list. Otherwise the field will be rendered without a placeholder and the clear feature
                 will stay disabled.
-                
+
 
         :type select2_options: :py:obj:`dict` or None
 
@@ -224,13 +231,13 @@ class Select2Mixin(object):
         :rtype: :py:obj:`unicode`
         """
         if logger.isEnabledFor(logging.DEBUG):
-            t1 = util.timer_start('Select2Mixin.render')
+            t1 = timer_start('Select2Mixin.render')
 
         args = [name, value, attrs]
         if choices:
             args.append(choices)
 
-        s = unicode(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
+        s = six.text_type(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
         if RENDER_SELECT2_STATICS:
             s += self.media.render()
         final_attrs = self.build_attrs(attrs)
@@ -238,7 +245,7 @@ class Select2Mixin(object):
         s += self.render_js_code(id_, name, value, attrs, choices)
 
         if logger.isEnabledFor(logging.DEBUG):
-            util.timer_end(t1)
+            timer_end(t1)
             logger.debug("Generated widget code:-\n%s", s)
 
         return mark_safe(s)
@@ -264,8 +271,8 @@ class Select2Widget(Select2Mixin, forms.Select):
     def render_options(self, choices, selected_choices):
         all_choices = chain(self.choices, choices)
         if not self.is_required and \
-            len([value for value, txt in all_choices if value == '']) == 0: # Checking if list already has empty choice
-                                                                            # as in the case of Model based Light fields.
+                len([value for value, txt in all_choices if value == '']) == 0:
+            # Checking if list already has empty choice as in the case of Model based Light fields.
 
             choices = list(choices)
             choices.append(('', '', ))  # Adding an empty choice
@@ -309,7 +316,7 @@ class MultipleSelect2HiddenInput(forms.TextInput):
 
     def render(self, name, value, attrs=None, choices=()):
         attrs = self.build_attrs(attrs, multiple='multiple')
-        s = unicode(super(MultipleSelect2HiddenInput, self).render(name, u"", attrs))
+        s = six.text_type(super(MultipleSelect2HiddenInput, self).render(name, u"", attrs))
         id_ = attrs.get('id', None)
         if id_:
             jscode = u''
@@ -332,11 +339,12 @@ class MultipleSelect2HiddenInput(forms.TextInput):
             data = []
         if len(initial) != len(data):
             return True
-        initial_set = set([force_unicode(value) for value in initial])
-        data_set = set([force_unicode(value) for value in data])
+        initial_set = set([force_text(value) for value in initial])
+        data_set = set([force_text(value) for value in data])
         return data_set != initial_set
 
 ### Heavy mixins and widgets ###
+
 
 class HeavySelect2Mixin(Select2Mixin):
     """
@@ -432,18 +440,18 @@ class HeavySelect2Mixin(Select2Mixin):
         :return: The rendered JS array code.
         :rtype: :py:obj:`unicode`
         """
-        selected_choices = list(force_unicode(v) for v in selected_choices)
+        selected_choices = list(force_text(v) for v in selected_choices)
         txts = []
         all_choices = choices if choices else []
         choices_dict = dict()
         self_choices = self.choices
 
-        import fields
+        from . import fields
         if isinstance(self_choices, fields.FilterableModelChoiceIterator):
             self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
 
         for val, txt in chain(self_choices, all_choices):
-            val = force_unicode(val)
+            val = force_text(val)
             choices_dict[val] = txt
 
         for val in selected_choices:
@@ -572,6 +580,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             if texts:
                 return u"$('#%s').txt(%s);" % (id_, texts)
 
+
 class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
     """
     Heavy widget with tagging support. Based on :py:class:`HeavySelect2MultipleWidget`,
@@ -603,6 +612,7 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
 
 ### Auto Heavy widgets ###
 
+
 class AutoHeavySelect2Mixin(object):
     """
     This mixin is needed for Auto heavy fields.
@@ -632,6 +642,7 @@ class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
     pass
+
 
 class AutoHeavySelect2TagWidget(AutoHeavySelect2Mixin, HeavySelect2TagWidget):
     "Auto version of :py:class:`.HeavySelect2TagWidget`"

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This is a Django_ integration of Select2_.
 
@@ -76,6 +77,8 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 
 """
 
+from __future__ import unicode_literals
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -108,18 +111,22 @@ try:
             logger.warn("You need not turn on ENABLE_SELECT2_MULTI_PROCESS_SUPPORT when GENERATE_RANDOM_SELECT2_ID is disabled.")
             __ENABLE_MULTI_PROCESS_SUPPORT = False
 
-        from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
-            AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget, HeavySelect2TagWidget, AutoHeavySelect2TagWidget
-        from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
-            HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
-            ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
-            AutoModelSelect2Field, AutoModelSelect2MultipleField, HeavySelect2TagField, AutoSelect2TagField, \
-            HeavyModelSelect2TagField, AutoModelSelect2TagField
-        from .views import Select2View, NO_ERR_RESP
+        from .widgets import (AutoHeavySelect2MultipleWidget,
+            AutoHeavySelect2TagWidget, AutoHeavySelect2Widget,
+            HeavySelect2MultipleWidget, HeavySelect2TagWidget,
+            HeavySelect2Widget, Select2MultipleWidget, Select2Widget)  # noqa
+        from .fields import (AutoModelSelect2Field,
+            AutoModelSelect2MultipleField, AutoModelSelect2TagField,
+            AutoSelect2Field, AutoSelect2MultipleField, AutoSelect2TagField,
+            HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField,
+            HeavyModelSelect2TagField, HeavySelect2ChoiceField,
+            HeavySelect2MultipleChoiceField, HeavySelect2TagField,
+            ModelSelect2Field, ModelSelect2MultipleField, Select2ChoiceField,
+            Select2MultipleChoiceField, )  # noqa
+        from .views import NO_ERR_RESP, Select2View  # noqa
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Django found and fields and widgets loaded.")
 except ImportError:
     if logger.isEnabledFor(logging.INFO):
         logger.info("Django not found.")
-

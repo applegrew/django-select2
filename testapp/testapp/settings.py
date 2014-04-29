@@ -1,11 +1,14 @@
+# -*- coding: utf-8 -*-
 # Django settings for testapp project.
 
+from __future__ import unicode_literals
+
 import os.path
-import posixpath
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-import os, sys
+import os
+import sys
 
 # Including the great parent so that django_select2 can be found.
 parent_folder = PROJECT_ROOT
@@ -87,7 +90,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -97,7 +100,7 @@ SECRET_KEY = 'ps&amp;l59kx$8%&amp;a1vjcj9sim-k^)g9gca0+a@j7o#_ln$(w%-#+k'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -153,16 +156,16 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler'
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
         },
     },
     'loggers': {
         'django_select2': {
-            'handlers':['console'],
+            'handlers': ['console'],
             'propagate': True,
-            'level':'DEBUG',
+            'level': 'DEBUG',
         },
         'django.request': {
             'handlers': ['mail_admins'],

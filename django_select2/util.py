@@ -1,16 +1,19 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import datetime
 import hashlib
 import logging
 import re
+import six
 import threading
-import types
 
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 logger = logging.getLogger(__name__)
 
 
-class JSVar(unicode):
+class JSVar(six.text_type):
     """
     A JS variable.
 
@@ -87,8 +90,9 @@ def extract_some_key_val(dct, keys):
 
 
 def convert_to_js_str(val):
-    val = force_unicode(val).replace('\'', '\\\'')
+    val = force_text(val).replace('\'', '\\\'')
     return u"'%s'" % val
+
 
 def convert_py_to_js_data(val, id_):
     """
@@ -108,10 +112,10 @@ def convert_py_to_js_data(val, id_):
 
     :rtype: :py:obj:`unicode`
     """
-    if type(val) == types.BooleanType:
+    if isinstance(val, bool):
         return u'true' if val else u'false'
-    elif type(val) in [types.IntType, types.LongType, types.FloatType]:
-        return force_unicode(val)
+    elif isinstance(val, six.integer_types + (float,)):
+        return force_text(val)
     elif isinstance(val, JSFunctionInContext):
         return u"django_select2.runInContextHelper(%s, '%s')" % (val, id_)
     elif isinstance(val, JSVar):
@@ -197,6 +201,7 @@ from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT, \
 
 from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID, __SECRET_SALT as SECRET_SALT
 
+
 def synchronized(f):
     "Decorator to synchronize multiple calls to a functions."
     f.__lock__ = threading.Lock()
@@ -216,6 +221,7 @@ __field_store = {}
 
 ID_PATTERN = r"[0-9_a-zA-Z.:+\- ]+"
 
+
 def is_valid_id(val):
     """
     Checks if ``val`` is a valid generated Id.
@@ -232,8 +238,9 @@ def is_valid_id(val):
         return True
 
 if ENABLE_MULTI_PROCESS_SUPPORT:
-    from memcache_wrapped_db_client import Client
+    from .memcache_wrapped_db_client import Client
     remote_server = Client(MEMCACHE_HOST, str(MEMCACHE_PORT), MEMCACHE_TTL)
+
 
 @synchronized
 def register_field(key, field):
@@ -252,16 +259,17 @@ def register_field(key, field):
     """
     global __id_store, __field_store
 
-    from fields import AutoViewFieldMixin
+    from .fields import AutoViewFieldMixin
     if not isinstance(field, AutoViewFieldMixin):
         raise ValueError('Field must extend AutoViewFieldMixin')
 
     if key not in __field_store:
         # Generating id
         if GENERATE_RANDOM_ID:
-            id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
+            id_ = u"%d:%s" % (len(__id_store), six.text_type(datetime.datetime.now()))
         else:
-            id_ = unicode(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            data = "%s:%s" % (key, SECRET_SALT)
+            id_ = six.text_type(hashlib.sha1(data.encode('utf-8')).hexdigest())
 
         __field_store[key] = id_
         __id_store[id_] = field
@@ -305,8 +313,10 @@ def get_field(id_):
             logger.error('Unknown id "%s".', id_)
     return field
 
+
 def timer_start(name):
-    import sys, time
+    import sys
+    import time
     if sys.platform == "win32":
         # On Windows, the best timer is time.clock()
         default_timer = time.clock
@@ -318,15 +328,16 @@ def timer_start(name):
 
     return (name, default_timer, multiplier, default_timer())
 
+
 def timer_end(t):
     (name, default_timer, multiplier, timeS) = t
     timeE = default_timer()
     logger.debug("Time taken by %s: %0.3f ms" % (name, (timeE - timeS) * multiplier))
 
+
 def timer(f):
     def inner(*args, **kwargs):
-
-        t = timer_start(f.func_name)
+        t = timer_start(f.__name__)
         ret = f(*args, **kwargs)
         timer_end(t)
 
