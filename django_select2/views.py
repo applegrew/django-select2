@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import json
 
 from django.http import HttpResponse
@@ -13,6 +16,7 @@ Equals to 'nil' constant.
 
 Use this in :py:meth:`.Select2View.get_results` to mean no error, instead of hardcoding 'nil' value.
 """
+
 
 class JSONResponseMixin(object):
     """
@@ -34,6 +38,7 @@ class JSONResponseMixin(object):
         "Convert the context dictionary into a JSON object"
         return json.dumps(context)
 
+
 class Select2View(JSONResponseMixin, View):
     """
     Base view which is designed to respond with JSON to Ajax queries from heavy widgets/fields.
@@ -47,7 +52,7 @@ class Select2View(JSONResponseMixin, View):
     def dispatch(self, request, *args, **kwargs):
         try:
             self.check_all_permissions(request, *args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             return self.respond_with_exception(e)
         return super(Select2View, self).dispatch(request, *args, **kwargs)
 
@@ -72,8 +77,8 @@ class Select2View(JSONResponseMixin, View):
         return self.render_to_response(
             self._results_to_context(
                 self.get_results(request, term, page, context)
-                )
             )
+        )
 
     def respond_with_exception(self, e):
         """
@@ -90,7 +95,7 @@ class Select2View(JSONResponseMixin, View):
         return self.render_to_response(
             self._results_to_context((str(e), False, [],)),
             status=status
-            )
+        )
 
     def _results_to_context(self, output):
         err, has_more, results = output
@@ -98,7 +103,7 @@ class Select2View(JSONResponseMixin, View):
         if err == NO_ERR_RESP:
             for result in results:
                 id_, text = result[:2]
-                if len(result)>2:
+                if len(result) > 2:
                     extra_data = result[2]
                 else:
                     extra_data = {}
@@ -191,4 +196,4 @@ class AutoResponseView(Select2View):
         del request.__django_select2_local
         return field.get_results(request, term, page, context)
 
-
+auto_response_view = AutoResponseView.as_view()

@@ -11,7 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -62,9 +63,10 @@ master_doc = 'index'
 project = u'Django-Select2'
 copyright = u'%s, Nirupam Biswas' % year
 
+
 def get_version():
-  import django_select2
-  return django_select2.__version__
+    import django_select2
+    return django_select2.__version__
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -109,13 +111,15 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+
 def skip(app, what, name, obj, skip, options):
-  if name == "__init__" and obj.__doc__:
-    return False
-  return skip
+    if name == "__init__" and obj.__doc__:
+        return False
+    return skip
+
 
 def setup(app):
-  app.connect("autodoc-skip-member", skip)
+    app.connect("autodoc-skip-member", skip)
 
 autodoc_default_flags = ['members', 'show-inheritance']
 autodoc_member_order = 'bysource'
@@ -132,9 +136,9 @@ inheritance_edge_attrs = dict(penwidth=0.75)
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 if on_rtd:
-  html_theme = 'default'
+    html_theme = 'default'
 else:
-  html_theme = 'nature'
+    html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -213,21 +217,21 @@ htmlhelp_basename = 'Django-Select2doc'
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Django-Select2.tex', u'Django-Select2 Documentation',
-   u'Nirupam Biswas', 'manual'),
+    ('index', 'Django-Select2.tex', 'Django-Select2 Documentation',
+     'Nirupam Biswas', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -270,9 +274,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Django-Select2', u'Django-Select2 Documentation',
-   u'Nirupam Biswas', 'Django-Select2', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'Django-Select2', 'Django-Select2 Documentation',
+     'Nirupam Biswas', 'Django-Select2', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
