@@ -265,12 +265,12 @@ class ModelResultJsonMixin(object):
         if self.max_results:
             min_ = (page - 1) * self.max_results
             max_ = min_ + self.max_results + 1  # fetching one extra row to check if it has more rows.
-            res = list(qs.filter(*params['or'], **params['and'])[min_:max_])
+            res = list(qs.filter(*params['or'], **params['and']).distinct()[min_:max_])
             has_more = len(res) == (max_ - min_)
             if has_more:
                 res = res[:-1]
         else:
-            res = list(qs.filter(*params['or'], **params['and']))
+            res = list(qs.filter(*params['or'], **params['and']).distinct())
             has_more = False
 
         res = [(getattr(obj, self.to_field_name), self.label_from_instance(obj), self.extra_data_from_instance(obj))
