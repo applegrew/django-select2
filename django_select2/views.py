@@ -121,7 +121,7 @@ class Select2View(JSONResponseMixin, View):
         :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.
 
         .. warning:: Sub-classes should override this. You really do not want random people making
-            Http reqeusts to your server, be able to get access to sensitive information.
+            Http requests to your server, be able to get access to sensitive information.
         """
         pass
 
