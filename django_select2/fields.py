@@ -65,7 +65,7 @@ class AutoViewFieldMixin(object):
         :rtype: :py:obj:`bool`
 
         .. warning:: Sub-classes should override this. You really do not want random people making
-            Http reqeusts to your server, be able to get access to sensitive information.
+            Http requests to your server, be able to get access to sensitive information.
         """
         return True
 
