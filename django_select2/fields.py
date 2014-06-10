@@ -128,7 +128,7 @@ class ModelResultJsonMixin(object):
         """
         Class constructor.
 
-        :param queryset: This can be passed as kwarg here or defined as field variabel,
+        :param queryset: This can be passed as kwarg here or defined as field variable,
             like ``search_fields``.
         :type queryset: :py:class:`django.db.models.query.QuerySet` or None
 
