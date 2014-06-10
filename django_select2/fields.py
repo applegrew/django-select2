@@ -120,7 +120,7 @@ class ModelResultJsonMixin(object):
     It is expected that sub-classes will defined a class field variable
     ``search_fields``, which should be a list of field names to search for.
 
-    ..note:: As of version 3.1.3, ``search_fields`` is optional if sub-class
+    .. note:: As of version 3.1.3, ``search_fields`` is optional if sub-class
         overrides ``get_results``.
     """
 
@@ -128,7 +128,7 @@ class ModelResultJsonMixin(object):
         """
         Class constructor.
 
-        :param queryset: This can be passed as kwarg here or defined as field variabel,
+        :param queryset: This can be passed as kwarg here or defined as field variable,
             like ``search_fields``.
         :type queryset: :py:class:`django.db.models.query.QuerySet` or None
 
