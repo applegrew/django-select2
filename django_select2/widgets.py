@@ -93,7 +93,7 @@ class Select2Mixin(object):
     }
     """
     The options listed here are rendered as JS map and passed to Select2 JS code.
-    Complete description of theses options are available in Select2_ JS' site.
+    Complete description of these options are available in Select2_ JS' site.
 
     .. _Select2: http://ivaynberg.github.com/select2/#documentation.
     """
