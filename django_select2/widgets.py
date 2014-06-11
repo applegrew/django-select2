@@ -126,7 +126,7 @@ class Select2Mixin(object):
                 ``multiple`` option then not only it is useless but an error in Select2 JS' point of view.
 
                 There are other such intricacies, based on which some options are removed. By enforcing this
-                restriction we make sure to not break the code by passing some wrong concotion of options.
+                restriction we make sure to not break the code by passing some wrong concoction of options.
                 
             .. tip:: According to the select2 documentation, in order to get the ``placeholder`` and ``allowClear`` 
                 settings working, you have to specify an empty ``<option></option>`` as the first entry in your 
