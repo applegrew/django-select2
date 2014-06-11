@@ -119,7 +119,7 @@ class Select2Mixin(object):
                                 })
                         }
 
-            .. tip:: You cannot introduce new options using this. For that you should sub-class and overried
+            .. tip:: You cannot introduce new options using this. For that you should sub-class and override
                 :py:meth:`.init_options`. The reason for this is, few options are not compatible with each other
                 or are not applicable in some scenarios. For example, when Select2 is attached to ``<select>`` tag,
                 it can get if it is multiple or single valued from that tag itself. In this case if you specify
