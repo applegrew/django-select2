@@ -404,6 +404,7 @@ class HeavySelect2Mixin(Select2Mixin):
         self.url = kwargs.pop('data_url', None)
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', u'null')
         self.choices = kwargs.pop('choices', [])
+        self.filter_by = kwargs.pop('filter_by', None)
 
         if not self.view and not self.url:
             raise ValueError('data_view or data_url is required')
@@ -620,6 +621,8 @@ class AutoHeavySelect2Mixin(object):
 
     def render_inner_js_code(self, id_, *args):
         js = u"$('#%s').data('field_id', '%s');" % (id_, self.field_id)
+        if self.filter_by:
+            js += u"$('#%s').data('filter_by', '%s');" % (id_, self.filter_by['id'])
         js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
         return js
 

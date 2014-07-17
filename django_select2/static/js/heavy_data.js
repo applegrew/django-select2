@@ -6,10 +6,13 @@ if (!window['django_select2']) {
 												// since this can't be entered by user.
 		get_url_params: function (term, page, context) {
 			var field_id = jQuery(this).data('field_id'),
+                            filter_by_id = jQuery(this).data('filter_by'),
+                            filter_by = jQuery('#' + filter_by_id).val(),
 				res = {
 					'term': term,
 					'page': page,
-					'context': context
+					'context': context,
+					'filter': filter_by
 				};
 			if (field_id) {
 				res['field_id'] = field_id;
@@ -59,14 +62,14 @@ if (!window['django_select2']) {
 		updateText: function ($e) {
 			var val = $e.select2('val'), data = $e.select2('data'), txt = $e.txt(), isMultiple = !!$e.attr('multiple'),
 				diff;
-			
+
 			if (val || val === 0) { // Means value is set. A numerical 0 is also a valid value.
 				if (isMultiple) {
 					if (val.length !== txt.length) {
 						txt = [];
 						jQuery(val).each(function (idx) {
 							var i, value = this, id;
-							
+
 							for (i in data) {
 								id = data [i].id;
 								if (id instanceof String) {
@@ -109,12 +112,12 @@ if (!window['django_select2']) {
 						return [val, txt];
 					}
 				}
-				
+
 				if (res) {
 					txt = [];
 					jQuery(val).each(function (idx) {
 						var i, value = this;
-						
+
 						for (i in res) {
 							if (res[i].id == value) {
 								val[idx] = res[i].id; // To set it to correct data type.
