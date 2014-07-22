@@ -526,6 +526,31 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
         self.options['multiple'] = False
 
 
+class HeavySelect2SingleTagWidget(HeavySelect2Widget):
+    """
+    Heavy widget with single tagging support. Based on :py:class:`HeavySelect2Widget`,
+    unlike other widgets this allows users to create a new option (tag).
+
+    Following Select2 options from :py:attr:`.Select2Mixin.options` are removed:-
+
+        * allowClear
+        * minimumResultsForSearch
+        * closeOnSelect
+
+    Following Select2 options from :py:attr:`.Select2Mixin.options` are added or set:-
+
+        * separator: ``JSVar('django_select2.MULTISEPARATOR')``
+        * createSearchChoice: ``JSFunctionInContext('django_select2.createSearchChoice')``
+        * minimumInputLength: ``1``
+
+    """
+    def init_options(self):
+        super(HeavySelect2SingleTagWidget, self).init_options()
+        self.options.pop('closeOnSelect', None)
+        self.options['minimumInputLength'] = 1
+        self.options['createSearchChoice'] = JSFunctionInContext('django_select2.createSearchChoice')
+
+
 class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
     """
     Multiple selection heavy widget.
@@ -628,6 +653,9 @@ class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
     "Auto version of :py:class:`.HeavySelect2Widget`"
     pass
 
+class AutoHeavySelect2SingleTagWidget(AutoHeavySelect2Mixin, HeavySelect2SingleTagWidget):
+    "Auto version of :py:class:`.HeavySelect2Widget`"
+    pass
 
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
