@@ -304,8 +304,6 @@ class MultipleSelect2HiddenInput(forms.TextInput):
     hidden input would be removed. This way, when submitted all the selected values
     would be available as list.
     """
-    # We want it hidden but should be treated as if is_hidden is False
-    input_type = 'hidden'
 
     def render(self, name, value, attrs=None, choices=()):
         attrs = self.build_attrs(attrs, multiple='multiple')
@@ -519,8 +517,6 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
         * multiple: ``False``
 
     """
-    # We want it hidden but should be treated as if is_hidden is False
-    input_type = 'hidden'
 
     def init_options(self):
         self.options['multiple'] = False
