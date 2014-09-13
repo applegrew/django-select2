@@ -640,7 +640,7 @@ class AutoHeavySelect2Mixin(object):
                   ''' % (fieldset_id)
             js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_.replace('-', '_'), *args)
             js += '};'
-            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_.replace('-', '_'), self.field_id)
+            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, self.field_id)
             return js
 
 
