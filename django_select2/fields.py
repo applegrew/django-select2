@@ -492,6 +492,7 @@ class HeavySelect2FieldBaseMixin(object):
         # could have directly set field_id on it.
         if hasattr(self, 'field_id'):
             self.widget.field_id = self.field_id
+            self.widget.attrs['data-select2-id'] = self.field_id
 
         # Widget should have been instantiated by now.
         self.widget.field = self
