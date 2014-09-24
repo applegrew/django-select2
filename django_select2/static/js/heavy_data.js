@@ -1,7 +1,7 @@
 if (!window['django_select2']) {
 	// This JS file can be included multiple times. So, as not to overwrite previous states, we run this only once.
 
-	var django_select2 = {
+	window.django_select2 = {
 		MULTISEPARATOR: String.fromCharCode(31), // We use this unprintable char as separator,
 												// since this can't be entered by user.
 		get_url_params: function (term, page, context) {
@@ -59,14 +59,14 @@ if (!window['django_select2']) {
 		updateText: function ($e) {
 			var val = $e.select2('val'), data = $e.select2('data'), txt = $e.txt(), isMultiple = !!$e.attr('multiple'),
 				diff;
-			
+
 			if (val || val === 0) { // Means value is set. A numerical 0 is also a valid value.
 				if (isMultiple) {
 					if (val.length !== txt.length) {
 						txt = [];
 						jQuery(val).each(function (idx) {
 							var i, value = this, id;
-							
+
 							for (i in data) {
 								id = data [i].id;
 								if (id instanceof String) {
@@ -109,12 +109,12 @@ if (!window['django_select2']) {
 						return [val, txt];
 					}
 				}
-				
+
 				if (res) {
 					txt = [];
 					jQuery(val).each(function (idx) {
 						var i, value = this;
-						
+
 						for (i in res) {
 							if (res[i].id == value) {
 								val[idx] = res[i].id; // To set it to correct data type.
