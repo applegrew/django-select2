@@ -302,7 +302,7 @@ class UnhideableQuerysetType(type):
 
     def __call__(cls, *args, **kwargs):
         queryset = kwargs.get('queryset', None)
-        if not queryset and hasattr(cls, '_subclass_queryset'):
+        if queryset is None and hasattr(cls, '_subclass_queryset'):
             kwargs['queryset'] = getattr(cls, '_subclass_queryset')
         return type.__call__(cls, *args, **kwargs)
 
