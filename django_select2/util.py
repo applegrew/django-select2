@@ -3,9 +3,7 @@ import hashlib
 import logging
 import re
 import threading
-import types
 
-from django.utils.encoding import force_unicode
 
 logger = logging.getLogger(__name__)
 
@@ -33,9 +31,12 @@ def extract_some_key_val(dct, keys):
 ### Auto view helper utils ###
 
 from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT, \
-    __MEMCACHE_HOST as MEMCACHE_HOST, __MEMCACHE_PORT as MEMCACHE_PORT, __MEMCACHE_TTL as MEMCACHE_TTL
+    __MEMCACHE_HOST as MEMCACHE_HOST, __MEMCACHE_PORT as MEMCACHE_PORT, \
+    __MEMCACHE_TTL as MEMCACHE_TTL
 
-from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID, __SECRET_SALT as SECRET_SALT
+from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID, \
+    __SECRET_SALT as SECRET_SALT
+
 
 def synchronized(f):
     "Decorator to synchronize multiple calls to a functions."
@@ -56,6 +57,7 @@ __field_store = {}
 
 ID_PATTERN = r"[0-9_a-zA-Z.:+\- ]+"
 
+
 def is_valid_id(val):
     """
     Checks if ``val`` is a valid generated Id.
@@ -75,6 +77,7 @@ if ENABLE_MULTI_PROCESS_SUPPORT:
     from memcache_wrapped_db_client import Client
     remote_server = Client(MEMCACHE_HOST, str(MEMCACHE_PORT), MEMCACHE_TTL)
 
+
 @synchronized
 def register_field(key, field):
     """
@@ -86,8 +89,8 @@ def register_field(key, field):
     :param field: The field to register.
     :type field: :py:class:`AutoViewFieldMixin`
 
-    :return: The generated Id for this field. If given ``key`` was already registered then the
-        Id generated that time, would be returned.
+    :return: The generated Id for this field. If given ``key`` was already
+        registered then the Id generated that time, would be returned.
     :rtype: :py:obj:`unicode`
     """
     global __id_store, __field_store
@@ -99,23 +102,28 @@ def register_field(key, field):
     if key not in __field_store:
         # Generating id
         if GENERATE_RANDOM_ID:
-            id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
+            id_ = u"%d:%s" % (
+                len(__id_store), unicode(datetime.datetime.now()))
         else:
-            id_ = unicode(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            id_ = unicode(
+                hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
 
         __field_store[key] = id_
         __id_store[id_] = field
 
         if logger.isEnabledFor(logging.INFO):
-            logger.info("Registering new field: %s; With actual id: %s", key, id_)
+            logger.info(
+                "Registering new field: %s; With actual id: %s", key, id_)
 
         if ENABLE_MULTI_PROCESS_SUPPORT:
-            logger.info("Multi process support is enabled. Adding id-key mapping to remote server.")
+            logger.info(
+                "Multi process support is enabled. Adding id-key mapping to remote server.")  # noqa
             remote_server.set(id_, key)
     else:
         id_ = __field_store[key]
         if logger.isEnabledFor(logging.INFO):
-            logger.info("Field already registered: %s; With actual id: %s", key, id_)
+            logger.info(
+                "Field already registered: %s; With actual id: %s", key, id_)
     return id_
 
 
@@ -131,7 +139,9 @@ def get_field(id_):
     field = __id_store.get(id_, None)
     if field is None and ENABLE_MULTI_PROCESS_SUPPORT:
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('Id "%s" not found in this process. Looking up in remote server.', id_)
+            logger.debug(
+                'Id "%s" not found in this process. Looking up in remote server.', id_)  # noqa
+
         key = remote_server.get(id_)
         if key is not None:
             id_in_current_instance = __field_store[key]
@@ -145,8 +155,11 @@ def get_field(id_):
             logger.error('Unknown id "%s".', id_)
     return field
 
+
 def timer_start(name):
-    import sys, time
+    import sys
+    import time
+
     if sys.platform == "win32":
         # On Windows, the best timer is time.clock()
         default_timer = time.clock
@@ -158,10 +171,13 @@ def timer_start(name):
 
     return (name, default_timer, multiplier, default_timer())
 
+
 def timer_end(t):
     (name, default_timer, multiplier, timeS) = t
     timeE = default_timer()
-    logger.debug("Time taken by %s: %0.3f ms" % (name, (timeE - timeS) * multiplier))
+    logger.debug(
+        "Time taken by %s: %0.3f ms" % (name, (timeE - timeS) * multiplier))
+
 
 def timer(f):
     def inner(*args, **kwargs):

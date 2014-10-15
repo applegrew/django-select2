@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 This is a Django_ integration of Select2_.
 
@@ -95,8 +96,10 @@ try:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("Django found.")
     if settings.configured:
-        __RENDER_SELECT2_STATICS = getattr(settings, 'AUTO_RENDER_SELECT2_STATICS', True)
-        __ENABLE_MULTI_PROCESS_SUPPORT = getattr(settings, 'ENABLE_SELECT2_MULTI_PROCESS_SUPPORT', False)
+        __RENDER_SELECT2_STATICS = getattr(
+            settings, 'AUTO_RENDER_SELECT2_STATICS', True)
+        __ENABLE_MULTI_PROCESS_SUPPORT = getattr(
+            settings, 'ENABLE_SELECT2_MULTI_PROCESS_SUPPORT', False)
         __MEMCACHE_HOST = getattr(settings, 'SELECT2_MEMCACHE_HOST', None)
         __MEMCACHE_PORT = getattr(settings, 'SELECT2_MEMCACHE_PORT', None)
         __MEMCACHE_TTL = getattr(settings, 'SELECT2_MEMCACHE_TTL', 900)
@@ -122,4 +125,3 @@ try:
 except ImportError:
     if logger.isEnabledFor(logging.INFO):
         logger.info("Django not found.")
-

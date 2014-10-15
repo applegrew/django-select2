@@ -1,7 +1,8 @@
 from models import KeyMap
 
+
 class Client(object):
- 
+
     def set(self, key, value):
         """
         This method is used to set a new value
@@ -11,10 +12,10 @@ class Client(object):
         if o is None:
             o = KeyMap()
             o.key = key
-            
+
         o.value = value
         o.save()
- 
+
     def get(self, key):
         """
         This method is used to retrieve a value
