@@ -11,8 +11,10 @@ NO_ERR_RESP = 'nil'
 """
 Equals to 'nil' constant.
 
-Use this in :py:meth:`.Select2View.get_results` to mean no error, instead of hardcoding 'nil' value.
+Use this in :py:meth:`.Select2View.get_results` to mean no error, instead of
+hardcoding 'nil' value.
 """
+
 
 class JSONResponseMixin(object):
     """
@@ -34,14 +36,19 @@ class JSONResponseMixin(object):
         "Convert the context dictionary into a JSON object"
         return json.dumps(context)
 
+
 class Select2View(JSONResponseMixin, View):
     """
-    Base view which is designed to respond with JSON to Ajax queries from heavy widgets/fields.
+    Base view which is designed to respond with JSON to Ajax queries from
+    heavy widgets/fields.
 
-    Although the widgets won't enforce the type of data_view it gets, but it is recommended to
-    sub-class this view instead of creating a Django view from scratch.
+    Although the widgets won't enforce the type of data_view it gets, but it
+    is recommended to sub-class this view instead of creating a Django view
+    from scratch.
 
-    .. note:: Only `GET <http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3>`_ Http requests are supported.
+    .. note:: Only
+        `GET <http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3>`
+        _ Http requests are supported.
     """
 
     def dispatch(self, request, *args, **kwargs):
@@ -55,7 +62,8 @@ class Select2View(JSONResponseMixin, View):
         if request.method == 'GET':
             term = request.GET.get('term', None)
             if term is None:
-                return self.render_to_response(self._results_to_context(('missing term', False, [], )))
+                return self.render_to_response(
+                    self._results_to_context(('missing term', False, [], )))
 
             try:
                 page = int(request.GET.get('page', None))
@@ -64,10 +72,12 @@ class Select2View(JSONResponseMixin, View):
             except ValueError:
                 page = -1
             if page == -1:
-                return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
+                return self.render_to_response(
+                    self._results_to_context(('bad page no.', False, [], )))
             context = request.GET.get('context', None)
         else:
-            return self.render_to_response(self._results_to_context(('not a get request', False, [], )))
+            return self.render_to_response(
+                self._results_to_context(('not a get request', False, [], )))
 
         return self.render_to_response(
             self._results_to_context(
@@ -98,7 +108,7 @@ class Select2View(JSONResponseMixin, View):
         if err == NO_ERR_RESP:
             for result in results:
                 id_, text = result[:2]
-                if len(result)>2:
+                if len(result) > 2:
                     extra_data = result[2]
                 else:
                     extra_data = {}
@@ -111,17 +121,21 @@ class Select2View(JSONResponseMixin, View):
 
     def check_all_permissions(self, request, *args, **kwargs):
         """
-        Sub-classes can use this to raise exception on permission check failures,
-        or these checks can be placed in ``urls.py``, e.g. ``login_required(SelectClass.as_view())``.
+        Sub-classes can use this to raise exception on permission check
+        failures, or these checks can be placed in
+        ``urls.py``, e.g. ``login_required(SelectClass.as_view())``.
 
         :param request: The Ajax request object.
         :type request: :py:class:`django.http.HttpRequest`
 
-        :param args: The ``*args`` passed to :py:meth:`django.views.generic.View.dispatch`.
-        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.
+        :param args: The ``*args`` passed to
+           :py:meth:`django.views.generic.View.dispatch`.
+        :param kwargs: The ``**kwargs`` passed to
+           :py:meth:`django.views.generic.View.dispatch`.
 
-        .. warning:: Sub-classes should override this. You really do not want random people making
-            Http requests to your server, be able to get access to sensitive information.
+        .. warning:: Sub-classes should override this. You really do not want
+            random people making Http requests to your server, be able to get
+            access to sensitive information.
         """
         pass
 
@@ -135,13 +149,15 @@ class Select2View(JSONResponseMixin, View):
         :param term: The search term.
         :type term: :py:obj:`str`
 
-        :param page: The page number. If in your last response you had signalled that there are more results,
-            then when user scrolls more a new Ajax request would be sent for the same term but with next page
-            number. (Page number starts at 1)
+        :param page: The page number. If in your last response you had
+            signalled that there are more results, then when user scrolls more
+            a new Ajax request would be sent for the same term but with next
+            page number. (Page number starts at 1)
         :type page: :py:obj:`int`
 
-        :param context: Can be anything which persists across the lifecycle of queries for the same search term.
-            It is reset to ``None`` when the term changes.
+        :param context: Can be anything which persists across the lifecycle of
+            queries for the same search term. It is reset to ``None`` when the
+            term changes.
 
             .. note:: Currently this is not used by ``heavy_data.js``.
         :type context: :py:obj:`str` or None
@@ -168,10 +184,12 @@ class Select2View(JSONResponseMixin, View):
 
 class AutoResponseView(Select2View):
     """
-    A central view meant to respond to Ajax queries for all Heavy widgets/fields.
-    Although it is not mandatory to use, but is immensely helpful.
+    A central view meant to respond to Ajax queries for all Heavy
+    widgets/fields. Although it is not mandatory to use, but is immensely
+    helpful.
 
-    .. tip:: Fields which want to use this view must sub-class :py:class:`~.widgets.AutoViewFieldMixin`.
+    .. tip:: Fields which want to use this view must sub-class
+        :py:class:`~.widgets.AutoViewFieldMixin`.
     """
     def check_all_permissions(self, request, *args, **kwargs):
         id_ = request.GET.get('field_id', None)
@@ -190,5 +208,3 @@ class AutoResponseView(Select2View):
         field = request.__django_select2_local
         del request.__django_select2_local
         return field.get_results(request, term, page, context)
-
-
