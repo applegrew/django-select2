@@ -1,10 +1,11 @@
+import json
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm, QuestionForm, WordsForm, SchoolForm, GetSearchTestForm, \
-    AnotherWordForm
-from .models import Employee, Dept, Question, WordList, School
+from .forms import EmployeeForm, DeptForm, MixedForm, InitialValueForm, QuestionForm, QuestionNonAutoForm, WordsForm, SchoolForm, \
+    GetSearchTestForm, AnotherWordForm
+from .models import Employee, Dept, Question, WordList, School, Tag
 
 def test_single_value_model_field(request):
     return render(request, 'list.html', {
@@ -60,6 +61,7 @@ def test_list_questions(request):
     return render(request, 'list.html', {
         'title': 'Questions',
         'href': 'test_tagging',
+        'href_non_auto': 'test_tagging_non_auto',
         'object_list': Question.objects.all(),
         'create_new_href': 'test_tagging_new'
     })
@@ -80,6 +82,25 @@ def test_tagging(request, id):
     else:
         form = QuestionForm(instance=question)
     return render(request, 'form.html', {'form': form})
+
+def test_tagging_non_auto(request, id):
+    if id is None:
+        question = Question()
+    else:
+        question =  get_object_or_404(Question, pk=id)
+    if request.POST:
+        form = QuestionNonAutoForm(data=request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = QuestionNonAutoForm(instance=question)
+    return render(request, 'form.html', {'form': form})
+
+def test_tagging_tags(request):
+    tags = Tag.objects.all()
+    results = [{'id': t.id, 'text': t.tag} for t in tags]
+    return HttpResponse(json.dumps({'err': 'nil', 'results': results}), content_type='application/json')
 
 def test_auto_multivalue_field(request):
     try:
