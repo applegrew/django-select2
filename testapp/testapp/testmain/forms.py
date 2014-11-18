@@ -175,7 +175,7 @@ class QuestionNonAutoForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea)
     tags = TagNAField(queryset=Tag.objects,
             search_fields=['tag__icontains'],
-            widget = HeavySelect2TagWidget(data_url='http://localhost:8000/test/question/tags/'))
+            widget = HeavySelect2TagWidget(data_view='test_tagging_tags'))
 
     class Meta:
         model = Question
