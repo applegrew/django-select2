@@ -194,7 +194,13 @@ class Select2Mixin(object):
         options = dict(self.get_options())
         options = self.render_select2_options_code(options, id_)
 
-        return '$("#%s").select2(%s);' % (id_, options)
+        if self.attrs.get('readonly', False):
+            return """
+                $("#{id}").select2({options});
+                $("#{id}").select2("readonly", true);
+            """.format(id=id_, options=options)
+        else:
+            return '$("#%s").select2(%s);' % (id_, options)
 
     def render(self, name, value, attrs=None, choices=()):
         """
