@@ -39,6 +39,10 @@ class TagField(AutoModelSelect2TagField):
     def get_model_field_values(self, value):
         return {'tag': value}
 
+class TagNAField(HeavyModelSelect2TagField):
+    def get_model_field_values(self, value):
+        return {'tag': value}
+
 class SelfChoices(AutoSelect2Field):
     def get_val_txt(self, value):
         if not hasattr(self, 'res_map'):
@@ -162,6 +166,16 @@ class QuestionForm(forms.ModelForm):
     question = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)
     tags = TagField()
+
+    class Meta:
+        model = Question
+
+class QuestionNonAutoForm(forms.ModelForm):
+    question = forms.CharField()
+    description = forms.CharField(widget=forms.Textarea)
+    tags = TagNAField(queryset=Tag.objects,
+            search_fields=['tag__icontains'],
+            widget = HeavySelect2TagWidget(data_view='test_tagging_tags'))
 
     class Meta:
         model = Question

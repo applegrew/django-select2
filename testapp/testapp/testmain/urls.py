@@ -13,7 +13,9 @@ urlpatterns = patterns('testapp.testmain.views',
 
     url(r'question/$', 'test_list_questions', name='test_list_questions'),
     url(r'question/form/([0-9]+)/$', 'test_tagging', name='test_tagging'),
+    url(r'question/form/([0-9]+)/na/$', 'test_tagging_non_auto', name='test_tagging_non_auto'),
     url(r'question/form/$', 'test_tagging_new', name='test_tagging_new'),
+    url(r'question/tags/$', 'test_tagging_tags', name='test_tagging_tags'),
 
     url(r'auto_model/form/$', 'test_auto_multivalue_field', name='test_auto_multivalue_field'),
 
