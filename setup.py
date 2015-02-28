@@ -99,7 +99,7 @@ def find_package_data(
                         break
                 if bad_name:
                     continue
-                out.setdefault(package, []).append(prefix+name)
+                out.setdefault(package, []).append(prefix + name)
     return out
 
 PACKAGE = "django_select2"
@@ -187,6 +187,7 @@ setup(
     ],
     install_requires=[
         "Django>=1.3",
+        "six',"
     ],
     zip_safe=False,
 )

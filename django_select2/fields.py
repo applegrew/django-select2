@@ -82,9 +82,12 @@ from django.core.exceptions import ValidationError
 from django.forms.models import ModelChoiceIterator
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_unicode, force_unicode
+try:
+    from django.utils.encoding import smart_unicode, force_unicode
+except ImportError:
+    from django.utils.encoding import smart_str as smart_unicode, force_str as force_unicode
 
-from .widgets import Select2Widget, Select2MultipleWidget,\
+from .widgets import Select2Widget, Select2MultipleWidget, \
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
     AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin, AutoHeavySelect2TagWidget, \
     HeavySelect2TagWidget
@@ -275,7 +278,7 @@ class ModelResultJsonMixin(object):
 
         res = [(getattr(obj, self.to_field_name), self.label_from_instance(obj), self.extra_data_from_instance(obj))
                 for obj in res]
-        return (NO_ERR_RESP, has_more, res, )
+        return (NO_ERR_RESP, has_more, res,)
 
 
 class UnhideableQuerysetType(type):
@@ -700,7 +703,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         try:
             key = self.to_field_name or 'pk'
             value = self.queryset.get(**{key: value})
-        except ValueError, e:
+        except ValueError as e:
             raise ValidationError(self.error_messages['invalid_choice'])
         except self.queryset.model.DoesNotExist:
             value = self.create_new_value(value)
