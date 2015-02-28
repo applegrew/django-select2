@@ -188,7 +188,7 @@ setup(
     ],
     install_requires=[
         "Django>=1.3",
-        "six',"
+        "six",
     ],
     zip_safe=False,
 )
