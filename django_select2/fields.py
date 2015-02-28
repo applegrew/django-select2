@@ -144,7 +144,7 @@ class ModelResultJsonMixin(object):
 
         super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
 
-    def get_queryset(self):
+    def get_queryset(self, request):
         """
         Returns the queryset.
 
@@ -259,7 +259,7 @@ class ModelResultJsonMixin(object):
         if not hasattr(self, 'search_fields') or not self.search_fields:
             raise ValueError('search_fields is required.')
 
-        qs = copy.deepcopy(self.get_queryset())
+        qs = copy.deepcopy(self.get_queryset(request))
         params = self.prepare_qs_params(request, term, self.search_fields)
 
         if self.max_results:
