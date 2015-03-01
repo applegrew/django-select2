@@ -9,7 +9,7 @@ import six
 try:
     from django.utils.encoding import force_unicode
 except ImportError:
-    from django.utils.encoding import force_str as force_unicode
+    from django.utils.encoding import force_text as force_unicode
 
 
 logger = logging.getLogger(__name__)

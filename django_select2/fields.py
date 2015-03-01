@@ -85,7 +85,8 @@ from django.utils.translation import ugettext_lazy as _
 try:
     from django.utils.encoding import smart_unicode, force_unicode
 except ImportError:
-    from django.utils.encoding import smart_str as smart_unicode, force_str as force_unicode
+    from django.utils.encoding import smart_text as smart_unicode, \
+        force_text as force_unicode
 
 from .widgets import Select2Widget, Select2MultipleWidget, \
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \

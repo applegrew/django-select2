@@ -16,7 +16,7 @@ from django.utils.datastructures import MultiValueDict, MergeDict
 try:
     from django.utils.encoding import force_unicode
 except ImportError:
-    from django.utils.encoding import force_str as force_unicode
+    from django.utils.encoding import force_text as force_unicode
 
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
