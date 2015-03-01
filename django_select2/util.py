@@ -106,10 +106,7 @@ def register_field(key, field):
         if GENERATE_RANDOM_ID:
             id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
         else:
-            if six.PY3:
-                id_ = hashlib.sha1(six.text_type("%s:%s" % (key, SECRET_SALT)).encode()).hexdigest()
-            else:
-                id_ = six.text_type(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            id_ = hashlib.sha1(six.text_type("%s:%s" % (key, SECRET_SALT)).encode()).hexdigest()
 
         __field_store[key] = id_
         __id_store[id_] = field
