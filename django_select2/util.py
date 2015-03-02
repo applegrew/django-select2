@@ -4,8 +4,13 @@ import logging
 import re
 import threading
 import types
+import six
 
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
+
 
 logger = logging.getLogger(__name__)
 
@@ -92,7 +97,7 @@ def register_field(key, field):
     """
     global __id_store, __field_store
 
-    from fields import AutoViewFieldMixin
+    from .fields import AutoViewFieldMixin
     if not isinstance(field, AutoViewFieldMixin):
         raise ValueError('Field must extend AutoViewFieldMixin')
 
@@ -101,7 +106,7 @@ def register_field(key, field):
         if GENERATE_RANDOM_ID:
             id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
         else:
-            id_ = unicode(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            id_ = hashlib.sha1(six.text_type("%s:%s" % (key, SECRET_SALT)).encode()).hexdigest()
 
         __field_store[key] = id_
         __id_store[id_] = field

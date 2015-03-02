@@ -5,14 +5,18 @@ import json
 import logging
 from itertools import chain
 import re
-import util
+import six
+from . import util
 
 from django import forms
 from django.core.validators import EMPTY_VALUES
-from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
 
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
@@ -22,18 +26,18 @@ logger = logging.getLogger(__name__)
 def get_select2_js_libs():
     from django.conf import settings
     if settings.configured and settings.DEBUG:
-        return ('js/select2.js', )
+        return ('js/select2.js',)
     else:
-        return ('js/select2.min.js', )
+        return ('js/select2.min.js',)
 
 def get_select2_heavy_js_libs():
     libs = get_select2_js_libs()
 
     from django.conf import settings
     if settings.configured and settings.DEBUG:
-        return libs + ('js/heavy_data.js', )
+        return libs + ('js/heavy_data.js',)
     else:
-        return libs + ('js/heavy_data.min.js', )
+        return libs + ('js/heavy_data.min.js',)
 
 def get_select2_css_libs(light=False):
     from django.conf import settings
@@ -235,7 +239,7 @@ class Select2Mixin(object):
         if choices:
             args.append(choices)
 
-        s = unicode(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
+        s = six.text_type(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
         if RENDER_SELECT2_STATICS:
             s += self.media.render()
         final_attrs = self.build_attrs(attrs)
@@ -269,11 +273,11 @@ class Select2Widget(Select2Mixin, forms.Select):
     def render_options(self, choices, selected_choices):
         all_choices = chain(self.choices, choices)
         if not self.is_required and \
-            len([value for value, txt in all_choices if value == '']) == 0: # Checking if list already has empty choice
+            len([value for value, txt in all_choices if value == '']) == 0:  # Checking if list already has empty choice
                                                                             # as in the case of Model based Light fields.
 
             choices = list(choices)
-            choices.append(('', '', ))  # Adding an empty choice
+            choices.append(('', '',))  # Adding an empty choice
         return super(Select2Widget, self).render_options(choices, selected_choices)
 
 
@@ -440,7 +444,7 @@ class HeavySelect2Mixin(Select2Mixin):
         choices_dict = dict()
         self_choices = self.choices
 
-        import fields
+        from . import fields
         if isinstance(self_choices, fields.FilterableModelChoiceIterator):
             self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
 
