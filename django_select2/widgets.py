@@ -444,7 +444,7 @@ class HeavySelect2Mixin(Select2Mixin):
         choices_dict = dict()
         self_choices = self.choices
 
-        import fields
+        from . import fields
         if isinstance(self_choices, fields.FilterableModelChoiceIterator):
             self_choices.set_extra_filter(**{'%s__in' % self.field.get_pk_field_name(): selected_choices})
 
