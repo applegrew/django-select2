@@ -1,0 +1,6 @@
+pytest
+pytest-pep8
+pytest-flakes
+pytest-django
+selenium
+model_mommy
