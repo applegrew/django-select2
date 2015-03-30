@@ -1,9 +1,11 @@
+# -*- coding:utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 import json
 
-from django.http import HttpResponse
-from django.views.generic import View
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.views.generic import View
 
 from .util import get_field, is_valid_id
 
@@ -13,6 +15,7 @@ Equals to 'nil' constant.
 
 Use this in :py:meth:`.Select2View.get_results` to mean no error, instead of hardcoding 'nil' value.
 """
+
 
 class JSONResponseMixin(object):
     """
@@ -31,8 +34,9 @@ class JSONResponseMixin(object):
         )
 
     def convert_context_to_json(self, context):
-        "Convert the context dictionary into a JSON object"
+        """Convert the context dictionary into a JSON object"""
         return json.dumps(context)
+
 
 class Select2View(JSONResponseMixin, View):
     """
@@ -98,7 +102,7 @@ class Select2View(JSONResponseMixin, View):
         if err == NO_ERR_RESP:
             for result in results:
                 id_, text = result[:2]
-                if len(result)>2:
+                if len(result) > 2:
                     extra_data = result[2]
                 else:
                     extra_data = {}
@@ -190,5 +194,3 @@ class AutoResponseView(Select2View):
         field = request.__django_select2_local
         del request.__django_select2_local
         return field.get_results(request, term, page, context)
-
-

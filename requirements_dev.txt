@@ -4,3 +4,4 @@ pytest-flakes
 pytest-django
 selenium
 model_mommy
+isort
