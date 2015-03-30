@@ -1,11 +1,18 @@
+# -*- coding:utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 import datetime
 import hashlib
 import logging
 import re
 import threading
-import types
 
-from django.utils.encoding import force_unicode
+from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT
+from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID
+from . import __MEMCACHE_HOST as MEMCACHE_HOST
+from . import __MEMCACHE_PORT as MEMCACHE_PORT
+from . import __MEMCACHE_TTL as MEMCACHE_TTL
+from . import __SECRET_SALT as SECRET_SALT
 
 logger = logging.getLogger(__name__)
 
@@ -30,15 +37,11 @@ def extract_some_key_val(dct, keys):
     return edct
 
 
-### Auto view helper utils ###
+# ## Auto view helper utils ##
 
-from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT, \
-    __MEMCACHE_HOST as MEMCACHE_HOST, __MEMCACHE_PORT as MEMCACHE_PORT, __MEMCACHE_TTL as MEMCACHE_TTL
-
-from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID, __SECRET_SALT as SECRET_SALT
 
 def synchronized(f):
-    "Decorator to synchronize multiple calls to a functions."
+    """Decorator to synchronize multiple calls to a functions."""
     f.__lock__ = threading.Lock()
 
     def synced_f(*args, **kwargs):
@@ -53,8 +56,8 @@ __id_store = {}
 # Field's key to generated Id mapping.
 __field_store = {}
 
-
 ID_PATTERN = r"[0-9_a-zA-Z.:+\- ]+"
+
 
 def is_valid_id(val):
     """
@@ -71,9 +74,12 @@ def is_valid_id(val):
     else:
         return True
 
+
 if ENABLE_MULTI_PROCESS_SUPPORT:
     from memcache_wrapped_db_client import Client
+
     remote_server = Client(MEMCACHE_HOST, str(MEMCACHE_PORT), MEMCACHE_TTL)
+
 
 @synchronized
 def register_field(key, field):
@@ -92,7 +98,8 @@ def register_field(key, field):
     """
     global __id_store, __field_store
 
-    from fields import AutoViewFieldMixin
+    from .fields import AutoViewFieldMixin
+
     if not isinstance(field, AutoViewFieldMixin):
         raise ValueError('Field must extend AutoViewFieldMixin')
 
@@ -110,7 +117,8 @@ def register_field(key, field):
             logger.info("Registering new field: %s; With actual id: %s", key, id_)
 
         if ENABLE_MULTI_PROCESS_SUPPORT:
-            logger.info("Multi process support is enabled. Adding id-key mapping to remote server.")
+            logger.info(
+                "Multi process support is enabled. Adding id-key mapping to remote server.")
             remote_server.set(id_, key)
     else:
         id_ = __field_store[key]
@@ -144,31 +152,3 @@ def get_field(id_):
         else:
             logger.error('Unknown id "%s".', id_)
     return field
-
-def timer_start(name):
-    import sys, time
-    if sys.platform == "win32":
-        # On Windows, the best timer is time.clock()
-        default_timer = time.clock
-        multiplier = 1.0
-    else:
-        # On most other platforms the best timer is time.time()
-        default_timer = time.time
-        multiplier = 1000.0
-
-    return (name, default_timer, multiplier, default_timer())
-
-def timer_end(t):
-    (name, default_timer, multiplier, timeS) = t
-    timeE = default_timer()
-    logger.debug("Time taken by %s: %0.3f ms" % (name, (timeE - timeS) * multiplier))
-
-def timer(f):
-    def inner(*args, **kwargs):
-
-        t = timer_start(f.func_name)
-        ret = f(*args, **kwargs)
-        timer_end(t)
-
-        return ret
-    return inner

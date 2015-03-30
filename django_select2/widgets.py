@@ -1,18 +1,21 @@
+# -*- coding:utf-8 -*-
 """
 Contains all the Django widgets for Select2.
 """
+from __future__ import absolute_import, unicode_literals
+
 import json
 import logging
-from itertools import chain
 import re
-import util
+from itertools import chain
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.core.validators import EMPTY_VALUES
+from django.utils.datastructures import MergeDict, MultiValueDict
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse
-from django.utils.datastructures import MultiValueDict, MergeDict
+from django.utils.six import text_type
 
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
@@ -26,6 +29,7 @@ def get_select2_js_libs():
     else:
         return ('js/select2.min.js', )
 
+
 def get_select2_heavy_js_libs():
     libs = get_select2_js_libs()
 
@@ -34,6 +38,7 @@ def get_select2_heavy_js_libs():
         return libs + ('js/heavy_data.js', )
     else:
         return libs + ('js/heavy_data.min.js', )
+
 
 def get_select2_css_libs(light=False):
     from django.conf import settings
@@ -61,7 +66,9 @@ def get_select2_css_libs(light=False):
             else:
                 return ('css/all.min.css',)
 
-### Light mixin and widgets ###
+
+# ## Light mixin and widgets ##
+
 
 class Select2Mixin(object):
     """
@@ -228,23 +235,17 @@ class Select2Mixin(object):
         :return: The rendered markup.
         :rtype: :py:obj:`unicode`
         """
-        if logger.isEnabledFor(logging.DEBUG):
-            t1 = util.timer_start('Select2Mixin.render')
 
         args = [name, value, attrs]
         if choices:
             args.append(choices)
 
-        s = unicode(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
+        s = text_type(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
         if RENDER_SELECT2_STATICS:
             s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         s += self.render_js_code(id_, name, value, attrs, choices)
-
-        if logger.isEnabledFor(logging.DEBUG):
-            util.timer_end(t1)
-            logger.debug("Generated widget code:-\n%s", s)
 
         return mark_safe(s)
 
@@ -268,10 +269,10 @@ class Select2Widget(Select2Mixin, forms.Select):
 
     def render_options(self, choices, selected_choices):
         all_choices = chain(self.choices, choices)
-        if not self.is_required and \
-            len([value for value, txt in all_choices if value == '']) == 0: # Checking if list already has empty choice
-                                                                            # as in the case of Model based Light fields.
-
+        if not self.is_required \
+                and len([value for value, txt in all_choices if value == '']) == 0:
+            # Checking if list already has empty choice
+            # as in the case of Model based Light fields.
             choices = list(choices)
             choices.append(('', '', ))  # Adding an empty choice
         return super(Select2Widget, self).render_options(choices, selected_choices)
@@ -295,7 +296,9 @@ class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
         self.options.pop('minimumResultsForSearch', None)
 
 
-### Specialized Multiple Hidden Input Widget ###
+# ## Specialized Multiple Hidden Input Widget ##
+
+
 class MultipleSelect2HiddenInput(forms.TextInput):
     """
     Multiple hidden input for Select2.
@@ -338,7 +341,9 @@ class MultipleSelect2HiddenInput(forms.TextInput):
         data_set = set([force_unicode(value) for value in data])
         return data_set != initial_set
 
-### Heavy mixins and widgets ###
+
+# ## Heavy mixins and widgets ##
+
 
 class HeavySelect2Mixin(Select2Mixin):
     """
@@ -617,7 +622,8 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
             return js
 
 
-### Auto Heavy widgets ###
+# ## Auto Heavy widgets ##
+
 
 class AutoHeavySelect2Mixin(object):
     """
@@ -660,14 +666,15 @@ class AutoHeavySelect2Mixin(object):
 
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
-    "Auto version of :py:class:`.HeavySelect2Widget`"
+    """Auto version of :py:class:`.HeavySelect2Widget`"""
     pass
 
 
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
-    "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
+    """Auto version of :py:class:`.HeavySelect2MultipleWidget`"""
     pass
 
+
 class AutoHeavySelect2TagWidget(AutoHeavySelect2Mixin, HeavySelect2TagWidget):
-    "Auto version of :py:class:`.HeavySelect2TagWidget`"
+    """Auto version of :py:class:`.HeavySelect2TagWidget`"""
     pass
