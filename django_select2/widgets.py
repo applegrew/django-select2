@@ -338,6 +338,14 @@ class MultipleSelect2HiddenInput(forms.TextInput):
         data_set = set([force_unicode(value) for value in data])
         return data_set != initial_set
 
+    @property
+    def is_hidden(self):
+        # we return false because even if input_type is 'hidden'
+        # , the final field will be displayed by javascript
+        # and we want label and other layout elements.
+        return False
+
+
 ### Heavy mixins and widgets ###
 
 class HeavySelect2Mixin(Select2Mixin):
@@ -523,6 +531,13 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
 
     def init_options(self):
         self.options['multiple'] = False
+
+    @property
+    def is_hidden(self):
+        # we return false because even if input_type is 'hidden'
+        # , the final field will be displayed by javascript
+        # and we want label and other layout elements.
+        return False
 
 
 class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
