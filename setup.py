@@ -9,9 +9,9 @@ import sys
 from setuptools import setup, find_packages, Command
 
 
-def read(fname):
-    f = codecs.open(os.path.join(os.path.dirname(__file__), fname), 'rb')
-    return f.read()
+def read(file_name):
+    file_path = os.path.join(os.path.dirname(__file__), file_name)
+    return codecs.open(file_path, encoding='utf-8').read()
 
 
 PACKAGE = "django_select2"
@@ -28,42 +28,27 @@ def getPkgPath():
 
 
 def minify(files, outfile, ftype):
-    import urllib
-    import json
+    import requests
+    import io
 
-    content = u''
+    content = ''
+
     for filename in files:
-        with open(getPkgPath() + filename) as f:
-            for line in f.xreadlines():
-                if isinstance(line, str):
-                    line = line.decode('utf-8')
-                content = content + line
+        with io.open(getPkgPath() + filename, 'rb', encoding='utf8') as f:
+            content = f.read()
 
-    data = urllib.urlencode([
-        ('code', content.encode('utf-8')),
-        ('type', ftype),
-    ])
-
-    f = urllib.urlopen('http://api.applegrew.com/minify', data)
-    data = u''
-    while 1:
-        line = f.readline()
-        if line:
-            if isinstance(line, str):
-                line = line.decode('utf-8')
-            data = data + line
-        else:
-            break
-    f.close()
-
-    data = json.loads(data)
-    if data['success']:
-        with open(getPkgPath() + outfile, 'w') as f:
-            f.write(data['compiled_code'].encode('utf8'))
+    data = {
+        'code': content,
+        'type': ftype,
+    }
+    response = requests.post('http://api.applegrew.com/minify', data)
+    response.raise_for_status()
+    response = response.json()
+    if response['success']:
+        with io.open(getPkgPath() + outfile, 'w', encoding='utf8') as f:
+            f.write(response['compiled_code'])
     else:
-        print data['error_code']
-        print data['error']
-        raise Exception('Could not minify.')
+        raise Exception('%(error_code)s: "%(error)s"' % response)
 
 
 if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:

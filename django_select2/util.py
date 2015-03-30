@@ -7,6 +7,8 @@ import logging
 import re
 import threading
 
+from django.utils.six import binary_type, text_type
+
 from . import __ENABLE_MULTI_PROCESS_SUPPORT as ENABLE_MULTI_PROCESS_SUPPORT
 from . import __GENERATE_RANDOM_ID as GENERATE_RANDOM_ID
 from . import __MEMCACHE_HOST as MEMCACHE_HOST
@@ -78,7 +80,7 @@ def is_valid_id(val):
 if ENABLE_MULTI_PROCESS_SUPPORT:
     from memcache_wrapped_db_client import Client
 
-    remote_server = Client(MEMCACHE_HOST, str(MEMCACHE_PORT), MEMCACHE_TTL)
+    remote_server = Client(MEMCACHE_HOST, binary_type(MEMCACHE_PORT), MEMCACHE_TTL)
 
 
 @synchronized
@@ -106,9 +108,9 @@ def register_field(key, field):
     if key not in __field_store:
         # Generating id
         if GENERATE_RANDOM_ID:
-            id_ = u"%d:%s" % (len(__id_store), unicode(datetime.datetime.now()))
+            id_ = "%d:%s" % (len(__id_store), text_type(datetime.datetime.now()))
         else:
-            id_ = unicode(hashlib.sha1("%s:%s" % (key, SECRET_SALT)).hexdigest())
+            id_ = text_type(hashlib.sha1(":".join((key, SECRET_SALT)).encode('utf-8')).hexdigest())
 
         __field_store[key] = id_
         __id_store[id_] = field

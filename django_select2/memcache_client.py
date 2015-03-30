@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+from django.utils.six import binary_type
+
 import memcache
 
 
@@ -29,6 +31,6 @@ class Client(object):
         return self.server.get(self.normalize_key(key))
 
     def normalize_key(self, key):
-        key = str(key)
+        key = binary_type(key)
         key = key.replace(' ', '-')
         return key

@@ -12,7 +12,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
-from django.utils.encoding import force_unicode, smart_unicode
+from django.utils.encoding import force_text, smart_text
 from django.utils.translation import ugettext_lazy as _
 
 from . import util
@@ -57,7 +57,7 @@ class AutoViewFieldMixin(object):
         :type auto_id: :py:obj:`unicode`
 
         """
-        name = kwargs.pop('auto_id', u"%s.%s" % (self.__module__, self.__class__.__name__))
+        name = kwargs.pop('auto_id', "%s.%s" % (self.__module__, self.__class__.__name__))
         if logger.isEnabledFor(logging.INFO):
             logger.info("Registering auto field: %s", name)
 
@@ -170,7 +170,7 @@ class ModelResultJsonMixin(object):
         :return: The label string.
         :rtype: :py:obj:`unicode`
         """
-        return smart_unicode(obj)
+        return smart_text(obj)
 
     def extra_data_from_instance(self, obj):
         """
@@ -519,9 +519,9 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         to be a subset of all possible choices.
     """
     default_error_messages = {
-        'invalid_choice': _(u'Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_choice': _('Select a valid choice. %(value)s is not one of the available choices.'),
     }
-    empty_value = u''
+    empty_value = ''
     "Sub-classes can set this other value if needed."
 
     def __init__(self, *args, **kwargs):
@@ -544,9 +544,9 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
             raise ValidationError(self.error_messages['invalid_choice'] % {'value': value})
 
     def valid_value(self, value):
-        uvalue = smart_unicode(value)
+        uvalue = smart_text(value)
         for k, v in self.choices:
-            if uvalue == smart_unicode(k):
+            if uvalue == smart_text(k):
                 return True
         return self.validate_value(value)
 
@@ -556,7 +556,7 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
 
         Sub-classes should override this if they do not want Unicode values.
         """
-        return smart_unicode(value)
+        return smart_text(value)
 
     def validate_value(self, value):
         """
@@ -602,8 +602,8 @@ class HeavyMultipleChoiceField(HeavyChoiceField):
     """
     hidden_widget = forms.MultipleHiddenInput
     default_error_messages = {
-        'invalid_choice': _(u'Select a valid choice. %(value)s is not one of the available choices.'),
-        'invalid_list': _(u'Enter a list of values.'),
+        'invalid_choice': _('Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_list': _('Enter a list of values.'),
     }
 
     def to_python(self, value):
@@ -729,7 +729,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
                 new_values.append(pk)
 
         for val in new_values:
-            value.append(self.create_new_value(force_unicode(val)))
+            value.append(self.create_new_value(force_text(val)))
 
         # Usually new_values will have list of new tags, but if the tag is
         # suppose of type int then that could be interpreted as valid pk
@@ -737,9 +737,9 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         # Below we find such tags and create them, by check if the pk
         # actually exists.
         qs = self.queryset.filter(**{'%s__in' % key: value})
-        pks = set([force_unicode(getattr(o, key)) for o in qs])
+        pks = set([force_text(getattr(o, key)) for o in qs])
         for i in range(0, len(value)):
-            val = force_unicode(value[i])
+            val = force_text(value[i])
             if val not in pks:
                 value[i] = self.create_new_value(val)
         # Since this overrides the inherited ModelChoiceField.clean
@@ -861,8 +861,8 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
 
         class Tag(models.Model):
             tag = models.CharField(max_length=10, unique=True)
-            def __unicode__(self):
-                return unicode(self.tag)
+            def __str__(self):
+                return text_type(self.tag)
 
         class TagField(AutoModelSelect2TagField):
             queryset = Tag.objects
