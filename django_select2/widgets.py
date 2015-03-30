@@ -349,7 +349,7 @@ class MultipleSelect2HiddenInput(forms.TextInput):
         return False
 
 
-### Heavy mixins and widgets ###
+# ## Heavy mixins and widgets ###
 
 class HeavySelect2Mixin(Select2Mixin):
     """
