@@ -182,7 +182,21 @@ class Select2Mixin(object):
         options = json.dumps(self.get_options())
         options = options.replace('"*START*', '').replace('*END*"', '')
         # selector variable must already be passed to this
-        return '$(hashedSelector).select2(%s);' % (options)
+
+        fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
+        if '__prefix__' in id_:
+            return ''
+        else:
+            js = '''
+                  window.django_select2.%s = function (selector) {
+                    var hashedSelector = "#" + selector;
+                    $(hashedSelector).select2(%s);
+                  ''' % (fieldset_id, options)
+            js += '};'
+            js += 'django_select2.%s("%s");' % (fieldset_id, id_)
+            return js
+        #
+        # return '$(hashedSelector).select2(%s);' % (options)
 
     def render(self, name, value, attrs=None, choices=()):
         """
