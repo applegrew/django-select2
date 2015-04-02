@@ -8,6 +8,7 @@ import json
 import logging
 import re
 from itertools import chain
+from django_select2.media import get_select2_js_libs, get_select2_css_libs, get_select2_heavy_js_libs
 
 from django import forms
 from django.core.urlresolvers import reverse
@@ -20,51 +21,6 @@ from django.utils.six import text_type
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
 logger = logging.getLogger(__name__)
-
-
-def get_select2_js_libs():
-    from django.conf import settings
-    if settings.configured and settings.DEBUG:
-        return ('js/select2.js', )
-    else:
-        return ('js/select2.min.js', )
-
-
-def get_select2_heavy_js_libs():
-    libs = get_select2_js_libs()
-
-    from django.conf import settings
-    if settings.configured and settings.DEBUG:
-        return libs + ('js/heavy_data.js', )
-    else:
-        return libs + ('js/heavy_data.min.js', )
-
-
-def get_select2_css_libs(light=False):
-    from django.conf import settings
-    from . import __BOOTSTRAP
-    if __BOOTSTRAP:
-        if settings.configured and settings.DEBUG:
-            if light:
-                return ('css/select2.css', 'css/select2-bootstrap.css')
-            else:
-                return ('css/select2.css', 'css/extra.css', 'css/select2-bootstrap.css')
-        else:
-            if light:
-                return ('css/select2-bootstrapped.min.css',)
-            else:
-                return ('css/all-bootstrapped.min.css',)
-    else:
-        if settings.configured and settings.DEBUG:
-            if light:
-                return ('css/select2.css',)
-            else:
-                return ('css/select2.css', 'css/extra.css')
-        else:
-            if light:
-                return ('css/select2.min.css',)
-            else:
-                return ('css/all.min.css',)
 
 
 # ## Light mixin and widgets ##
@@ -241,8 +197,7 @@ class Select2Mixin(object):
             args.append(choices)
 
         s = text_type(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
-        if RENDER_SELECT2_STATICS:
-            s += self.media.render()
+        s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
         s += self.render_js_code(id_, name, value, attrs, choices)
@@ -250,8 +205,11 @@ class Select2Mixin(object):
         return mark_safe(s)
 
     class Media:
-        js = get_select2_js_libs()
-        css = {'screen': get_select2_css_libs(light=True)}
+        if RENDER_SELECT2_STATICS:
+            js = get_select2_js_libs()
+            css = {
+                'screen': get_select2_css_libs(light=True),
+            }
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -518,8 +476,11 @@ class HeavySelect2Mixin(Select2Mixin):
         return js
 
     class Media:
-        js = get_select2_heavy_js_libs()
-        css = {'screen': get_select2_css_libs()}
+        if RENDER_SELECT2_STATICS:
+            js = get_select2_heavy_js_libs()
+            css = {
+                'screen': get_select2_css_libs()
+            }
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
