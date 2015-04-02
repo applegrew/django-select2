@@ -3,7 +3,9 @@ from __future__ import absolute_import, unicode_literals
 
 from django import template
 
-from django_select2.media import get_select2_js_libs, get_select2_css_libs, get_select2_heavy_js_libs
+from django_select2.media import (get_select2_css_libs,
+                                  get_select2_heavy_js_libs,
+                                  get_select2_js_libs)
 
 register = template.Library()
 

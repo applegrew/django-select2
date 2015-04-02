@@ -3,7 +3,6 @@ from django.templatetags.static import static
 
 from . import __BOOTSTRAP as BOOTSTRAP
 
-
 # Local version of DEBUG
 DEBUG = settings.configured and settings.DEBUG
 

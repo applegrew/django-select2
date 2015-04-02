@@ -8,7 +8,6 @@ import json
 import logging
 import re
 from itertools import chain
-from django_select2.media import get_select2_js_libs, get_select2_css_libs, get_select2_heavy_js_libs
 
 from django import forms
 from django.core.urlresolvers import reverse
@@ -17,6 +16,10 @@ from django.utils.datastructures import MergeDict, MultiValueDict
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.six import text_type
+
+from django_select2.media import (get_select2_css_libs,
+                                  get_select2_heavy_js_libs,
+                                  get_select2_js_libs)
 
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
 
