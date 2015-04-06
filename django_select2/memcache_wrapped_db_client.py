@@ -8,11 +8,11 @@ class Client(object):
 
     def __init__(self, hostname="127.0.0.1", port="11211", expiry=900):
         if hostname and port:
-            import memcache_client
+            from . import memcache_client
 
             self.cache = memcache_client.Client(hostname, port, expiry)
 
-        import db_client
+        from . import db_client
 
         self.db = db_client.Client()
 
