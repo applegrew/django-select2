@@ -24,6 +24,11 @@ from .widgets import (AutoHeavySelect2MultipleWidget,
                       HeavySelect2MultipleWidget, HeavySelect2TagWidget,
                       HeavySelect2Widget, Select2MultipleWidget, Select2Widget)
 
+try:
+    from django.forms.fields import RenameFieldMethods as UnhideableQuerysetTypeBase
+except ImportError:
+    UnhideableQuerysetTypeBase = type
+
 logger = logging.getLogger(__name__)
 
 
@@ -284,7 +289,7 @@ class ModelResultJsonMixin(object):
         return NO_ERR_RESP, has_more, res
 
 
-class UnhideableQuerysetType(type):
+class UnhideableQuerysetType(UnhideableQuerysetTypeBase):
     """
     This does some pretty nasty hacky stuff, to make sure users can
     also define ``queryset`` as class-level field variable, instead of
