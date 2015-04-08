@@ -104,9 +104,7 @@ setup(
         "Programming Language :: Python",
         "Framework :: Django",
     ],
-    install_requires=[
-        "Django>=1.4",
-    ],
+    install_requires=[],
     zip_safe=False,
     cmdclass={'test': PyTest},
 )

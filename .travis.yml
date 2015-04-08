@@ -15,13 +15,11 @@ env:
     - DJANGO="<1.5,>=1.4"
     - DJANGO="<1.7,>=1.6"
     - DJANGO="<1.8,>=1.7"
-    - DJANGO="==1.8rc1"
+    - DJANGO="<1.9,>=1.8"
 matrix:
   exclude:
     - python: "3.2"
       env: DJANGO="<1.5,>=1.4"
-    - python: "3.2"
-      env: DJANGO="<1.8,>=1.7"
     - python: "3.3"
       env: DJANGO="<1.5,>=1.4"
     - python: "3.4"
@@ -30,8 +28,10 @@ matrix:
       env: DJANGO="<1.5,>=1.4"
     - python: "2.6"
       env: DJANGO="<1.8,>=1.7"
-  allow_failures:
-    - env: DJANGO="==1.8rc1"
+    - python: "3.2"
+      env: DJANGO="<1.8,>=1.7"
+    - python: "2.6"
+      env: DJANGO="<1.9,>=1.8"
 install:
   - pip install --upgrade pip
   - pip install -e .
