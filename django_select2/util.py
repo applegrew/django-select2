@@ -78,7 +78,7 @@ def is_valid_id(val):
 
 
 if ENABLE_MULTI_PROCESS_SUPPORT:
-    from memcache_wrapped_db_client import Client
+    from .memcache_wrapped_db_client import Client
 
     remote_server = Client(MEMCACHE_HOST, binary_type(MEMCACHE_PORT), MEMCACHE_TTL)
 
