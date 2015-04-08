@@ -184,8 +184,9 @@ class Select2Mixin(object):
         """
         options = json.dumps(self.get_options())
         options = options.replace('"*START*', '').replace('*END*"', '')
-        # selector variable must already be passed to this
-        return '$(hashedSelector).select2(%s);' % (options)
+        js = 'var hashedSelector = "#" + "%s";' % id_
+        js += '$(hashedSelector).select2(%s);' % (options)
+        return js
 
     def render(self, name, value, attrs=None, choices=()):
         """
