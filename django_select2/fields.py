@@ -12,6 +12,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
+from django.utils import six
 from django.utils.encoding import force_text, smart_text
 from django.utils.translation import ugettext_lazy as _
 
@@ -825,35 +826,38 @@ class AutoSelect2TagField(AutoViewFieldMixin, HeavySelect2TagField):
 # ## Heavy field, specialized for Model, that uses central AutoView ##
 
 
-class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2ChoiceField):
+class AutoModelSelect2Field(six.with_metaclass(UnhideableQuerysetType,
+                                               ModelResultJsonMixin,
+                                               AutoViewFieldMixin,
+                                               HeavyModelSelect2ChoiceField)):
     """
     Auto Heavy Select2 field, specialized for Models.
 
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    # ModelChoiceField will set this to ModelChoiceIterator
-    # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2Widget
 
 
-class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2MultipleChoiceField):
+class AutoModelSelect2MultipleField(six.with_metaclass(UnhideableQuerysetType,
+                                                       ModelResultJsonMixin,
+                                                       AutoViewFieldMixin,
+                                                       HeavyModelSelect2MultipleChoiceField)):
     """
     Auto Heavy Select2 field for multiple choices, specialized for Models.
 
     This needs to be subclassed. The first instance of a class (sub-class) is used to serve all incoming
     json query requests for that type (class).
     """
-    # Makes sure that user defined queryset class variable is replaced by
-    # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2MultipleWidget
 
 
-class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyModelSelect2TagField):
+class AutoModelSelect2TagField(six.with_metaclass(UnhideableQuerysetType,
+                                                  ModelResultJsonMixin,
+                                                  AutoViewFieldMixin,
+                                                  HeavyModelSelect2TagField)):
     """
     Auto Heavy Select2 field for tagging, specialized for Models.
 
@@ -876,8 +880,5 @@ class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin, HeavyMo
                 return {'tag': value}
 
     """
-    # Makes sure that user defined queryset class variable is replaced by
-    # queryset property (as it is needed by super classes).
-    __metaclass__ = UnhideableQuerysetType
 
     widget = AutoHeavySelect2TagWidget
