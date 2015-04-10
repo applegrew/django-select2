@@ -585,6 +585,7 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
         self.options['createSearchChoice'] = '*START*django_select2.createSearchChoice*END*'
 
     def render_inner_js_code(self, id_, *args):
+        field_id = self.field_id if hasattr(self, 'field_id') else id_
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
@@ -596,7 +597,7 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
                   ''' % (fieldset_id)
             js += super(HeavySelect2TagWidget, self).render_inner_js_code(id_, *args)
             js += '};'
-            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, id_)
+            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, field_id)
             return js
 
 
@@ -626,21 +627,6 @@ class AutoHeavySelect2Mixin(object):
     def __init__(self, *args, **kwargs):
         kwargs['data_view'] = "django_select2_central_json"
         super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
-
-    def render_inner_js_code(self, id_, *args):
-        fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
-        if '__prefix__' in id_:
-            return ''
-        else:
-            js = '''
-                  window.django_select2.%s = function (selector, fieldID) {
-                    var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
-                  ''' % (fieldset_id)
-            js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
-            js += '};'
-            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, self.field_id)
-            return js
 
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
