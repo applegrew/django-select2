@@ -57,22 +57,19 @@ class Select2View(JSONResponseMixin, View):
         return super(Select2View, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            term = request.GET.get('term', None)
-            if term is None:
-                return self.render_to_response(self._results_to_context(('missing term', False, [], )))
+        term = request.GET.get('term', None)
+        if term is None:
+            return self.render_to_response(self._results_to_context(('missing term', False, [], )))
 
-            try:
-                page = int(request.GET.get('page', None))
-                if page <= 0:
-                    page = -1
-            except ValueError:
+        try:
+            page = int(request.GET.get('page', None))
+            if page <= 0:
                 page = -1
-            if page == -1:
-                return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
-            context = request.GET.get('context', None)
-        else:
-            return self.render_to_response(self._results_to_context(('not a get request', False, [], )))
+        except ValueError:
+            page = -1
+        if page == -1:
+            return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
+        context = request.GET.get('context', None)
 
         return self.render_to_response(
             self._results_to_context(
