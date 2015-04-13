@@ -113,6 +113,7 @@ class SchoolForm(forms.ModelForm):
 
     class Meta:
         model = School
+        fields = ('classes', )
 
 
 class EmployeeForm(forms.ModelForm):
@@ -121,6 +122,7 @@ class EmployeeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
+        fields = ('name', 'salary', 'dept', 'manager')
 
 
 class DeptForm(forms.ModelForm):
@@ -129,6 +131,7 @@ class DeptForm(forms.ModelForm):
 
     class Meta:
         model = Dept
+        fields = ('name', 'allotted_rooms', 'allotted_labs')
 
 
 class MixedForm(forms.Form):
@@ -189,6 +192,7 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
+        fields = ('question', 'description', 'tags')
 
 
 class QuestionNonAutoForm(forms.ModelForm):
@@ -200,6 +204,7 @@ class QuestionNonAutoForm(forms.ModelForm):
 
     class Meta:
         model = Question
+        fields = ('question', 'description', 'tags')
 
 
 class WordsForm(forms.ModelForm):
