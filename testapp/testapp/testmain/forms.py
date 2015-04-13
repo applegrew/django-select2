@@ -131,6 +131,7 @@ class DeptForm(forms.ModelForm):
 
     class Meta:
         model = Dept
+        fields = ('name', 'allotted_rooms', 'allotted_labs')
 
 
 class MixedForm(forms.Form):
