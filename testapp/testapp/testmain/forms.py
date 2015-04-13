@@ -192,6 +192,7 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
+        fields = ('question', 'description', 'tags')
 
 
 class QuestionNonAutoForm(forms.ModelForm):
