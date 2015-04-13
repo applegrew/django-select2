@@ -15,11 +15,12 @@
         <li><a href="{% url href e.id %}">{{ e }}</a></li>
     {% endfor %}
 </ul>
+{% if href_non_auto %}
 <p>Non-Auto Tags</p>
 <ul>
     {% for e in object_list %}
         <li><a href="{% url href_non_auto e.id %}">{{ e }}</a></li>
     {% endfor %}
 </ul>
-
+{% endif %}
 </body>
