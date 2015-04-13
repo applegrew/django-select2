@@ -113,6 +113,7 @@ class SchoolForm(forms.ModelForm):
 
     class Meta:
         model = School
+        fields = ('classes', )
 
 
 class EmployeeForm(forms.ModelForm):
