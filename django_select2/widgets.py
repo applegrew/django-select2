@@ -628,6 +628,21 @@ class AutoHeavySelect2Mixin(object):
         kwargs['data_view'] = "django_select2_central_json"
         super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
 
+    def render_inner_js_code(self, id_, *args):
+        fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
+        if '__prefix__' in id_:
+            return ''
+        else:
+            js = '''
+                  window.django_select2.%s = function (selector, fieldID) {
+                    var hashedSelector = "#" + selector;
+                    $(hashedSelector).data("field_id", fieldID);
+                  ''' % (fieldset_id)
+            js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
+            js += '};'
+            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, self.field_id)
+            return js
+
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
     """Auto version of :py:class:`.HeavySelect2Widget`"""
