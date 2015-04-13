@@ -8,40 +8,50 @@ from .fields import GetSearchTestField, GetModelSearchTestField
 
 from django.core.exceptions import ValidationError
 
-def validate_fail_always(value):
-    raise ValidationError(u'%s not valid. Infact nothing is valid!' % value)
 
-############# Choice fields ###################
+def validate_fail_always(value):
+    raise ValidationError(u'%s not valid. In fact nothing is valid!' % value)
+
+
+# Choice fields
 
 class EmployeeChoices(AutoModelSelect2Field):
     queryset = Employee.objects
     search_fields = ['name__icontains', ]
 
+
 class ClassRoomChoices(AutoModelSelect2MultipleField):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
+
 
 class ClassRoomSingleChoices(AutoModelSelect2Field):
     queryset = ClassRoom.objects
     search_fields = ['number__icontains', ]
 
+
 class WordChoices(AutoModelSelect2Field):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
+
 
 class MultiWordChoices(AutoModelSelect2MultipleField):
     queryset = Word.objects
     search_fields = ['word__icontains', ]
 
+
 class TagField(AutoModelSelect2TagField):
     queryset = Tag.objects
     search_fields = ['tag__icontains', ]
+
     def get_model_field_values(self, value):
         return {'tag': value}
+
 
 class TagNAField(HeavyModelSelect2TagField):
     def get_model_field_values(self, value):
         return {'tag': value}
+
 
 class SelfChoices(AutoSelect2Field):
     def get_val_txt(self, value):
@@ -60,7 +70,8 @@ class SelfChoices(AutoSelect2Field):
             self.res_map[idx] = term * i
         self.choices = res
 
-        return (NO_ERR_RESP, False, res)
+        return NO_ERR_RESP, False, res
+
 
 class SelfMultiChoices(AutoSelect2MultipleField):
     big_data = {
@@ -92,15 +103,17 @@ class SelfMultiChoices(AutoSelect2MultipleField):
             self._big_data[idx] = term * i
         self.choices = res
 
-        return (NO_ERR_RESP, False, res)
+        return NO_ERR_RESP, False, res
 
-########### Forms ##############]
+
+# Forms
 
 class SchoolForm(forms.ModelForm):
     classes = ClassRoomChoices()
 
     class Meta:
         model = School
+
 
 class EmployeeForm(forms.ModelForm):
     manager = EmployeeChoices(required=False)
@@ -109,12 +122,14 @@ class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
 
+
 class DeptForm(forms.ModelForm):
     allotted_rooms = ClassRoomChoices()
     allotted_labs = ModelSelect2MultipleField(queryset=Lab.objects, required=False)
 
     class Meta:
         model = Dept
+
 
 class MixedForm(forms.Form):
     emp1 = EmployeeChoices()
@@ -137,30 +152,35 @@ class MixedForm(forms.Form):
     always_fail_rooms = ClassRoomSingleChoices(validators=[validate_fail_always])
     always_fail_rooms_multi = ClassRoomChoices(validators=[validate_fail_always])
     always_fail_self_choice = SelfChoices(validators=[validate_fail_always], auto_id='always_fail_self_choice')
-    always_fail_self_choice_multi = SelfMultiChoices(validators=[validate_fail_always], auto_id='always_fail_self_choice_multi')
+    always_fail_self_choice_multi = SelfMultiChoices(validators=[validate_fail_always],
+                                                     auto_id='always_fail_self_choice_multi')
     model_with_both_required_and_empty_label_false = ModelSelect2Field(
-        queryset=Employee.objects, empty_label=None, required=False) #issue#26
+        queryset=Employee.objects, empty_label=None, required=False)  # issue#26
 
 # These are just for testing Auto registration of fields
-EmployeeChoices() # Should already be registered
-EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId") # Should get registered
+EmployeeChoices()  # Should already be registered
+EmployeeChoices(auto_id="EmployeeChoices_CustomAutoId")  # Should get registered
+
 
 class InitialValueForm(forms.Form):
     select2Choice = Select2ChoiceField(initial=2,
-        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    select2MultipleChoice = Select2MultipleChoiceField(initial=[2,3],
-        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+                                       choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    select2MultipleChoice = Select2MultipleChoiceField(initial=[2, 3],
+                                                       choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     heavySelect2Choice = AutoSelect2Field(initial=2,
-        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1,3],
-        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+                                          choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    heavySelect2MultipleChoice = AutoSelect2MultipleField(initial=[1, 3],
+                                                          choices=((1, "First"), (2, "Second"), (3, "Third"), ))
     self_choices = SelfChoices(label='Self copy choices', initial=2,
-        choices=((1, "First"), (2, "Second"), (3, "Third"), ))
-    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2,3])
+                               choices=((1, "First"), (2, "Second"), (3, "Third"), ))
+    self_multi_choices = SelfMultiChoices(label='Self copy multi-choices', initial=[2, 3])
     select2ChoiceWithQuotes = Select2ChoiceField(initial=2,
-        choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""), (3, "\"Mixed-Quotes'"), ))
+                                                 choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""),
+                                                          (3, "\"Mixed-Quotes'"), ))
     heavySelect2ChoiceWithQuotes = AutoSelect2Field(initial=2,
-        choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""), (3, "\"Mixed-Quotes'"), ))
+                                                    choices=((1, "'Single-Quote'"), (2, "\"Double-Quotes\""),
+                                                             (3, "\"Mixed-Quotes'"), ))
+
 
 class QuestionForm(forms.ModelForm):
     question = forms.CharField()
@@ -170,15 +190,17 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
 
+
 class QuestionNonAutoForm(forms.ModelForm):
     question = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)
     tags = TagNAField(queryset=Tag.objects,
-            search_fields=['tag__icontains'],
-            widget = HeavySelect2TagWidget(data_view='test_tagging_tags'))
+                      search_fields=['tag__icontains'],
+                      widget=HeavySelect2TagWidget(data_view='test_tagging_tags'))
 
     class Meta:
         model = Question
+
 
 class WordsForm(forms.ModelForm):
     word = WordChoices()
@@ -188,9 +210,11 @@ class WordsForm(forms.ModelForm):
         model = WordList
         exclude = ['kind']
 
+
 class GetSearchTestForm(forms.Form):
     name = GetSearchTestField(required=False, label='Name')
     dept = GetModelSearchTestField(required=False, label='Department')
+
 
 class AnotherWordForm(forms.ModelForm):
     word = WordChoices(widget=AutoHeavySelect2Widget())
