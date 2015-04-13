@@ -122,6 +122,7 @@ class EmployeeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
+        fields = ('name', 'salary', 'dept', 'manager')
 
 
 class DeptForm(forms.ModelForm):
