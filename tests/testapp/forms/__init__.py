@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 from django import forms
 
 from django_select2.fields import Select2MultipleWidget
-from django_select2.widgets import Select2Widget
+from django_select2.widgets import Select2Widget, HeavySelect2Widget
 
 from tests.testapp import models
 from . import fields
@@ -60,3 +60,6 @@ class Select2WidgetForm(forms.Form):
                        (3, 'Three'),
                        (4, 'Four') ]
     number = forms.ChoiceField(widget=Select2Widget(), choices=NUMBER_CHOICES)
+
+class HeavySelect2WidgetForm(forms.Form):
+    heavy_number = forms.ChoiceField(widget=HeavySelect2Widget(data_view='heavy_data'))

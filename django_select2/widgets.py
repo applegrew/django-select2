@@ -507,6 +507,22 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
         # and we want label and other layout elements.
         return False
 
+    def render_inner_js_code(self, id_, *args):
+        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
+        if '__prefix__' in id_:
+            return ''
+        else:
+            js = '''
+                  window.django_select2.%s = function (selector, fieldID) {
+                    var hashedSelector = "#" + selector;
+                    $(hashedSelector).data("field_id", fieldID);
+                  ''' % (fieldset_id)
+            js += super(HeavySelect2Widget, self).render_inner_js_code(id_, *args)
+            js += '};'
+            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, field_id)
+            return js
+
 
 class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
     """
