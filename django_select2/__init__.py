@@ -81,7 +81,7 @@ from __future__ import absolute_import, unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-__version__ = "4.2.2"
+__version__ = "4.3.0"
 
 __RENDER_SELECT2_STATICS = False
 __ENABLE_MULTI_PROCESS_SUPPORT = False

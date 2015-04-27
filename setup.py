@@ -34,7 +34,7 @@ def minify(files, outfile, ftype):
     content = ''
 
     for filename in files:
-        with io.open(getPkgPath() + filename, 'rb', encoding='utf8') as f:
+        with io.open(getPkgPath() + filename, 'r', encoding='utf8') as f:
             content = f.read()
 
     data = {
@@ -52,19 +52,19 @@ def minify(files, outfile, ftype):
 
 
 if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:
-    minify(['static/js/select2.js'], 'static/js/select2.min.js', 'js')
-    minify(['static/js/heavy_data.js'], 'static/js/heavy_data.min.js', 'js')
-    minify(['static/css/select2.css'], 'static/css/select2.min.css', 'css')
-    minify(['static/css/select2.css', 'static/css/extra.css'],
-           'static/css/all.min.css', 'css')
-    minify(['static/css/select2.css', 'static/css/select2-bootstrap.css'],
-           'static/css/select2-bootstrapped.min.css', 'css')
+    minify(['static/django_select2/js/select2.js'], 'static/django_select2/js/select2.min.js', 'js')
+    minify(['static/django_select2/js/heavy_data.js'], 'static/django_select2/js/heavy_data.min.js', 'js')
+    minify(['static/django_select2/css/select2.css'], 'static/django_select2/css/select2.min.css', 'css')
+    minify(['static/django_select2/css/select2.css', 'static/django_select2/css/extra.css'],
+           'static/django_select2/css/all.min.css', 'css')
+    minify(['static/django_select2/css/select2.css', 'static/django_select2/css/select2-bootstrap.css'],
+           'static/django_select2/css/select2-bootstrapped.min.css', 'css')
     minify(
         [
-            'static/css/select2.css',
-            'static/css/extra.css',
-            'static/css/select2-bootstrap.css'
-        ], 'static/css/all-bootstrapped.min.css', 'css')
+            'static/django_select2/css/select2.css',
+            'static/django_select2/css/extra.css',
+            'static/django_select2/css/select2-bootstrap.css'
+        ], 'static/django_select2/css/all-bootstrapped.min.css', 'css')
 
 
 class PyTest(Command):
@@ -93,7 +93,7 @@ setup(
     author_email=AUTHOR_EMAIL,
     license="LICENSE.txt",
     url=URL,
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(),
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
