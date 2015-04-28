@@ -59,6 +59,10 @@ Official Contributors
 Changelog Summary
 =================
 
+### v4.3.1
+
+* Build failure fix.
+
 ### v4.3.0
 
 * Now the package supports both Python2 and Python3.
