@@ -35,7 +35,7 @@ def minify(files, outfile, ftype):
 
     for filename in files:
         with io.open(getPkgPath() + filename, 'r', encoding='utf8') as f:
-            content = f.read()
+            content = content + '\n' + f.read()
 
     data = {
         'code': content,
