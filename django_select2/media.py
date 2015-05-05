@@ -53,4 +53,4 @@ def get_select2_css_libs(light=False):
                 css_files = ('css/select2.min.css',)
             else:
                 css_files = ('css/all.min.css',)
-    return (django_select2_static(f) for f in css_files)
+    return [django_select2_static(f) for f in css_files]
