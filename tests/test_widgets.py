@@ -48,3 +48,18 @@ class TestHeavySelect2Widget(object):
         with pytest.raises(NoSuchElementException):
             error = driver.find_element_by_xpath('//body[@JSError]')
             pytest.fail(error.get_attribute('JSError'))
+
+
+class TestHeavySelect2MultipleWidget(object):
+    url = reverse('heavy_select2_multiple_widget')
+
+    def test_heavy_select_multiple(self, db, client, live_server, driver):
+        driver.get(live_server + self.url)
+        dropdown = driver.find_element_by_css_selector('.select2-results')
+        assert dropdown.is_displayed() is False
+        elem = driver.find_element_by_css_selector('.select2-choices')
+        elem.click()
+        assert dropdown.is_displayed() is True
+        with pytest.raises(NoSuchElementException):
+            error = driver.find_element_by_xpath('//body[@JSError]')
+            pytest.fail(error.get_attribute('JSError'))
