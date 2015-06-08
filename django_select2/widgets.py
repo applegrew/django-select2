@@ -142,6 +142,8 @@ class Select2Mixin(object):
         options = dict(self.options)
         if options.get('allowClear', None) is not None:
             options['allowClear'] = not self.is_required
+        if options.get('placeholder'):
+            options['placeholder'] = force_text(options['placeholder'])
         return options
 
     def render_js_code(self, id_, *args):
