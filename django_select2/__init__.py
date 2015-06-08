@@ -29,8 +29,8 @@ Widgets are generally of two types :-
     so you need not worry about writing any Ajax related JS code. Although on the server side you do need to
     create a view specifically to respond to the queries.
 
-    Heavies have further specialized versions called -- **Auto Heavy**. These do not require views to server Ajax
-    request. When they are instantiated, they register themselves with one central view which handles Ajax requests
+    Heavies have further specialized versions called -- **Auto Heavy**. These do not require views to serve Ajax
+    requests. When they are instantiated, they register themselves with one central view which handles Ajax requests
     for them.
 
 Heavy widgets have the word 'Heavy' in their name. Light widgets are normally named, i.e. there is no 'Light' word

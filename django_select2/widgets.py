@@ -85,9 +85,9 @@ class Select2Mixin(object):
 
             .. tip:: You cannot introduce new options using this. For that you should sub-class and override
                 :py:meth:`.init_options`. The reason for this is, few options are not compatible with each other
-                or are not applicable in some scenarios. For example, when Select2 is attached to ``<select>`` tag,
-                it can get if it is multiple or single valued from that tag itself. In this case if you specify
-                ``multiple`` option then not only it is useless but an error in Select2 JS' point of view.
+                or are not applicable in some scenarios. For example, when Select2 is attached to a ``<select>`` tag,
+                it can detect if it is being used with a single or multiple values from that tag itself. If you specified the
+                ``multiple`` option in this case, it would not only be useless but an error from Select2 JS' point of view.
 
                 There are other such intricacies, based on which some options are removed. By enforcing this
                 restriction we make sure to not break the code by passing some wrong concoction of options.
@@ -344,10 +344,10 @@ class HeavySelect2Mixin(Select2Mixin):
         :param data_url: Url which will respond to Ajax queries with JSON object.
         :type data_url: :py:obj:`str` or None
 
-        .. tip:: When ``data_view`` is provided then it is converted into Url using
+        .. tip:: When ``data_view`` is provided then it is converted into an URL using
             :py:func:`~django.core.urlresolvers.reverse`.
 
-        .. warning:: Either of ``data_view`` or ``data_url`` must be specified, else :py:exc:`ValueError` would
+        .. warning:: Either of ``data_view`` or ``data_url`` must be specified, otherwise :py:exc:`ValueError` will
             be raised.
 
         :param choices: The list of available choices. If not provided then empty list is used instead. It
