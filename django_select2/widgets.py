@@ -216,7 +216,7 @@ class Select2Mixin(object):
             media._js = get_select2_js_libs()
             media._css['screen'] = get_select2_css_libs(light=True)
         return media
-    media = property(_media)
+    media = property(_get_media)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -488,7 +488,7 @@ class HeavySelect2Mixin(Select2Mixin):
             media._js = get_select2_heavy_js_libs()
             media._css['screen'] = get_select2_css_libs()
         return media
-    media = property(_media)
+    media = property(_get_media)
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
