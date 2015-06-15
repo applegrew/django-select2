@@ -214,7 +214,7 @@ class Select2Mixin(object):
         if RENDER_SELECT2_STATICS:
             return forms.Media(
                 js=get_select2_js_libs(),
-                css=get_select2_css_libs(light=True)
+                css=get_select2_css_libs(light=True))
         return forms.Media()
     media = property(_media)
 
@@ -486,7 +486,7 @@ class HeavySelect2Mixin(Select2Mixin):
         if RENDER_SELECT2_STATICS:
             return forms.Media(
                 js=get_select2_js_libs(),
-                css=get_select2_css_libs()
+                css=get_select2_css_libs())
         return forms.Media()
     media = property(_media)
 
