@@ -210,12 +210,13 @@ class Select2Mixin(object):
 
         return mark_safe(s)
 
-    class Media:
+    def _media(self):
+        media = Media()
         if RENDER_SELECT2_STATICS:
-            js = get_select2_js_libs()
-            css = {
-                'screen': get_select2_css_libs(light=True),
-            }
+            media._js = get_select2_js_libs()
+            media._css = get_select2_css_libs(light=True)
+        return media
+    media = property(_media)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -481,12 +482,13 @@ class HeavySelect2Mixin(Select2Mixin):
         js += super(HeavySelect2Mixin, self).render_inner_js_code(id_, name, value, attrs, choices, *args)
         return js
 
-    class Media:
+    def _media(self):
+        media = Media()
         if RENDER_SELECT2_STATICS:
-            js = get_select2_heavy_js_libs()
-            css = {
-                'screen': get_select2_css_libs()
-            }
+            media._js = get_select2_js_libs()
+            media._css = get_select2_css_libs()
+        return media
+    media = property(_media)
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
