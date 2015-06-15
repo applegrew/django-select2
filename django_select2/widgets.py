@@ -485,7 +485,7 @@ class HeavySelect2Mixin(Select2Mixin):
     def _get_media(self):
         media = forms.Media()
         if RENDER_SELECT2_STATICS:
-            media._js = get_select2_js_libs()
+            media._js = get_select2_heavy_js_libs()
             media._css['screen'] = get_select2_css_libs()
         return media
     media = property(_media)
