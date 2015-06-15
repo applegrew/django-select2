@@ -211,7 +211,7 @@ class Select2Mixin(object):
         return mark_safe(s)
 
     def _media(self):
-        media = Media()
+        media = forms.Media()
         if RENDER_SELECT2_STATICS:
             media._js = get_select2_js_libs()
             media._css = get_select2_css_libs(light=True)
@@ -483,7 +483,7 @@ class HeavySelect2Mixin(Select2Mixin):
         return js
 
     def _media(self):
-        media = Media()
+        media = forms.Media()
         if RENDER_SELECT2_STATICS:
             media._js = get_select2_js_libs()
             media._css = get_select2_css_libs()
