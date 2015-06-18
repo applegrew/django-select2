@@ -216,7 +216,7 @@ class Select2Mixin(object):
 
         This is essential because we need to check RENDER_SELECT2_STATICS
         before returning our assets.
-        
+
         for more information:
         https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property        
         """
@@ -498,7 +498,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
         This is essential because we need to check RENDER_SELECT2_STATICS
         before returning our assets.
-        
+
         for more information:
         https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
