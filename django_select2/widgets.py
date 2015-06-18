@@ -218,7 +218,7 @@ class Select2Mixin(object):
         before returning our assets.
 
         for more information:
-        https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property        
+        https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
         if RENDER_SELECT2_STATICS:
             return forms.Media(
