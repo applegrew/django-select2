@@ -210,12 +210,23 @@ class Select2Mixin(object):
 
         return mark_safe(s)
 
-    class Media:
+    def _get_media(self):
+        """
+        Construct Media as a dynamic property
+
+        This is essential because we need to check RENDER_SELECT2_STATICS
+        before returning our assets.
+
+        for more information:
+        https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
+        """
         if RENDER_SELECT2_STATICS:
-            js = get_select2_js_libs()
-            css = {
-                'screen': get_select2_css_libs(light=True),
-            }
+            return forms.Media(
+                js=get_select2_js_libs(),
+                css={'screen': get_select2_css_libs(light=True)}
+            )
+        return forms.Media()
+    media = property(_get_media)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -481,12 +492,23 @@ class HeavySelect2Mixin(Select2Mixin):
         js += super(HeavySelect2Mixin, self).render_inner_js_code(id_, name, value, attrs, choices, *args)
         return js
 
-    class Media:
+    def _get_media(self):
+        """
+        Construct Media as a dynamic property
+
+        This is essential because we need to check RENDER_SELECT2_STATICS
+        before returning our assets.
+
+        for more information:
+        https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
+        """
         if RENDER_SELECT2_STATICS:
-            js = get_select2_heavy_js_libs()
-            css = {
-                'screen': get_select2_css_libs()
-            }
+            return forms.Media(
+                js=get_select2_heavy_js_libs(),
+                css={'screen': get_select2_css_libs()}
+            )
+        return forms.Media()
+    media = property(_get_media)
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
