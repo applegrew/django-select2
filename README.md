@@ -1,4 +1,4 @@
-Django-Select2
+Django-Select2 [![Build Status](https://travis-ci.org/applegrew/django-select2.svg?branch=master)](https://travis-ci.org/applegrew/django-select2)
 ==============
 
 This is a [Django](https://www.djangoproject.com/) integration of [Select2](http://ivaynberg.github.com/select2/).
@@ -51,8 +51,23 @@ Special Thanks
 
 * Samuel Goldszmidt (@ouhouhsami) for reporting many fundamental issues with the code, because of which versions 2.0 and 2.0.1 were released.
 
+Official Contributors
+=====================
+
+* Johannes Hoppe (@codingjoe)
+
 Changelog Summary
 =================
+
+### v4.3.1
+
+* Build failure fix.
+
+### v4.3.0
+
+* Now the package supports both Python2 and Python3.
+* Django 1.8 support added.
+* Many bug fixes.
 
 ### v4.2.2
 

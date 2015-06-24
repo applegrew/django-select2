@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 This is a Django_ integration of Select2_.
 
@@ -28,8 +29,8 @@ Widgets are generally of two types :-
     so you need not worry about writing any Ajax related JS code. Although on the server side you do need to
     create a view specifically to respond to the queries.
 
-    Heavies have further specialized versions called -- **Auto Heavy**. These do not require views to server Ajax
-    request. When they are instantiated, they register themselves with one central view which handles Ajax requests
+    Heavies have further specialized versions called -- **Auto Heavy**. These do not require views to serve Ajax
+    requests. When they are instantiated, they register themselves with one central view which handles Ajax requests
     for them.
 
 Heavy widgets have the word 'Heavy' in their name. Light widgets are normally named, i.e. there is no 'Light' word
@@ -75,11 +76,12 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 .. _Read more: http://blog.applegrew.com/2012/08/django-select2/
 
 """
+from __future__ import absolute_import, unicode_literals
 
 import logging
 logger = logging.getLogger(__name__)
 
-__version__ = "4.2.2"
+__version__ = "4.3.1"
 
 __RENDER_SELECT2_STATICS = False
 __ENABLE_MULTI_PROCESS_SUPPORT = False
@@ -108,13 +110,22 @@ try:
             logger.warn("You need not turn on ENABLE_SELECT2_MULTI_PROCESS_SUPPORT when GENERATE_RANDOM_SELECT2_ID is disabled.")
             __ENABLE_MULTI_PROCESS_SUPPORT = False
 
-        from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
-            AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget, HeavySelect2TagWidget, AutoHeavySelect2TagWidget
-        from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
-            HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
-            ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
-            AutoModelSelect2Field, AutoModelSelect2MultipleField, HeavySelect2TagField, AutoSelect2TagField, \
+        from .widgets import (
+            Select2Widget, Select2MultipleWidget,
+            HeavySelect2Widget, HeavySelect2MultipleWidget,
+            AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget,
+            HeavySelect2TagWidget, AutoHeavySelect2TagWidget
+        )  # NOQA
+        from .fields import (
+            Select2ChoiceField, Select2MultipleChoiceField,
+            HeavySelect2ChoiceField, HeavySelect2MultipleChoiceField,
+            HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField,
+            ModelSelect2Field, ModelSelect2MultipleField,
+            AutoSelect2Field, AutoSelect2MultipleField,
+            AutoModelSelect2Field, AutoModelSelect2MultipleField,
+            HeavySelect2TagField, AutoSelect2TagField,
             HeavyModelSelect2TagField, AutoModelSelect2TagField
+        )  # NOQA
         from .views import Select2View, NO_ERR_RESP
 
         if logger.isEnabledFor(logging.DEBUG):
@@ -122,4 +133,3 @@ try:
 except ImportError:
     if logger.isEnabledFor(logging.INFO):
         logger.info("Django not found.")
-

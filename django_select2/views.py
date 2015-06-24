@@ -1,9 +1,12 @@
+# -*- coding:utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 import json
 
-from django.http import HttpResponse
-from django.views.generic import View
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.utils.six import binary_type
+from django.views.generic import View
 
 from .util import get_field, is_valid_id
 
@@ -13,6 +16,7 @@ Equals to 'nil' constant.
 
 Use this in :py:meth:`.Select2View.get_results` to mean no error, instead of hardcoding 'nil' value.
 """
+
 
 class JSONResponseMixin(object):
     """
@@ -31,8 +35,9 @@ class JSONResponseMixin(object):
         )
 
     def convert_context_to_json(self, context):
-        "Convert the context dictionary into a JSON object"
+        """Convert the context dictionary into a JSON object"""
         return json.dumps(context)
+
 
 class Select2View(JSONResponseMixin, View):
     """
@@ -47,27 +52,24 @@ class Select2View(JSONResponseMixin, View):
     def dispatch(self, request, *args, **kwargs):
         try:
             self.check_all_permissions(request, *args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             return self.respond_with_exception(e)
         return super(Select2View, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            term = request.GET.get('term', None)
-            if term is None:
-                return self.render_to_response(self._results_to_context(('missing term', False, [], )))
+        term = request.GET.get('term', None)
+        if term is None:
+            return self.render_to_response(self._results_to_context(('missing term', False, [], )))
 
-            try:
-                page = int(request.GET.get('page', None))
-                if page <= 0:
-                    page = -1
-            except ValueError:
+        try:
+            page = int(request.GET.get('page', None))
+            if page <= 0:
                 page = -1
-            if page == -1:
-                return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
-            context = request.GET.get('context', None)
-        else:
-            return self.render_to_response(self._results_to_context(('not a get request', False, [], )))
+        except ValueError:
+            page = -1
+        if page == -1:
+            return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
+        context = request.GET.get('context', None)
 
         return self.render_to_response(
             self._results_to_context(
@@ -88,7 +90,7 @@ class Select2View(JSONResponseMixin, View):
         else:
             status = getattr(e, 'status_code', 400)
         return self.render_to_response(
-            self._results_to_context((str(e), False, [],)),
+            self._results_to_context((binary_type(e), False, [],)),
             status=status
             )
 
@@ -98,7 +100,7 @@ class Select2View(JSONResponseMixin, View):
         if err == NO_ERR_RESP:
             for result in results:
                 id_, text = result[:2]
-                if len(result)>2:
+                if len(result) > 2:
                     extra_data = result[2]
                 else:
                     extra_data = {}
@@ -121,7 +123,7 @@ class Select2View(JSONResponseMixin, View):
         :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.View.dispatch`.
 
         .. warning:: Sub-classes should override this. You really do not want random people making
-            Http reqeusts to your server, be able to get access to sensitive information.
+            Http requests to your server, be able to get access to sensitive information.
         """
         pass
 
@@ -190,5 +192,3 @@ class AutoResponseView(Select2View):
         field = request.__django_select2_local
         del request.__django_select2_local
         return field.get_results(request, term, page, context)
-
-
