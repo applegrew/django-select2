@@ -1,6 +1,8 @@
 Django-Select2 [![Build Status](https://travis-ci.org/applegrew/django-select2.svg?branch=master)](https://travis-ci.org/applegrew/django-select2)
 ==============
 
+[![Join the chat at https://gitter.im/applegrew/django-select2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/applegrew/django-select2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is a [Django](https://www.djangoproject.com/) integration of [Select2](http://ivaynberg.github.com/select2/).
 
 The app includes Select2 driven Django Widgets and Form Fields.
