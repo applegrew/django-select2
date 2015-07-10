@@ -5,8 +5,7 @@ Django-Select2
 [![Build Status](https://travis-ci.org/applegrew/django-select2.svg?branch=master)](https://travis-ci.org/applegrew/django-select2)
 [![Code Health](https://landscape.io/github/applegrew/django-select2/master/landscape.svg?style=flat)](https://landscape.io/github/applegrew/django-select2/master)
 [![Test Coverage](https://coveralls.io/repos/applegrew/django-select2/badge.png?branch=master)](https://coveralls.io/r/applegrew/django-select2)
-[![Code health](https://scrutinizer-ci.com/g/applegrew/django-select2/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/applegrew/django-select2/?branch=master)
-[![GitHub license](https://img.shields.io/badge/license-APL-blue.svg)](https://raw.githubusercontent.com/applegrew/django-select2/master/LICENSE.txt)
+[![GitHub license](https://img.shields.io/badge/license-APL2-blue.svg)](https://raw.githubusercontent.com/applegrew/django-select2/master/LICENSE.txt)
 [![Join the chat at https://gitter.im/applegrew/django-select2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/applegrew/django-select2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This is a [Django](https://www.djangoproject.com/) integration of [Select2](http://ivaynberg.github.com/select2/).
