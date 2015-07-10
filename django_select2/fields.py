@@ -18,7 +18,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from . import util
 from .util import extract_some_key_val
-from .views import NO_ERR_RESP
 from .widgets import AutoHeavySelect2Mixin  # NOQA
 from .widgets import (AutoHeavySelect2MultipleWidget,
                       AutoHeavySelect2TagWidget, AutoHeavySelect2Widget,
@@ -130,25 +129,8 @@ class ModelResultJsonMixin(object):
         overrides ``get_results``.
     """
 
-    def __init__(self, *args, **kwargs):
-        """
-        Class constructor.
-
-        :param queryset: This can be passed as kwarg here or defined as field variable,
-            like ``search_fields``.
-        :type queryset: :py:class:`django.db.models.query.QuerySet` or None
-
-        :param max_results: Maximum number to results to return per Ajax query.
-        :type max_results: :py:obj:`int`
-
-        :param to_field_name: Which field's value should be returned as result tuple's
-            value. (Default is ``pk``, i.e. the id field of the model)
-        :type to_field_name: :py:obj:`str`
-        """
-        self.max_results = getattr(self, 'max_results', None)
-        self.to_field_name = getattr(self, 'to_field_name', 'pk')
-
-        super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
+    max_results = 25
+    to_field_name = 'pk'
 
     def get_queryset(self):
         """
@@ -256,7 +238,7 @@ class ModelResultJsonMixin(object):
                 q = q | Q(**kwargs)
         return {'or': [q], 'and': {}}
 
-    def get_results(self, request, term, page, context):
+    def get_results(self, request, term):
         """
         See :py:meth:`.views.Select2View.get_results`.
 
@@ -268,26 +250,7 @@ class ModelResultJsonMixin(object):
         qs = copy.deepcopy(self.get_queryset())
         params = self.prepare_qs_params(request, term, self.search_fields)
 
-        if self.max_results:
-            min_ = (page - 1) * self.max_results
-            max_ = min_ + self.max_results + 1  # fetching one extra row to check if it has more rows.
-            res = list(qs.filter(*params['or'], **params['and']).distinct()[min_:max_])
-            has_more = len(res) == (max_ - min_)
-            if has_more:
-                res = res[:-1]
-        else:
-            res = list(qs.filter(*params['or'], **params['and']).distinct())
-            has_more = False
-
-        res = [
-            (
-                getattr(obj, self.to_field_name),
-                self.label_from_instance(obj),
-                self.extra_data_from_instance(obj)
-            )
-            for obj in res
-        ]
-        return NO_ERR_RESP, has_more, res
+        return qs.filter(*params['or'], **params['and']).distinct()
 
 
 class UnhideableQuerysetType(UnhideableQuerysetTypeBase):
