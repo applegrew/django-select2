@@ -46,41 +46,60 @@ When this settings is ``False`` then you are responsible for including the JS an
 .. tip:: Make sure to include them at the top of the page, preferably in ``<head>...</head>``.
 
 .. note:: (Since version 3.3.1) The above template tags accept one argument ``light``. Default value for that is ``0``.
-	If that is set to ``1`` then only the JS and CSS libraries needed by Select2Widget (Light fields) are rendered.
-	That effectively leaves out ``heavy.js`` and ``extra.css``.
+    If that is set to ``1`` then only the JS and CSS libraries needed by Select2Widget (Light fields) are rendered.
+    That effectively leaves out ``heavy.js`` and ``extra.css``.
 
-``GENERATE_RANDOM_SELECT2_ID`` [Default ``False``]
-..................................................
+``SELECT2_CACHE_BACKEND`` [Default ``default``]
+...............................................
 
-As of version 4.0.0 the field's Ids are their paths which have been hashed by SHA1. This Id generation scheme should be sufficient for most applications.
+Django-Select2 uses Django's cache to sure a consistent state across multiple machines.
 
-However, if you have a secret government project and fear that SHA1 hashes could be cracked (which is not impossible) to reveal the path and names of your fields then you can enable this mode. This will use timestamps as Ids which have no correlation to the field's name or path.
+Example of settings.py::
 
-.. tip:: The field's paths are first salted with Django generated ``SECRET_KEY`` before hashing them.
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        },
+        'select2': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
+
+    # Set the cache backend to select2
+    SELECT2_CACHE_BACKEND = 'select2'
+
+.. tip:: To ensure a consistent state across all you machines you need to user
+a consistent external cache backend like Memcached, Redis or a database.
+
+.. note:: Select2 requires the cache to never expire. Therefore you should avoid clearing the cache.
+As third party apps might add unpredictable behavior we recommend to always use an separate cache server.
 
 ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`` [Default ``False``]
 ............................................................
 
-This setting cannot be enabled as it is not required when ``GENERATE_RANDOM_SELECT2_ID`` is ``False``.
+.. warning:: Deprecated in favour of ``SELECT2_CACHE_BACKEND``. Will be removed in version 5.
 
-In production servers usually multiple server processes are run to handle the requests. This poses a problem for Django Select2's Auto fields since they generate unique Id at runtime when ``GENERATE_RANDOM_SELECT2_ID`` is enabled. The clients can identify the fields in Ajax query request using only these generated ids. In multi-processes scenario there is no guarantee that the process which rendered the page is the one which will respond to Ajax queries.
-
-When this mode is enabled then Django Select2 maintains an id to field key mapping in DB for all processes. Whenever a process does not find an id in its internal map it looks-up in the central DB. From DB it finds the field key. Using the key, the process then looks-up a field instance with that key, since all instances with same key are assumed to be equivalent.
-
-.. tip:: Make sure to run ``python manage.py syncdb`` to create the ``KeyMap`` table.
-
-.. warning:: You need to write your own script to periodically purge old data from ``KeyMap`` table. You can take help of ``accessed_on`` column. You need to decide the criteria on which basis you will purge the rows.
+Since version 4.3 django-select2 supports multiprocessing support out of the box.
+If you want to have multiple machine support take a look at ``SELECT2_CACHE_BACKEND``.
 
 
-``SELECT2_MEMCACHE_HOST`` [Default ``None``], ``SELECT2_MEMCACHE_PORT`` [Default ``None``], ``SELECT2_MEMCACHE_TTL`` [Default ``900``]
-.......................................................................................................................................
+``SELECT2_MEMCACHE_HOST`` [Default ``None``], ``SELECT2_MEMCACHE_PORT`` [Default ``None``]
+..........................................................................................
 
-When ``ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`` is enabled then all processes will hit DB to get the mapping for the ids they are not aware of. For performance reasons it is recommended that you install Memcached and set the above settings appropriately.
+.. warning:: Deprecated in favour of ``SELECT2_CACHE_BACKEND``. Will be removed in version 5.
 
-Also note that, when you set the above you need to install ``python-memcached`` library too.
+Since version 4.3 dajngo-select2 uses Django's own caching solution.
+The hostname and port will be used to create a new django cache backend.
+
+.. note:: It is recommended to upgrade to ``SELECT2_CACHE_BACKEND`` to avoid cache consistency issues.
 
 ``SELECT2_BOOTSTRAP`` [Default ``False``]
-............................................................
+.........................................
 
 Setting to True will include the CSS for making Select2 fit in with Bootstrap a bit better using the css found here https://github.com/fk/select2-bootstrap-css.
 

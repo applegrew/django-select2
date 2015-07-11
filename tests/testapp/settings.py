@@ -40,4 +40,12 @@ SECRET_KEY = '123456'
 
 USE_L10N = True
 
+if os.environ.get('TRAVIS'):
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': 'localhost:11211',
+        }
+    }
+
 AUTO_RENDER_SELECT2_STATICS = False

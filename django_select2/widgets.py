@@ -10,18 +10,21 @@ import re
 from itertools import chain
 
 from django import forms
+from django.core import signing
 from django.core.urlresolvers import reverse
 from django.core.validators import EMPTY_VALUES
+from django.db.models import Q
 from django.utils.datastructures import MergeDict, MultiValueDict
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.six import text_type
 
-from django_select2.media import (get_select2_css_libs,
-                                  get_select2_heavy_js_libs,
-                                  get_select2_js_libs)
+from django_select2.cache import cache
 
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
+from .conf import settings
+from .media import (get_select2_css_libs, get_select2_heavy_js_libs,
+                    get_select2_js_libs)
 
 logger = logging.getLogger(__name__)
 
@@ -342,6 +345,10 @@ class HeavySelect2Mixin(Select2Mixin):
 
     .. tip:: You can override these options by passing ``select2_options`` kwarg to :py:meth:`.__init__`.
     """
+    model = None
+    queryset = None
+    search_fields = []
+    max_results = 25
 
     def __init__(self, **kwargs):
         """
@@ -393,8 +400,9 @@ class HeavySelect2Mixin(Select2Mixin):
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
         self.choices = kwargs.pop('choices', [])
 
-        if not self.view and not self.url:
-            raise ValueError('data_view or data_url is required')
+        self.queryset = kwargs.pop('queryset', self.queryset)
+        self.search_fields = kwargs.pop('search_fields', self.search_fields)
+        self.max_results = kwargs.pop('max_results', self.max_results)
 
         self.options['ajax'] = {
             'dataType': 'json',
@@ -405,6 +413,98 @@ class HeavySelect2Mixin(Select2Mixin):
         self.options['minimumInputLength'] = 2
         self.options['initSelection'] = '*START*django_select2.onInit*END*'
         super(HeavySelect2Mixin, self).__init__(**kwargs)
+
+    def prepare_qs_params(self, request, search_term, search_fields):
+        """
+        Prepares queryset parameter to use for searching.
+
+        :param search_term: The search term.
+        :type search_term: :py:obj:`str`
+
+        :param search_fields: The list of search fields. This is same as ``self.search_fields``.
+        :type search_term: :py:obj:`list`
+
+        :return: A dictionary of parameters to 'or' and 'and' together. The output format should
+            be ::
+
+                {
+                    'or': [
+                    Q(attr11=term11) | Q(attr12=term12) | ...,
+                    Q(attrN1=termN1) | Q(attrN2=termN2) | ...,
+                    ...],
+
+                    'and': {
+                        'attrX1': termX1,
+                        'attrX2': termX2,
+                        ...
+                    }
+                }
+
+            The above would then be coaxed into ``filter()`` as below::
+
+                queryset.filter(
+                    Q(attr11=term11) | Q(attr12=term12) | ...,
+                    Q(attrN1=termN1) | Q(attrN2=termN2) | ...,
+                    ...,
+                    attrX1=termX1,
+                    attrX2=termX2,
+                    ...
+                    )
+
+            In this implementation, ``term11, term12, termN1, ...`` etc., all are actually ``search_term``.
+            Also then ``and`` part is always empty.
+
+            So, let's take an example.
+
+            | Assume, ``search_term == 'John'``
+            | ``self.search_fields == ['first_name__icontains', 'last_name__icontains']``
+
+            So, the prepared query would be::
+
+                {
+                    'or': [
+                        Q(first_name__icontains=search_term) | Q(last_name__icontains=search_term)
+                    ],
+                    'and': {}
+                }
+        :rtype: :py:obj:`dict`
+        """
+        q = None
+        for field in search_fields:
+            kwargs = {}
+            kwargs[field] = search_term
+            if q is None:
+                q = Q(**kwargs)
+            else:
+                q = q | Q(**kwargs)
+        return {'or': [q], 'and': {}}
+
+    def get_results(self, request, term):
+        """
+        See :py:meth:`.views.Select2View.get_results`.
+
+        This implementation takes care of detecting if more results are available.
+        """
+        try:
+            qs = self.get_queryset()
+        except NotImplementedError:
+            return self.field.get_results(request, term)
+        else:
+            params = self.prepare_qs_params(request, term, self.get_search_fields())
+
+            return qs.filter(*params['or'], **params['and']).distinct()
+
+    def get_queryset(self):
+        if self.queryset:
+            return self.queryset
+        elif self.model:
+            return self.model._default_queryset
+        raise NotImplementedError('%s, must implement "model" or "queryset".' % self.__class__.__name__)
+
+    def get_search_fields(self):
+        if self.search_fields:
+            return self.search_fields
+        raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
     def render_texts(self, selected_choices, choices):
         """
@@ -492,6 +592,14 @@ class HeavySelect2Mixin(Select2Mixin):
         js += super(HeavySelect2Mixin, self).render_inner_js_code(id_, name, value, attrs, choices, *args)
         return js
 
+    def render(self, name, value, attrs={}, choices=()):
+        self.field_id = signing.dumps(id(self))
+        key = "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
+        cache.set(key, self)
+        attrs.setdefault('data-field_id', self.field_id)
+        output = super(HeavySelect2Mixin, self).render(name, value, attrs, choices)
+        return output
+
     def _get_media(self):
         """
         Construct Media as a dynamic property
@@ -540,7 +648,6 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
             js = '''
                   window.django_select2.%s = function (selector, fieldID) {
                     var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
                   ''' % (fieldset_id)
             js += super(HeavySelect2Widget, self).render_inner_js_code(id_, *args)
             js += '};'
@@ -603,7 +710,6 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             js = '''
                   window.django_select2.%s = function (selector, fieldID) {
                     var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
                   ''' % (fieldset_id)
             js += super(HeavySelect2MultipleWidget, self).render_inner_js_code(id_, *args)
             js += '};'
@@ -649,7 +755,6 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
             js = '''
                   window.django_select2.%s = function (selector, fieldID) {
                     var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
                   ''' % (fieldset_id)
             js += super(HeavySelect2TagWidget, self).render_inner_js_code(id_, *args)
             js += '};'
@@ -683,21 +788,6 @@ class AutoHeavySelect2Mixin(object):
     def __init__(self, *args, **kwargs):
         kwargs['data_view'] = "django_select2_central_json"
         super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
-
-    def render_inner_js_code(self, id_, *args):
-        fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
-        if '__prefix__' in id_:
-            return ''
-        else:
-            js = '''
-                  window.django_select2.%s = function (selector, fieldID) {
-                    var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
-                  ''' % (fieldset_id)
-            js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
-            js += '};'
-            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, self.field_id)
-            return js
 
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):

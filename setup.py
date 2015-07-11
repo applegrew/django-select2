@@ -6,7 +6,7 @@ import codecs
 import os
 import sys
 
-from setuptools import setup, find_packages, Command
+from setuptools import Command, find_packages, setup
 
 
 def read(file_name):
@@ -104,7 +104,9 @@ setup(
         "Programming Language :: Python",
         "Framework :: Django",
     ],
-    install_requires=[],
+    install_requires=[
+        'django-appconf>=0.6.0',
+    ],
     zip_safe=False,
     cmdclass={'test': PyTest},
 )

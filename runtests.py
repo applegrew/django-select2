@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
-import sys
 import base64
+import sys
 import zlib
+
 
 # Hi There!
 # You may be wondering what this giant blob of binary data here is, you might

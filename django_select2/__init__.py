@@ -79,18 +79,20 @@ The view - `Select2View`, exposed here is meant to be used with 'Heavy' fields a
 from __future__ import absolute_import, unicode_literals
 
 import logging
+import warnings
+
 logger = logging.getLogger(__name__)
 
 __version__ = "4.3.1"
 
 __RENDER_SELECT2_STATICS = False
+__BOOTSTRAP = False
+
+# @todo: Deprecated and to be removed in v5
 __ENABLE_MULTI_PROCESS_SUPPORT = False
 __MEMCACHE_HOST = None
 __MEMCACHE_PORT = None
-__MEMCACHE_TTL = 900
 __GENERATE_RANDOM_ID = False
-__SECRET_SALT = ''
-__BOOTSTRAP = False
 
 try:
     from django.conf import settings
@@ -101,14 +103,30 @@ try:
         __ENABLE_MULTI_PROCESS_SUPPORT = getattr(settings, 'ENABLE_SELECT2_MULTI_PROCESS_SUPPORT', False)
         __MEMCACHE_HOST = getattr(settings, 'SELECT2_MEMCACHE_HOST', None)
         __MEMCACHE_PORT = getattr(settings, 'SELECT2_MEMCACHE_PORT', None)
-        __MEMCACHE_TTL = getattr(settings, 'SELECT2_MEMCACHE_TTL', 900)
         __GENERATE_RANDOM_ID = getattr(settings, 'GENERATE_RANDOM_SELECT2_ID', False)
-        __SECRET_SALT = getattr(settings, 'SECRET_KEY', '')
         __BOOTSTRAP = getattr(settings, 'SELECT2_BOOTSTRAP', False)
 
-        if not __GENERATE_RANDOM_ID and __ENABLE_MULTI_PROCESS_SUPPORT:
-            logger.warn("You need not turn on ENABLE_SELECT2_MULTI_PROCESS_SUPPORT when GENERATE_RANDOM_SELECT2_ID is disabled.")
+        if __GENERATE_RANDOM_ID:
+            msg = (
+                'Select2\'s setting "GENERATE_RANDOM_SELECT2_ID" has been deprecated.\n'
+                'Since version 4.4 all IDs will be encrypted by default.'
+            )
+            warnings.warn(msg, DeprecationWarning)
             __ENABLE_MULTI_PROCESS_SUPPORT = False
+        if __ENABLE_MULTI_PROCESS_SUPPORT:
+            msg = (
+                'Select2\'s setting "ENABLE_SELECT2_MULTI_PROCESS_SUPPORT"'
+                ' has been deprecated and will be removed in version 4.4.\n'
+                'Multiprocessing support is on by default.\n'
+                'If you seek multi machine support please review the latest documentation.'
+            )
+            warnings.warn(msg, DeprecationWarning)
+        if __MEMCACHE_HOST or __MEMCACHE_PORT:
+            msg = (
+                'Select2\'s setting "SELECT2_MEMCACHE_HOST" has been deprecated'
+                ' in favour of "SELECT2_CACHE_BACKEND".\n'
+                'The support for this setting will be removed in version 5.'
+            )
 
         from .widgets import (
             Select2Widget, Select2MultipleWidget,

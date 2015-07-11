@@ -8,27 +8,19 @@ import copy
 import logging
 
 from django import forms
-from django.core import validators
+from django.core import signing, validators
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
-from django.utils import six
 from django.utils.encoding import force_text, smart_text
 from django.utils.translation import ugettext_lazy as _
 
-from . import util
+from .conf import settings
 from .util import extract_some_key_val
-from .views import NO_ERR_RESP
-from .widgets import AutoHeavySelect2Mixin  # NOQA
 from .widgets import (AutoHeavySelect2MultipleWidget,
                       AutoHeavySelect2TagWidget, AutoHeavySelect2Widget,
                       HeavySelect2MultipleWidget, HeavySelect2TagWidget,
                       HeavySelect2Widget, Select2MultipleWidget, Select2Widget)
-
-try:
-    from django.forms.fields import RenameFieldMethods as UnhideableQuerysetTypeBase
-except ImportError:
-    UnhideableQuerysetTypeBase = type
 
 logger = logging.getLogger(__name__)
 
@@ -42,54 +34,6 @@ class AutoViewFieldMixin(object):
     .. warning:: Do not forget to include ``'django_select2.urls'`` in your url conf, else,
         central view used to serve Auto fields won't be available.
     """
-    def __init__(self, *args, **kwargs):
-        """
-        Class constructor.
-
-        :param auto_id: The key to use while registering this field. If it is not provided then
-            an auto generated key is used.
-
-            .. tip::
-                This mixin uses full class name of the field to register itself. This is
-                used like key in a :py:obj:`dict` by :py:func:`.util.register_field`.
-
-                If that key already exists then the instance is not registered again. So, eventually
-                all instances of an Auto field share one instance to respond to the Ajax queries for
-                its fields.
-
-                If for some reason any instance needs to be isolated then ``auto_id`` can be used to
-                provide a unique key which has never occured before.
-
-        :type auto_id: :py:obj:`unicode`
-
-        """
-        name = kwargs.pop('auto_id', "%s.%s" % (self.__module__, self.__class__.__name__))
-        if logger.isEnabledFor(logging.INFO):
-            logger.info("Registering auto field: %s", name)
-
-        rf = util.register_field
-
-        id_ = rf(name, self)
-        self.field_id = id_
-        super(AutoViewFieldMixin, self).__init__(*args, **kwargs)
-
-    def security_check(self, request, *args, **kwargs):
-        """
-        Returns ``False`` if security check fails.
-
-        :param request: The Ajax request object.
-        :type request: :py:class:`django.http.HttpRequest`
-
-        :param args: The ``*args`` passed to :py:meth:`django.views.generic.base.View.dispatch`.
-        :param kwargs: The ``**kwargs`` passed to :py:meth:`django.views.generic.base.View.dispatch`.
-
-        :return: A boolean value, signalling if check passed or failed.
-        :rtype: :py:obj:`bool`
-
-        .. warning:: Sub-classes should override this. You really do not want random people making
-            Http requests to your server, be able to get access to sensitive information.
-        """
-        return True
 
     def get_results(self, request, term, page, context):
         """See :py:meth:`.views.Select2View.get_results`."""
@@ -130,24 +74,13 @@ class ModelResultJsonMixin(object):
         overrides ``get_results``.
     """
 
+    max_results = 25
+    to_field_name = 'pk'
+    queryset = None
+    search_fields = []
+
     def __init__(self, *args, **kwargs):
-        """
-        Class constructor.
-
-        :param queryset: This can be passed as kwarg here or defined as field variable,
-            like ``search_fields``.
-        :type queryset: :py:class:`django.db.models.query.QuerySet` or None
-
-        :param max_results: Maximum number to results to return per Ajax query.
-        :type max_results: :py:obj:`int`
-
-        :param to_field_name: Which field's value should be returned as result tuple's
-            value. (Default is ``pk``, i.e. the id field of the model)
-        :type to_field_name: :py:obj:`str`
-        """
-        self.max_results = getattr(self, 'max_results', None)
-        self.to_field_name = getattr(self, 'to_field_name', 'pk')
-
+        self.search_fields = self.search_fields or kwargs.pop('search_fields', None)
         super(ModelResultJsonMixin, self).__init__(*args, **kwargs)
 
     def get_queryset(self):
@@ -161,10 +94,9 @@ class ModelResultJsonMixin(object):
         :return: queryset
         :rtype: :py:class:`django.db.models.query.QuerySet`
         """
-        if self.queryset is None:
-            raise ValueError('queryset is required.')
-
-        return self.queryset
+        if self.queryset:
+            return self.queryset
+        raise NotImplementedError('%s must implement "queryset".' % self.__class__.__name__)
 
     def label_from_instance(self, obj):
         """
@@ -256,67 +188,19 @@ class ModelResultJsonMixin(object):
                 q = q | Q(**kwargs)
         return {'or': [q], 'and': {}}
 
-    def get_results(self, request, term, page, context):
+    def get_results(self, request, term):
         """
         See :py:meth:`.views.Select2View.get_results`.
 
         This implementation takes care of detecting if more results are available.
         """
         if not hasattr(self, 'search_fields') or not self.search_fields:
-            raise ValueError('search_fields is required.')
+            raise NotImplementedError('search_fields is required.')
 
         qs = copy.deepcopy(self.get_queryset())
         params = self.prepare_qs_params(request, term, self.search_fields)
 
-        if self.max_results:
-            min_ = (page - 1) * self.max_results
-            max_ = min_ + self.max_results + 1  # fetching one extra row to check if it has more rows.
-            res = list(qs.filter(*params['or'], **params['and']).distinct()[min_:max_])
-            has_more = len(res) == (max_ - min_)
-            if has_more:
-                res = res[:-1]
-        else:
-            res = list(qs.filter(*params['or'], **params['and']).distinct())
-            has_more = False
-
-        res = [
-            (
-                getattr(obj, self.to_field_name),
-                self.label_from_instance(obj),
-                self.extra_data_from_instance(obj)
-            )
-            for obj in res
-        ]
-        return NO_ERR_RESP, has_more, res
-
-
-class UnhideableQuerysetType(UnhideableQuerysetTypeBase):
-    """
-    This does some pretty nasty hacky stuff, to make sure users can
-    also define ``queryset`` as class-level field variable, instead of
-    passing it to constructor.
-    """
-
-    # TODO check for alternatives. Maybe this hack is not necessary.
-
-    def __new__(cls, name, bases, dct):
-        _q = dct.get('queryset', None)
-        if _q is not None and not isinstance(_q, property):
-            # This hack is needed since users are allowed to
-            # provide queryset in sub-classes by declaring
-            # class variable named - queryset, which will
-            # effectively hide the queryset declared in this
-            # mixin.
-            dct.pop('queryset')  # Throwing away the sub-class queryset
-            dct['_subclass_queryset'] = _q
-
-        return type.__new__(cls, name, bases, dct)
-
-    def __call__(cls, *args, **kwargs):
-        queryset = kwargs.get('queryset', None)
-        if queryset is None and hasattr(cls, '_subclass_queryset'):
-            kwargs['queryset'] = getattr(cls, '_subclass_queryset')
-        return type.__call__(cls, *args, **kwargs)
+        return qs.filter(*params['or'], **params['and']).distinct()
 
 
 class ChoiceMixin(object):
@@ -324,6 +208,7 @@ class ChoiceMixin(object):
     Simple mixin which provides a property -- ``choices``. When ``choices`` is set,
     then it sets that value to ``self.widget.choices`` too.
     """
+
     def _get_choices(self):
         if hasattr(self, '_choices'):
             return self._choices
@@ -359,6 +244,7 @@ class FilterableModelChoiceIterator(ModelChoiceIterator):
         """
         if not hasattr(self, '_original_queryset'):
             import copy
+
             self._original_queryset = copy.deepcopy(self.queryset)
         if filter_map:
             self.queryset = self._original_queryset.filter(**filter_map)
@@ -397,45 +283,46 @@ class QuerysetChoiceMixin(ChoiceMixin):
 
 
 class ModelChoiceFieldMixin(QuerysetChoiceMixin):
-
-    def __init__(self, *args, **kwargs):
-        queryset = kwargs.pop('queryset', None)
+    def __init__(self, queryset=None, **kwargs):
         # This filters out kwargs not supported by Field but are still passed as it is required
         # by other codes. If new args are added to Field then make sure they are added here too.
         kargs = extract_some_key_val(kwargs, [
             'empty_label', 'cache_choices', 'required', 'label', 'initial', 'help_text',
             'validators', 'localize',
-            ])
+        ])
         kargs['widget'] = kwargs.pop('widget', getattr(self, 'widget', None))
         kargs['to_field_name'] = kwargs.pop('to_field_name', 'pk')
+
+        queryset = queryset or self.get_queryset()
 
         # If it exists then probably it is set by HeavySelect2FieldBase.
         # We are not gonna use that anyway.
         if hasattr(self, '_choices'):
             del self._choices
-
         super(ModelChoiceFieldMixin, self).__init__(queryset, **kargs)
 
         if hasattr(self, 'set_placeholder'):
             self.widget.set_placeholder(self.empty_label)
 
-    def _get_queryset(self):
-        if hasattr(self, '_queryset'):
-            return self._queryset
-
     def get_pk_field_name(self):
-        return self.to_field_name or 'pk'
+        return self.to_field_name
 
 
 # ## Slightly altered versions of the Django counterparts with the same name in forms module. ##
 
 
 class ModelChoiceField(ModelChoiceFieldMixin, forms.ModelChoiceField):
-    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelChoiceField._set_queryset)
+
+    def get_queryset(self):
+        if self.queryset:
+            return self.queryset
+        elif self.model:
+            return self.model._default_queryset
+        raise NotImplementedError('%s must implement "model" or "queryset".' % self.__class__.__name__)
 
 
 class ModelMultipleChoiceField(ModelChoiceFieldMixin, forms.ModelMultipleChoiceField):
-    queryset = property(ModelChoiceFieldMixin._get_queryset, forms.ModelMultipleChoiceField._set_queryset)
+    pass
 
 
 # ## Light Fields specialized for Models ##
@@ -473,6 +360,7 @@ class HeavySelect2FieldBaseMixin(object):
         might expect it to be available.
 
     """
+
     def __init__(self, *args, **kwargs):
         """
         Class constructor.
@@ -490,29 +378,21 @@ class HeavySelect2FieldBaseMixin(object):
         data_view = kwargs.pop('data_view', None)
         choices = kwargs.pop('choices', [])
 
-        kargs = {}
-        if kwargs.get('widget', None) is None:
-            kargs['widget'] = self.widget(data_view=data_view)
+        widget = kwargs.pop('widget', None)
+        widget = widget or self.widget
+        if isinstance(widget, type):
+                self.widget = widget(data_view=data_view)
+        else:
+            self.widget.data_view = data_view
 
-        kargs.update(kwargs)
-        super(HeavySelect2FieldBaseMixin, self).__init__(*args, **kargs)
-
-        # By this time self.widget would have been instantiated.
-
-        # This piece of code is needed here since (God knows why) Django's Field class does not call
-        # super(); because of that __init__() of classes would get called after Field.__init__().
-        # If it did had super() call there then we could have simply moved AutoViewFieldMixin at the
-        # end of the MRO list. This way it would have got widget instance instead of class and it
-        # could have directly set field_id on it.
-        if hasattr(self, 'field_id'):
-            self.widget.field_id = self.field_id
-            self.widget.attrs['data-select2-id'] = self.field_id
+        super(HeavySelect2FieldBaseMixin, self).__init__(*args, **kwargs)
 
         # Widget should have been instantiated by now.
         self.widget.field = self
 
         # ModelChoiceField will set self.choices to ModelChoiceIterator
-        if choices and not (hasattr(self, 'choices') and isinstance(self.choices, forms.models.ModelChoiceIterator)):
+        if choices and not (hasattr(self, 'choices') and isinstance(self.choices,
+                                                                    forms.models.ModelChoiceIterator)):
             self.choices = choices
 
 
@@ -525,7 +405,8 @@ class HeavyChoiceField(ChoiceMixin, forms.Field):
         to be a subset of all possible choices.
     """
     default_error_messages = {
-        'invalid_choice': _('Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_choice': _(
+            'Select a valid choice. %(value)s is not one of the available choices.'),
     }
     empty_value = ''
     "Sub-classes can set this other value if needed."
@@ -608,7 +489,8 @@ class HeavyMultipleChoiceField(HeavyChoiceField):
     """
     hidden_widget = forms.MultipleHiddenInput
     default_error_messages = {
-        'invalid_choice': _('Select a valid choice. %(value)s is not one of the available choices.'),
+        'invalid_choice': _(
+            'Select a valid choice. %(value)s is not one of the available choices.'),
         'invalid_list': _('Enter a list of values.'),
     }
 
@@ -781,6 +663,7 @@ class HeavyModelSelect2TagField(HeavySelect2FieldBaseMixin, ModelMultipleChoiceF
         """
         raise NotImplementedError
 
+
 # ## Heavy general field that uses central AutoView ##
 
 
@@ -826,10 +709,8 @@ class AutoSelect2TagField(AutoViewFieldMixin, HeavySelect2TagField):
 # ## Heavy field, specialized for Model, that uses central AutoView ##
 
 
-class AutoModelSelect2Field(six.with_metaclass(UnhideableQuerysetType,
-                                               ModelResultJsonMixin,
-                                               AutoViewFieldMixin,
-                                               HeavyModelSelect2ChoiceField)):
+class AutoModelSelect2Field(ModelResultJsonMixin, AutoViewFieldMixin,
+                            HeavyModelSelect2ChoiceField):
     """
     Auto Heavy Select2 field, specialized for Models.
 
@@ -840,10 +721,8 @@ class AutoModelSelect2Field(six.with_metaclass(UnhideableQuerysetType,
     widget = AutoHeavySelect2Widget
 
 
-class AutoModelSelect2MultipleField(six.with_metaclass(UnhideableQuerysetType,
-                                                       ModelResultJsonMixin,
-                                                       AutoViewFieldMixin,
-                                                       HeavyModelSelect2MultipleChoiceField)):
+class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin,
+                                    HeavyModelSelect2MultipleChoiceField):
     """
     Auto Heavy Select2 field for multiple choices, specialized for Models.
 
@@ -854,10 +733,8 @@ class AutoModelSelect2MultipleField(six.with_metaclass(UnhideableQuerysetType,
     widget = AutoHeavySelect2MultipleWidget
 
 
-class AutoModelSelect2TagField(six.with_metaclass(UnhideableQuerysetType,
-                                                  ModelResultJsonMixin,
-                                                  AutoViewFieldMixin,
-                                                  HeavyModelSelect2TagField)):
+class AutoModelSelect2TagField(ModelResultJsonMixin, AutoViewFieldMixin,
+                               HeavyModelSelect2TagField):
     """
     Auto Heavy Select2 field for tagging, specialized for Models.
 
