@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 import json
-from django.views.generic import FormView
+
 from django.http import HttpResponse
+from django.views.generic import FormView
 
 
 class TemplateFormView(FormView):

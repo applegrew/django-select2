@@ -45,7 +45,8 @@ External Dependencies
 
 * Django - This is obvious.
 * jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.
-* Memcached (python-memcached) - If you plan on running multiple python processes with `GENERATE_RANDOM_SELECT2_ID` enabled, then you need to turn on `ENABLE_SELECT2_MULTI_PROCESS_SUPPORT`. In that mode it is highly recommended that you use Memcached, to minimize DB hits.
+* Memcached or Redis - If you run more than one node, you'll need a shared memory.
+
 
 Example Application
 ===================

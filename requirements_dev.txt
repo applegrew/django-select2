@@ -2,6 +2,8 @@ pytest
 pytest-pep8
 pytest-flakes
 pytest-django
+pytest-isort
+pep257
 selenium
 model_mommy
 isort
