@@ -7,8 +7,7 @@ from django.http import Http404, JsonResponse
 from django.utils.encoding import smart_text
 from django.views.generic.list import BaseListView
 
-from django_select2.cache import cache
-
+from .cache import cache
 from .conf import settings
 
 NO_ERR_RESP = 'nil'
@@ -29,7 +28,7 @@ class AutoResponseView(BaseListView):
     """
 
     def get(self, request, *args, **kwargs):
-        self.field = self.get_field_or_404()
+        self.widget = self.get_widget_or_404()
         self.term = kwargs.get('term', request.GET.get('term', ''))
 
         self.object_list = self.get_queryset()
@@ -47,12 +46,12 @@ class AutoResponseView(BaseListView):
         })
 
     def get_queryset(self):
-        return self.field.get_results(self.request, self.term)
+        return self.widget.filter_queryset(self.request, self.term)
 
     def get_paginate_by(self, queryset):
-        return self.field.max_results
+        return self.widget.max_results
 
-    def get_field_or_404(self):
+    def get_widget_or_404(self):
         field_id = self.kwargs.get('field_id', self.request.GET.get('field_id', None))
         if not field_id:
             raise Http404('No "field_id" provided.')
@@ -62,6 +61,7 @@ class AutoResponseView(BaseListView):
             raise Http404('Invalid "field_id".')
         else:
             cache_key = '%s%s' % (settings.SELECT2_CACHE_PREFIX, key)
+            print(cache_key)
             field = cache.get(cache_key)
             if field is None:
                 raise Http404('field_id not found')

@@ -92,6 +92,7 @@ __BOOTSTRAP = False
 __ENABLE_MULTI_PROCESS_SUPPORT = False
 __MEMCACHE_HOST = None
 __MEMCACHE_PORT = None
+__MEMCACHE_TTL = 900
 __GENERATE_RANDOM_ID = False
 
 try:
@@ -103,6 +104,7 @@ try:
         __ENABLE_MULTI_PROCESS_SUPPORT = getattr(settings, 'ENABLE_SELECT2_MULTI_PROCESS_SUPPORT', False)
         __MEMCACHE_HOST = getattr(settings, 'SELECT2_MEMCACHE_HOST', None)
         __MEMCACHE_PORT = getattr(settings, 'SELECT2_MEMCACHE_PORT', None)
+        __MEMCACHE_TTL = getattr(settings, 'SELECT2_MEMCACHE_TTL', 900)
         __GENERATE_RANDOM_ID = getattr(settings, 'GENERATE_RANDOM_SELECT2_ID', False)
         __BOOTSTRAP = getattr(settings, 'SELECT2_BOOTSTRAP', False)
 
@@ -121,7 +123,7 @@ try:
                 'If you seek multi machine support please review the latest documentation.'
             )
             warnings.warn(msg, DeprecationWarning)
-        if __MEMCACHE_HOST or __MEMCACHE_PORT:
+        if __MEMCACHE_HOST or __MEMCACHE_PORT or __MEMCACHE_TTL:
             msg = (
                 'Select2\'s setting "SELECT2_MEMCACHE_HOST" has been deprecated'
                 ' in favour of "SELECT2_CACHE_BACKEND".\n'

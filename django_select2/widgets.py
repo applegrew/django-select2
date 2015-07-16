@@ -19,9 +19,8 @@ from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.six import text_type
 
-from django_select2.cache import cache
-
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
+from .cache import cache
 from .conf import settings
 from .media import (get_select2_css_libs, get_select2_heavy_js_libs,
                     get_select2_js_libs)
@@ -479,7 +478,7 @@ class HeavySelect2Mixin(Select2Mixin):
                 q = q | Q(**kwargs)
         return {'or': [q], 'and': {}}
 
-    def get_results(self, request, term):
+    def filter_queryset(self, request, term):
         """
         See :py:meth:`.views.Select2View.get_results`.
 
@@ -592,13 +591,18 @@ class HeavySelect2Mixin(Select2Mixin):
         js += super(HeavySelect2Mixin, self).render_inner_js_code(id_, name, value, attrs, choices, *args)
         return js
 
+    def _get_cache_key(self):
+        return "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
+
     def render(self, name, value, attrs={}, choices=()):
-        self.field_id = signing.dumps(id(self))
-        key = "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
-        cache.set(key, self)
-        attrs.setdefault('data-field_id', self.field_id)
+        self.widget_id = signing.dumps(id(self))
+        cache.set(self._get_cache_key(), self)
+        attrs.setdefault('data-field_id', self.widget_id)
         output = super(HeavySelect2Mixin, self).render(name, value, attrs, choices)
         return output
+
+    def value_from_datadict(self, *args, **kwargs):
+        return super(HeavySelect2Mixin, self).value_from_datadict(*args, **kwargs)
 
     def _get_media(self):
         """
@@ -640,7 +644,7 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
         return False
 
     def render_inner_js_code(self, id_, *args):
-        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        field_id = self.widget_id
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
@@ -702,7 +706,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
                 return '$("#%s").txt(%s);' % (id_, texts)
 
     def render_inner_js_code(self, id_, *args):
-        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        field_id = self.widget_id
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
@@ -747,7 +751,7 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
         self.options['createSearchChoice'] = '*START*django_select2.createSearchChoice*END*'
 
     def render_inner_js_code(self, id_, *args):
-        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        field_id = self.widget_id
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
