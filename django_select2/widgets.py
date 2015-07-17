@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Contains all the Django widgets for Select2.
 """
@@ -7,21 +7,24 @@ from __future__ import absolute_import, unicode_literals
 import json
 import logging
 import re
+from functools import reduce
 from itertools import chain
 
 from django import forms
+from django.core import signing
 from django.core.urlresolvers import reverse
 from django.core.validators import EMPTY_VALUES
+from django.db.models import Q, QuerySet
 from django.utils.datastructures import MergeDict, MultiValueDict
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.six import text_type
 
-from django_select2.media import (get_select2_css_libs,
-                                  get_select2_heavy_js_libs,
-                                  get_select2_js_libs)
-
 from . import __RENDER_SELECT2_STATICS as RENDER_SELECT2_STATICS
+from .cache import cache
+from .conf import settings
+from .media import (get_select2_css_libs, get_select2_heavy_js_libs,
+                    get_select2_js_libs)
 
 logger = logging.getLogger(__name__)
 
@@ -342,6 +345,10 @@ class HeavySelect2Mixin(Select2Mixin):
 
     .. tip:: You can override these options by passing ``select2_options`` kwarg to :py:meth:`.__init__`.
     """
+    model = None
+    queryset = None
+    search_fields = []
+    max_results = 25
 
     def __init__(self, **kwargs):
         """
@@ -393,8 +400,10 @@ class HeavySelect2Mixin(Select2Mixin):
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
         self.choices = kwargs.pop('choices', [])
 
-        if not self.view and not self.url:
-            raise ValueError('data_view or data_url is required')
+        self.model = kwargs.pop('model', self.model)
+        self.queryset = kwargs.pop('queryset', self.queryset)
+        self.search_fields = kwargs.pop('search_fields', self.search_fields)
+        self.max_results = kwargs.pop('max_results', self.max_results)
 
         self.options['ajax'] = {
             'dataType': 'json',
@@ -405,6 +414,40 @@ class HeavySelect2Mixin(Select2Mixin):
         self.options['minimumInputLength'] = 2
         self.options['initSelection'] = '*START*django_select2.onInit*END*'
         super(HeavySelect2Mixin, self).__init__(**kwargs)
+
+    def filter_queryset(self, term):
+        """
+        See :py:meth:`.views.Select2View.get_results`.
+
+        This implementation takes care of detecting if more results are available.
+        """
+        qs = self.get_queryset()
+        search_fields = self.get_search_fields()
+        select = reduce(lambda x, y: Q(**{x: term}) | Q(**{y: term}), search_fields,
+                        Q(**{search_fields.pop(): term}))
+        return qs.filter(select).distinct()
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            queryset = self.queryset
+            if isinstance(queryset, QuerySet):
+                queryset = queryset.all()
+        elif self.model is not None:
+            queryset = self.model._default_manager.all()
+        else:
+            raise NotImplementedError(
+                "%(cls)s is missing a QuerySet. Define "
+                "%(cls)s.model, %(cls)s.queryset, or override "
+                "%(cls)s.get_queryset()." % {
+                    'cls': self.__class__.__name__
+                }
+            )
+        return queryset
+
+    def get_search_fields(self):
+        if self.search_fields:
+            return self.search_fields
+        raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
     def render_texts(self, selected_choices, choices):
         """
@@ -492,6 +535,19 @@ class HeavySelect2Mixin(Select2Mixin):
         js += super(HeavySelect2Mixin, self).render_inner_js_code(id_, name, value, attrs, choices, *args)
         return js
 
+    def _get_cache_key(self):
+        return "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
+
+    def render(self, name, value, attrs={}, choices=()):
+        self.widget_id = signing.dumps(id(self))
+        cache.set(self._get_cache_key(), self)
+        attrs.setdefault('data-field_id', self.widget_id)
+        output = super(HeavySelect2Mixin, self).render(name, value, attrs, choices)
+        return output
+
+    def value_from_datadict(self, *args, **kwargs):
+        return super(HeavySelect2Mixin, self).value_from_datadict(*args, **kwargs)
+
     def _get_media(self):
         """
         Construct Media as a dynamic property
@@ -532,7 +588,7 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
         return False
 
     def render_inner_js_code(self, id_, *args):
-        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        field_id = self.widget_id
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
@@ -540,7 +596,6 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.TextInput):
             js = '''
                   window.django_select2.%s = function (selector, fieldID) {
                     var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
                   ''' % (fieldset_id)
             js += super(HeavySelect2Widget, self).render_inner_js_code(id_, *args)
             js += '};'
@@ -595,7 +650,7 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
                 return '$("#%s").txt(%s);' % (id_, texts)
 
     def render_inner_js_code(self, id_, *args):
-        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        field_id = self.widget_id
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
@@ -603,7 +658,6 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             js = '''
                   window.django_select2.%s = function (selector, fieldID) {
                     var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
                   ''' % (fieldset_id)
             js += super(HeavySelect2MultipleWidget, self).render_inner_js_code(id_, *args)
             js += '};'
@@ -641,7 +695,7 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
         self.options['createSearchChoice'] = '*START*django_select2.createSearchChoice*END*'
 
     def render_inner_js_code(self, id_, *args):
-        field_id = self.field_id if hasattr(self, 'field_id') else id_
+        field_id = self.widget_id
         fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
         if '__prefix__' in id_:
             return ''
@@ -649,7 +703,6 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
             js = '''
                   window.django_select2.%s = function (selector, fieldID) {
                     var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
                   ''' % (fieldset_id)
             js += super(HeavySelect2TagWidget, self).render_inner_js_code(id_, *args)
             js += '};'
@@ -683,21 +736,6 @@ class AutoHeavySelect2Mixin(object):
     def __init__(self, *args, **kwargs):
         kwargs['data_view'] = "django_select2_central_json"
         super(AutoHeavySelect2Mixin, self).__init__(*args, **kwargs)
-
-    def render_inner_js_code(self, id_, *args):
-        fieldset_id = re.sub(r'-\d+-', '_', id_).replace('-', '_')
-        if '__prefix__' in id_:
-            return ''
-        else:
-            js = '''
-                  window.django_select2.%s = function (selector, fieldID) {
-                    var hashedSelector = "#" + selector;
-                    $(hashedSelector).data("field_id", fieldID);
-                  ''' % (fieldset_id)
-            js += super(AutoHeavySelect2Mixin, self).render_inner_js_code(id_, *args)
-            js += '};'
-            js += 'django_select2.%s("%s", "%s");' % (fieldset_id, id_, self.field_id)
-            return js
 
 
 class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):

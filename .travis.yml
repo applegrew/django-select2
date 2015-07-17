@@ -1,5 +1,7 @@
 language: python
 sudo: false
+services:
+  - memcached
 python:
   - "2.7"
   - "3.3"
@@ -25,6 +27,8 @@ install:
   - pip install --upgrade pip
   - pip install -e .
   - pip install -r requirements_dev.txt
+  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install python-memcached; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then pip install python3-memcached; fi
   - pip install $DJANGO
   - pip install coveralls
   - sh -e /etc/init.d/xvfb start
