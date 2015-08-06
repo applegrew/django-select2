@@ -8,6 +8,8 @@ Django_Select2_Py3.egg-info
 dist
 build
 
+node_modules/
+
 docs/_build
 
 # Intellij

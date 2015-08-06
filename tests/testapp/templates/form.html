@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load django_select2_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,8 +8,7 @@
             $("body").attr("JSError", msg);
         }
     </script>
-    {% import_django_select2_js %}
-    {% import_django_select2_css %}
+  {{ form.media }}
 </head>
 <body>
 <form method="post" action="">

@@ -3,8 +3,10 @@ from __future__ import absolute_import, unicode_literals
 
 from django.conf.urls import include, patterns, url
 
-from .forms import (ArtistForm, HeavySelect2MultipleWidgetForm,
-                    HeavySelect2WidgetForm, Select2WidgetForm)
+from .forms import (
+    ArtistForm, HeavySelect2MultipleWidgetForm, HeavySelect2WidgetForm,
+    Select2WidgetForm
+)
 from .views import TemplateFormView, heavy_data
 
 urlpatterns = patterns(

@@ -13,43 +13,23 @@ from .types import NO_ERR_RESP
 
 
 class AutoResponseView(BaseListView):
-    """
-    A central view meant to respond to Ajax queries for all Heavy widgets/fields.
-
-    Although it is not mandatory to use, but is immensely helpful.
-
-    .. tip:: Fields which want to use this view must sub-class :py:class:`~.widgets.AutoViewFieldMixin`.
-    """
 
     def get(self, request, *args, **kwargs):
         self.widget = self.get_widget_or_404()
         self.term = kwargs.get('term', request.GET.get('term', ''))
-
-        try:
-            self.object_list = self.get_queryset()
-        except NotImplementedError:
-            self.object_list = []
-            context = self.get_context_data()
-            results = self.widget.field.get_results(
-                self.request,
-                self.term,
-                int(self.request.GET.get('page', 1)),
-                context
-            )
-            return JsonResponse(self._results_to_context(results))
-        else:
-            context = self.get_context_data()
-            return JsonResponse({
-                'results': [
-                    {
-                        'text': smart_text(obj),
-                        'id': obj.pk,
-                    }
-                    for obj in context['object_list']
-                    ],
-                'err': NO_ERR_RESP,
-                'more': context['is_paginated']
-            })
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        return JsonResponse({
+            'results': [
+                {
+                    'text': smart_text(obj),
+                    'id': obj.pk,
+                }
+                for obj in context['object_list']
+                ],
+            'err': NO_ERR_RESP,
+            'more': context['is_paginated']
+        })
 
     def get_queryset(self):
         return self.widget.filter_queryset(self.term)
@@ -71,20 +51,3 @@ class AutoResponseView(BaseListView):
             if field is None:
                 raise Http404('field_id not found')
         return field
-
-    def _results_to_context(self, output):
-        err, has_more, results = output
-        res = []
-        if err == NO_ERR_RESP:
-            for result in results:
-                id_, text = result[:2]
-                if len(result) > 2:
-                    extra_data = result[2]
-                else:
-                    extra_data = {}
-                res.append(dict(id=id_, text=text, **extra_data))
-        return {
-            'err': err,
-            'more': has_more,
-            'results': res,
-        }

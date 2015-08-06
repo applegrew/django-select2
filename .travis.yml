@@ -1,5 +1,7 @@
 language: python
 sudo: false
+cache:
+  - pip
 services:
   - memcached
 python:
@@ -19,7 +21,7 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: DJANGO="<1.7,>=1.6"
+    - env: DJANGO="Django<1.7,>=1.6"
     - env: DJANGO="-e git+https://github.com/django/django.git@master#egg=Django"
     - python: "pypy"
     - python: "pypy3"
@@ -33,6 +35,9 @@ install:
   - pip install coveralls
   - sh -e /etc/init.d/xvfb start
 script:
+  - isort --check-only --recursive --diff .
+  - flake8 --jobs=2 .
+  - pep257 django_select2
   - coverage run --source=django_select2 runtests.py
 after_success:
-  coveralls
+  - coveralls

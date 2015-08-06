@@ -1,10 +1,6 @@
-from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from . import __BOOTSTRAP as BOOTSTRAP
-
-# Local version of DEBUG
-DEBUG = settings.configured and settings.DEBUG
+from .conf import settings
 
 
 def django_select2_static(file):
@@ -12,7 +8,7 @@ def django_select2_static(file):
 
 
 def get_select2_js_libs():
-    if DEBUG:
+    if settings.DEBUG:
         js_file = 'js/select2.js'
     else:
         js_file = 'js/select2.min.js'
@@ -22,7 +18,7 @@ def get_select2_js_libs():
 def get_select2_heavy_js_libs():
     libs = get_select2_js_libs()
 
-    if DEBUG:
+    if settings.DEBUG:
         js_file = 'js/heavy_data.js'
     else:
         js_file = 'js/heavy_data.min.js'
@@ -30,15 +26,15 @@ def get_select2_heavy_js_libs():
 
 
 def get_select2_css_libs(light=False):
-    if DEBUG:
+    if settings.DEBUG:
         if light:
             css_files = 'css/select2.css',
         else:
             css_files = 'css/select2.css', 'css/extra.css'
-        if BOOTSTRAP:
+        if settings.SELECT2_BOOTSTRAP:
             css_files += 'css/select2-bootstrap.css',
     else:
-        if BOOTSTRAP:
+        if settings.SELECT2_BOOTSTRAP:
             if light:
                 css_files = 'css/select2-bootstrapped.min.css',
             else:
