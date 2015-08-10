@@ -13,7 +13,7 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.core.validators import EMPTY_VALUES
 from django.utils.datastructures import MergeDict, MultiValueDict
-from django.utils.encoding import force_text, force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.six import text_type
 
@@ -432,7 +432,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
         for val, txt in chain(self_choices, all_choices):
             val = force_text(val)
-            choices_dict[val] = force_unicode(txt)
+            choices_dict[val] = force_text(txt)
 
         for val in selected_choices:
             try:
