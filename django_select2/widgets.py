@@ -432,7 +432,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
         for val, txt in chain(self_choices, all_choices):
             val = force_text(val)
-            choices_dict[val] = txt
+            choices_dict[val] = force_text(txt)
 
         for val in selected_choices:
             try:
