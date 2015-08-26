@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.templatetags.static import static
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from . import __BOOTSTRAP as BOOTSTRAP
 
