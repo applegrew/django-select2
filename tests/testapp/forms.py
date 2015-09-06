@@ -5,8 +5,8 @@ from django import forms
 
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, Select2MultipleWidget,
-    Select2Widget
-)
+    Select2Widget,
+    ModelSelect2MultipleWidget, ModelSelect2Widget)
 from tests.testapp import models
 
 
@@ -38,9 +38,9 @@ class ArtistModelForm(forms.ModelForm):
 
 class ArtistForm(forms.Form):
     title = forms.CharField(max_length=50)
-    genres = forms.ModelMultipleChoiceField(widget=HeavySelect2MultipleWidget(
+    genres = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
         queryset=models.Genre.objects.all(),
-        search_fields=['title'],
+        search_fields=['title__icontains'],
     ), queryset=models.Genre.objects.all())
 
 
@@ -55,9 +55,9 @@ class AlbumModelForm(forms.ModelForm):
 
 class AlbumForm(forms.Form):
     title = forms.CharField(max_length=255)
-    artist = forms.ModelChoiceField(widget=HeavySelect2Widget(
+    artist = forms.ModelChoiceField(widget=ModelSelect2Widget(
         model=models.Artist,
-        search_fields=['title']
+        search_fields=['title__icontains']
     ), queryset=models.Artist.objects.all())
 
 

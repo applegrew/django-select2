@@ -13,7 +13,7 @@ from selenium.common.exceptions import NoSuchElementException
 from six import text_type
 
 from django_select2.cache import cache
-from django_select2.forms import AutoHeavySelect2Widget
+from django_select2.forms import ModelSelect2Widget
 from tests.testapp.models import Genre
 
 
@@ -82,7 +82,7 @@ class TestHeavySelect2Mixin(object):
         mommy.make(Genre, 100)
 
     def test_get_queryset(self):
-        widget = AutoHeavySelect2Widget()
+        widget = ModelSelect2Widget()
         with pytest.raises(NotImplementedError):
             widget.get_queryset()
         widget.model = Genre
@@ -92,7 +92,7 @@ class TestHeavySelect2Mixin(object):
         assert isinstance(widget.get_queryset(), QuerySet)
 
     def test_get_search_fields(self):
-        widget = AutoHeavySelect2Widget()
+        widget = ModelSelect2Widget()
         with pytest.raises(NotImplementedError):
             widget.get_search_fields()
 
@@ -101,32 +101,32 @@ class TestHeavySelect2Mixin(object):
         assert all(isinstance(x, text_type) for x in widget.get_search_fields())
 
     def test_model_kwarg(self):
-        widget = AutoHeavySelect2Widget(model=Genre, search_fields=['title__icontains'])
+        widget = ModelSelect2Widget(model=Genre, search_fields=['title__icontains'])
         genre = Genre.objects.last()
         result = widget.filter_queryset(genre.title)
         assert result.exists()
 
     def test_queryset_kwarg(self):
-        widget = AutoHeavySelect2Widget(queryset=Genre.objects, search_fields=['title__icontains'])
+        widget = ModelSelect2Widget(queryset=Genre.objects, search_fields=['title__icontains'])
         genre = Genre.objects.last()
         result = widget.filter_queryset(genre.title)
         assert result.exists()
 
     def test_widget_id(self):
-        widget = AutoHeavySelect2Widget()
+        widget = ModelSelect2Widget()
         widget.render('name', 'value')
         assert widget.widget_id
         assert signing.loads(widget.widget_id) == id(widget)
 
     def test_render(self):
-        widget = AutoHeavySelect2Widget()
+        widget = ModelSelect2Widget()
         widget.render('name', 'value')
         cached_widget = cache.get(widget._get_cache_key())
-        assert isinstance(cached_widget, AutoHeavySelect2Widget)
+        assert isinstance(cached_widget, ModelSelect2Widget)
         assert cached_widget.widget_id == widget.widget_id
 
     def test_ajax_view_registration(self, client):
-        widget = AutoHeavySelect2Widget(queryset=Genre.objects, search_fields=['title__icontains'])
+        widget = ModelSelect2Widget(queryset=Genre.objects, search_fields=['title__icontains'])
         widget.render('name', 'value')
         url = reverse('django_select2_central_json')
         genre = Genre.objects.last()

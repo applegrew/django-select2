@@ -55,10 +55,10 @@ Light widgets are normally named, i.e. there is no
 :py:class:`.Select2MultipleWidget`,
 :py:class:`.HeavySelect2Widget`,
 :py:class:`.HeavySelect2MultipleWidget`,
-:py:class:`.AutoHeavySelect2Widget`,
-:py:class:`.AutoHeavySelect2MultipleWidget`,
+:py:class:`.ModelSelect2Widget`,
+:py:class:`.ModelSelect2MultipleWidget`,
 :py:class:`.HeavySelect2TagWidget`,
-:py:class:`.AutoHeavySelect2TagWidget`
+:py:class:`.ModelSelect2TagWidget`
 
 `Read more`_
 

@@ -1,11 +1,12 @@
 import os.path
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DEBUG = True
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'NAME': 'testdb.sqlite',
     }
 }
 
@@ -48,4 +49,4 @@ if os.environ.get('TRAVIS'):
         }
     }
 
-AUTO_RENDER_SELECT2_STATICS = False
+SELECT2_BOOTSTRAP = True

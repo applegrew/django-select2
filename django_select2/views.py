@@ -27,8 +27,6 @@ class AutoResponseView(BaseListView):
                 }
                 for obj in context['object_list']
                 ],
-            'err': NO_ERR_RESP,
-            'more': context['is_paginated']
         })
 
     def get_queryset(self):

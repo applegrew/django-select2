@@ -2,18 +2,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="{% static 'jquery-1.7.2.min.js' %}"></script>
-    <script type="text/javascript">
-        window.onerror = function (msg) {
-            $("body").attr("JSError", msg);
-        }
-    </script>
-  {{ form.media }}
+  {{ form.media.css }}
+  <style type="text/css">select{width:200px}</style>
 </head>
 <body>
 <form method="post" action="">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit Form"/>
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Submit Form"/>
 </form>
+<script src="{% static 'jquery-2.1.4.min.js' %}"></script>
+<script type="text/javascript">
+  window.onerror = function (msg) {
+    $("body").attr("JSError", msg);
+  }
+</script>
+{{ form.media.js }}
 </body>
