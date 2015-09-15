@@ -8,9 +8,8 @@ from functools import reduce
 from django import forms
 from django.core import signing
 from django.core.urlresolvers import reverse_lazy
-
 from django.db.models import Q
-
+from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
 
 from .cache import cache
@@ -34,13 +33,23 @@ class Select2Mixin(object):
 
     def build_attrs(self, extra_attrs=None, **kwargs):
         attrs = super(Select2Mixin, self).build_attrs(extra_attrs=None, **kwargs)
-        attrs.setdefault('data-allowClear', 'true' if self.is_required else 'false')
-        attrs.setdefault('data-closeOnSelect', 'false')
+        if self.is_required:
+            attrs.setdefault('data-allow-clear', 'false')
+        else:
+            attrs.setdefault('data-allow-clear', 'true')
+            attrs.setdefault('data-placeholder', '')
+
+        attrs.setdefault('data-minimumInputLength', 0)
         if 'class' in attrs:
             attrs['class'] += ' django-select2'
         else:
             attrs['class'] = 'django-select2'
         return attrs
+
+    def render_options(self, choices, selected_choices):
+        output = '<option></option>\n' if not self.is_required else ''
+        output += super(Select2Mixin, self).render_options(choices, selected_choices)
+        return output
 
     def _get_media(self):
         """
@@ -69,16 +78,21 @@ class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
     pass
 
 
-class HeavySelect2Mixin(object):
+class HeavySelect2Mixin(Select2Mixin):
 
     """Mixin that adds select2's ajax options and registers itself on django's cache."""
 
     def __init__(self, **kwargs):
-        self.data_view = kwargs.pop('data_view')
+        self.data_view = kwargs.pop('data_view', None)
+        self.data_url = kwargs.pop('data_url', None)
+        if not (self.data_view or self.data_url):
+            ValueError('You must ether specify "data_view" or "data_url".')
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
         super(HeavySelect2Mixin, self).__init__(**kwargs)
 
     def get_url(self):
+        if self.data_url:
+            return self.data_url
         return reverse_lazy(self.data_view)
 
     def build_attrs(self, extra_attrs=None, **kwargs):
@@ -94,6 +108,11 @@ class HeavySelect2Mixin(object):
         attrs.setdefault('data-ajax--cache', "true")
         attrs.setdefault('data-ajax--type', "GET")
         attrs.setdefault('data-minimumInputLength', 2)
+
+        if 'class' in attrs:
+            attrs['class'] += ' django-select2-heavy'
+        else:
+            attrs['class'] = 'django-select2-heavy'
         return attrs
 
     def _get_cache_key(self):
@@ -103,9 +122,13 @@ class HeavySelect2Mixin(object):
         return super(HeavySelect2Mixin, self).value_from_datadict(*args, **kwargs)
 
     def render_options(self, choices, selected_choices):
-        selected_choices = set(force_text(v) for v in selected_choices)
-        output = []
-        for option_value, option_label in selected_choices:
+        output = [super(HeavySelect2Mixin, self).render_options(choices, selected_choices)]
+        if isinstance(choices, ModelChoiceIterator):
+            selected_choices = set(choices.choice(obj)
+                                   for obj in choices.queryset.filter(pk__in=selected_choices))
+        else:
+            selected_choices = set((force_text(v), v) for v in choices if v in selected_choices)
+        for option_label, option_value in selected_choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
 
@@ -144,7 +167,7 @@ class ModelSelect2Mixin(object):
         self.queryset = kwargs.pop('queryset', self.queryset)
         self.search_fields = kwargs.pop('search_fields', self.search_fields)
         self.max_results = kwargs.pop('max_results', self.max_results)
-        defaults = {'data_view': 'django_select2_central_json'}
+        defaults = {'data_view': 'django_select2-json'}
         defaults.update(kwargs)
         super(ModelSelect2Mixin, self).__init__(*args, **defaults)
 

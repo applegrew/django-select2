@@ -9,7 +9,6 @@ from django.views.generic.list import BaseListView
 
 from .cache import cache
 from .conf import settings
-from .types import NO_ERR_RESP
 
 
 class AutoResponseView(BaseListView):

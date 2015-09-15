@@ -10,7 +10,6 @@ __all__ = ('settings',)
 class Select2Conf(AppConf):
     CACHE_BACKEND = 'default'
     CACHE_PREFIX = 'select2_'
-    BOOTSTRAP = False
 
     class Meta:
         prefix = 'SELECT2'
