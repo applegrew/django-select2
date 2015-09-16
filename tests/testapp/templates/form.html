@@ -3,7 +3,11 @@
 <html>
 <head>
   {{ form.media.css }}
-  <style type="text/css">select{width:200px}</style>
+  <style type="text/css">
+    select {
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
 <form method="post" action="">
@@ -11,7 +15,7 @@
   {{ form }}
   <input type="submit" value="Submit Form"/>
 </form>
-<script src="{% static 'jquery-2.1.4.min.js' %}"></script>
+<script src="{% static '//code.jquery.com/jquery-2.1.4.min.js' %}"></script>
 <script type="text/javascript">
   window.onerror = function (msg) {
     $("body").attr("JSError", msg);

@@ -26,17 +26,9 @@ class Artist(models.Model):
 class Album(models.Model):
     title = models.CharField(max_length=255)
     artist = models.ForeignKey(Artist)
-
-    def __str__(self):
-        return self.title
-
-
-@python_2_unicode_compatible
-class Song(models.Model):
-    title = models.CharField(max_length=255)
-    album = models.ForeignKey(Album, blank=True, null=True)
-    artist = models.ForeignKey(Artist)
-    genres = models.ManyToManyField(Genre, blank=True, null=True)
+    featured_artists = models.ManyToManyField(Artist, blank=True, related_name='featured_album_set')
+    primary_genre = models.ForeignKey(Genre, blank=True, null=True, related_name='primary_album_set')
+    genres = models.ManyToManyField(Genre)
 
     def __str__(self):
         return self.title

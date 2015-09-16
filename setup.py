@@ -23,50 +23,6 @@ URL = "https://github.com/applegrew/django-select2"
 VERSION = __import__(PACKAGE).__version__
 
 
-def getPkgPath():
-    return __import__(PACKAGE).__path__[0] + '/'
-
-
-def minify(files, outfile, ftype):
-    import requests
-    import io
-
-    content = ''
-
-    for filename in files:
-        with io.open(getPkgPath() + filename, 'r', encoding='utf8') as f:
-            content = content + '\n' + f.read()
-
-    data = {
-        'code': content,
-        'type': ftype,
-    }
-    response = requests.post('http://api.applegrew.com/minify', data)
-    response.raise_for_status()
-    response = response.json()
-    if response['success']:
-        with io.open(getPkgPath() + outfile, 'w', encoding='utf8') as f:
-            f.write(response['compiled_code'])
-    else:
-        raise Exception('%(error_code)s: "%(error)s"' % response)
-
-
-if len(sys.argv) > 1 and 'sdist' == sys.argv[1]:
-    minify(['static/django_select2/js/select2.js'], 'static/django_select2/js/select2.min.js', 'js')
-    minify(['static/django_select2/js/heavy_data.js'], 'static/django_select2/js/heavy_data.min.js', 'js')
-    minify(['static/django_select2/css/select2.css'], 'static/django_select2/css/select2.min.css', 'css')
-    minify(['static/django_select2/css/select2.css', 'static/django_select2/css/extra.css'],
-           'static/django_select2/css/all.min.css', 'css')
-    minify(['static/django_select2/css/select2.css', 'static/django_select2/css/select2-bootstrap.css'],
-           'static/django_select2/css/select2-bootstrapped.min.css', 'css')
-    minify(
-        [
-            'static/django_select2/css/select2.css',
-            'static/django_select2/css/extra.css',
-            'static/django_select2/css/select2-bootstrap.css'
-        ], 'static/django_select2/css/all-bootstrapped.min.css', 'css')
-
-
 class PyTest(Command):
     user_options = []
 
@@ -102,6 +58,10 @@ setup(
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
+        "Framework :: Django :: 1.7",
+        "Framework :: Django :: 1.8",
         "Framework :: Django",
     ],
     install_requires=[

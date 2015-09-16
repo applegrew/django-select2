@@ -6,7 +6,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'testdb.sqlite',
+        'NAME': ':memory:',
     }
 }
 
@@ -48,5 +48,3 @@ if os.environ.get('TRAVIS'):
             'LOCATION': 'localhost:11211',
         }
     }
-
-SELECT2_BOOTSTRAP = True

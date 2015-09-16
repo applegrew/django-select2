@@ -32,14 +32,14 @@ class Select2Mixin(object):
     """
 
     def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(Select2Mixin, self).build_attrs(extra_attrs=None, **kwargs)
+        attrs = super(Select2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
         if self.is_required:
             attrs.setdefault('data-allow-clear', 'false')
         else:
             attrs.setdefault('data-allow-clear', 'true')
             attrs.setdefault('data-placeholder', '')
 
-        attrs.setdefault('data-minimumInputLength', 0)
+        attrs.setdefault('data-minimum-input-length', 0)
         if 'class' in attrs:
             attrs['class'] += ' django-select2'
         else:
@@ -47,7 +47,7 @@ class Select2Mixin(object):
         return attrs
 
     def render_options(self, choices, selected_choices):
-        output = '<option></option>\n' if not self.is_required else ''
+        output = '<option></option>' if not self.is_required else ''
         output += super(Select2Mixin, self).render_options(choices, selected_choices)
         return output
 
@@ -86,7 +86,7 @@ class HeavySelect2Mixin(Select2Mixin):
         self.data_view = kwargs.pop('data_view', None)
         self.data_url = kwargs.pop('data_url', None)
         if not (self.data_view or self.data_url):
-            ValueError('You must ether specify "data_view" or "data_url".')
+            raise ValueError('You must ether specify "data_view" or "data_url".')
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
         super(HeavySelect2Mixin, self).__init__(**kwargs)
 
@@ -96,39 +96,37 @@ class HeavySelect2Mixin(Select2Mixin):
         return reverse_lazy(self.data_view)
 
     def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs, **kwargs)
+        attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
 
         # encrypt instance Id
-        widget_id = signing.dumps(id(self))
-        # add widget object to cache
-        cache.set(self._get_cache_key(), self)
+        self.widget_id = signing.dumps(id(self))
 
-        attrs['data-field_id'] = widget_id
+        attrs['data-field_id'] = self.widget_id
         attrs.setdefault('data-ajax--url', self.get_url())
         attrs.setdefault('data-ajax--cache', "true")
         attrs.setdefault('data-ajax--type', "GET")
-        attrs.setdefault('data-minimumInputLength', 2)
+        attrs.setdefault('data-minimum-input-length', 2)
 
-        if 'class' in attrs:
-            attrs['class'] += ' django-select2-heavy'
-        else:
-            attrs['class'] = 'django-select2-heavy'
+        attrs['class'] += ' django-select2-heavy'
         return attrs
+
+    def render(self, name, value, attrs=None, choices=()):
+        output = super(HeavySelect2Mixin, self).render(name, value, attrs=attrs, choices=choices)
+        self.set_to_cache()
+        return output
 
     def _get_cache_key(self):
         return "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
 
-    def value_from_datadict(self, *args, **kwargs):
-        return super(HeavySelect2Mixin, self).value_from_datadict(*args, **kwargs)
+    def set_to_cache(self):
+        """Add widget object to Djnago's cache."""
+        cache.set(self._get_cache_key(), self)
 
     def render_options(self, choices, selected_choices):
-        output = [super(HeavySelect2Mixin, self).render_options(choices, selected_choices)]
-        if isinstance(choices, ModelChoiceIterator):
-            selected_choices = set(choices.choice(obj)
-                                   for obj in choices.queryset.filter(pk__in=selected_choices))
-        else:
-            selected_choices = set((force_text(v), v) for v in choices if v in selected_choices)
-        for option_label, option_value in selected_choices:
+        output = ['<option></option>' if not self.is_required else '']
+        choices = {(k, v) for k, v in choices if k in selected_choices}
+        selected_choices = {force_text(v) for v in selected_choices}
+        for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
 
@@ -143,10 +141,10 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.SelectMultiple):
 
 class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
     def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(HeavySelect2TagWidget, self).build_attrs(self, extra_attrs, **kwargs)
-        attrs['data-minimumInputLength'] = 1
+        attrs = super(HeavySelect2TagWidget, self).build_attrs(extra_attrs, **kwargs)
+        attrs['data-minimum-input-length'] = 1
         attrs['data-tags'] = 'true'
-        attrs['data-tokenSeparators'] = [",", " "]
+        attrs['data-token-separators'] = [",", " "]
         return attrs
 
 
@@ -154,9 +152,6 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
 
 
 class ModelSelect2Mixin(object):
-
-    """Mixin for """
-
     model = None
     queryset = None
     search_fields = []
@@ -197,6 +192,22 @@ class ModelSelect2Mixin(object):
         if self.search_fields:
             return self.search_fields
         raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
+
+    def render_options(self, choices, selected_choices):
+        output = ['<option></option>' if not self.is_required else '']
+        if isinstance(self.choices, ModelChoiceIterator):
+            if not self.queryset:
+                self.queryset = self.choices.queryset
+            selected_choices = {c for c in selected_choices
+                                if c not in self.choices.field.empty_values}
+            choices = {self.choices.choice(obj)
+                       for obj in self.choices.queryset.filter(pk__in=selected_choices)}
+        else:
+            choices = {(k, v) for k, v in choices if k in selected_choices}
+        selected_choices = {force_text(v) for v in selected_choices}
+        for option_value, option_label in choices:
+            output.append(self.render_option(selected_choices, option_value, option_label))
+        return '\n'.join(output)
 
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
