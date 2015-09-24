@@ -63,8 +63,10 @@ Official Contributors
 
 * Johannes Hoppe (@codingjoe)
 
-[Changelog](CHANGELOG.md)
-=========================
+Changelog
+=========
+
+See [CHANGELOG.md](CHANGELOG.md)
 
 License
 =======

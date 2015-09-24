@@ -1,6 +1,10 @@
 Changelog Summary
 =================
 
+### v5.0.0
+
+* Lots code refactoring and improvements.
+
 ### v4.3.1
 
 * Build failure fix.
