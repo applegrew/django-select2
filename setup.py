@@ -17,7 +17,7 @@ def read(file_name):
 PACKAGE = "django_select2"
 NAME = "Django-Select2"
 DESCRIPTION = "Select2 option fields for Django"
-AUTHOR = "Nirupam Biswas"
+AUTHOR = "Nirupam Biswas, Johannes Hoppe"
 AUTHOR_EMAIL = "admin@applegrew.com"
 URL = "https://github.com/applegrew/django-select2"
 VERSION = __import__(PACKAGE).__version__
@@ -49,7 +49,7 @@ setup(
     author_email=AUTHOR_EMAIL,
     license="LICENSE.txt",
     url=URL,
-    packages=find_packages(),
+    packages=find_packages('django_select2'),
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

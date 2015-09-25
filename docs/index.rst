@@ -9,9 +9,11 @@ All Contents
 Contents:
 
 .. toctree::
+   :maxdepth: 2
+   :glob:
 
    get_started
-   reference
+   django_select2
 
 Indices and tables
 ==================

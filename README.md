@@ -3,17 +3,16 @@ Django-Select2
 
 [![PyPi Version](https://img.shields.io/pypi/v/Django-Select2.svg)](https://pypi.python.org/pypi/Django-Select2/)
 [![Build Status](https://travis-ci.org/applegrew/django-select2.svg?branch=master)](https://travis-ci.org/applegrew/django-select2)
-[![Code Health](https://landscape.io/github/applegrew/django-select2/master/landscape.svg?style=flat)](https://landscape.io/github/applegrew/django-select2/master)
 [![Test Coverage](https://coveralls.io/repos/applegrew/django-select2/badge.png?branch=master)](https://coveralls.io/r/applegrew/django-select2)
 [![GitHub license](https://img.shields.io/badge/license-APL2-blue.svg)](https://raw.githubusercontent.com/applegrew/django-select2/master/LICENSE.txt)
 [![Join the chat at https://gitter.im/applegrew/django-select2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/applegrew/django-select2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This is a [Django](https://www.djangoproject.com/) integration of [Select2](http://ivaynberg.github.com/select2/).
 
-The app includes Select2 driven Django Widgets and Form Fields.
+The app includes Select2 driven Django Widgets.
 
-Installation
-============
+## Installation
+
 
 1. Install `django_select2`
 
@@ -21,56 +20,70 @@ Installation
 
 2. Add `django_select2` to your `INSTALLED_APPS` in your project settings.
 
-3. When deploying on production server, run :-
-
-        python manage.py collectstatic
-
-4. Add `django_select` to your urlconf if you use any 'Auto' fields.
+3. Add `django_select` to your urlconf if you use any 'Auto' fields.
 
         url(r'^select2/', include('django_select2.urls')),
 
 
-Documentation
-=============
+### Upgrade from Version 4
+
+Version 5 is a complete rewrite of the package to drastically reduce
+the code base and to ensure a future maintainability.
+
+While we feature set remained unchanged, the API changed completely.
+Major changes:
+- Fields have been removed in favor of widgets.
+- All version 4 settings have been removed.
+- Template tags have been removed.
+- 3rd party javascript is served by a CDN.
+- No more inline javascript code.
+
+#### Upgrade can be done in 5 simple steps:
+
+1. Remove all existing and to setup the new cache backend.
+2. Remove the old template tags from your templates:
+ 1. `import_django_select2_js`
+ 2. `import_django_select2_css`
+ 3. `import_django_select2_js_css`
+3. Add `form.media.css` to the top and `form.media.js`
+ to the bottom of your base template.
+4. Upgrade to jQuery version 2, if you are still running version 1.
+5. Replace old fields with new widgets.
+
+
+## Documentation
+
 
 Documentation available at http://django-select2.readthedocs.org/.
 
-More details
-============
-
-More details can be found on my blog at - http://blog.applegrew.com/2012/08/django-select2/.
-
-External Dependencies
-=====================
-
-* Django - This is obvious.
-* jQuery - This is not included in the package since it is expected that in most scenarios this would already be available.
-* Memcached or Redis - If you run more than one node, you'll need a shared memory.
+## External Dependencies
 
 
-Example Application
-===================
-Please see `testapp` application. This application is used to manually test the functionalities of this package. This also serves as a good example.
+* jQuery version 2
+    This is not included in the package since it is expected
+    that in most scenarios this would already be available.
 
-You need only Django 1.4 or above to run that. It might run on older versions but that is not tested.
 
-Special Thanks
-==============
+## Example Application
+
+Please see `tests/testapp` application.
+This application is used to manually test the functionalities of this package.
+This also serves as a good example.
+
+## Special Thanks
+
 
 * Samuel Goldszmidt (@ouhouhsami) for reporting many fundamental issues with the code, because of which versions 2.0 and 2.0.1 were released.
 
-Official Contributors
-=====================
+## Official Contributors
 
 * Johannes Hoppe (@codingjoe)
 
-Changelog
-=========
+## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md)
 
-License
-=======
+## License
 
 Copyright 2012 Nirupam Biswas
 

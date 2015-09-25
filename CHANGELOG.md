@@ -1,6 +1,18 @@
 Changelog Summary
 =================
 
+### v5.0.0
+Version 5 is a complete rewrite of the package to drastically reduce
+the code base and to ensure a future maintainability.
+
+While we feature set remained unchanged, the API changed completely.
+Major changes:
+* Fields have been removed in favor of widgets.
+* All version 4 settings have been removed.
+* Template tags have been removed.
+* 3rd party javascript is served by a CDN.
+* No more inline javascript code.
+
 ### v4.3.2
 
 * Use `django.contrib.staticfiles.templatetags.staticfiles.static` over `django.templatetags.static.static` to allow hashing.

@@ -11,24 +11,28 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import datetime
+import os
+import sys
+
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+year = datetime.datetime.now().strftime("%Y")
 
 # This is needed since django_select2 requires django model modules
 # and those modules assume that django settings is configured and
 # have proper DB settings.
 # Using this we give a proper environment with working django settings.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testapp.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.testapp.settings")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../testapp'))
+sys.path.insert(0, os.path.abspath('../tests.testapp'))
 sys.path.insert(0, os.path.abspath('..'))
 
-import datetime
-year = datetime.datetime.now().strftime("%Y")
+
 
 # -- General configuration -----------------------------------------------------
 
@@ -40,10 +44,9 @@ year = datetime.datetime.now().strftime("%Y")
 extensions = ['sphinx.ext.autodoc',  'sphinx.ext.inheritance_diagram', 'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
 
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/2.7', None),
-    'django': ('https://docs.djangoproject.com/en/1.4/',
-      'http://www.applegrew.com/others/django.inv'),
-      #'http://docs.djangoproject.com/en/1.4/_objects/'),
+    'python': ('http://docs.python.org/3.5', None),
+    'django': ('https://docs.djangoproject.com/en/dev/',
+               'https://docs.djangoproject.com/en/dev/_objects/'),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -62,9 +65,11 @@ master_doc = 'index'
 project = u'Django-Select2'
 copyright = u'%s, Nirupam Biswas' % year
 
+
 def get_version():
-  import django_select2
-  return django_select2.__version__
+    import django_select2
+
+    return django_select2.__version__
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -120,10 +125,10 @@ def setup(app):
 autodoc_default_flags = ['members', 'show-inheritance']
 autodoc_member_order = 'bysource'
 
-inheritance_graph_attrs = dict(rankdir="TB", size='""')
+inheritance_graph_attrs = dict(rankdir='TB')
 
-inheritance_node_attrs = dict(shape='ellipse', fontsize=9,
-                              color='"#97C9FD"', style='filled')
+inheritance_node_attrs = dict(shape='rect', fontsize=14, fillcolor='gray90',
+                              color='gray30', style='filled')
 
 inheritance_edge_attrs = dict(penwidth=0.75)
 
@@ -134,7 +139,7 @@ inheritance_edge_attrs = dict(penwidth=0.75)
 if on_rtd:
   html_theme = 'default'
 else:
-  html_theme = 'nature'
+  html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -163,7 +168,7 @@ else:
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

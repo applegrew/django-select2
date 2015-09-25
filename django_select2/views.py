@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""JSONResponse views for model widgets."""
 from __future__ import absolute_import, unicode_literals
 
 from django.core import signing
@@ -13,7 +14,28 @@ from .conf import settings
 
 class AutoResponseView(BaseListView):
 
+    """
+    View that handles requests from heavy model widgets.
+
+    The view only supports HTTP's GET method.
+    """
+
     def get(self, request, *args, **kwargs):
+        """
+        Return a :class:`.django.http.JsonResponse`.
+
+        Example::
+
+            {
+                'results': [
+                    {
+                        'text': "foo",
+                        'id': 123
+                    }
+                ]
+            }
+
+        """
         self.widget = self.get_widget_or_404()
         self.term = kwargs.get('term', request.GET.get('term', ''))
         self.object_list = self.get_queryset()
@@ -29,12 +51,22 @@ class AutoResponseView(BaseListView):
         })
 
     def get_queryset(self):
+        """Get queryset from cached widget."""
         return self.widget.filter_queryset(self.term)
 
     def get_paginate_by(self, queryset):
+        """Paginate response by size of widget's `max_results` parameter."""
         return self.widget.max_results
 
     def get_widget_or_404(self):
+        """
+        Get and return widget from cache.
+
+        Raises a 404 if the widget can not be found or no id is provided.
+
+        :raises: Http404
+        :return: ModelSelect2Mixin
+        """
         field_id = self.kwargs.get('field_id', self.request.GET.get('field_id', None))
         if not field_id:
             raise Http404('No "field_id" provided.')
@@ -44,7 +76,7 @@ class AutoResponseView(BaseListView):
             raise Http404('Invalid "field_id".')
         else:
             cache_key = '%s%s' % (settings.SELECT2_CACHE_PREFIX, key)
-            field = cache.get(cache_key)
-            if field is None:
+            widget = cache.get(cache_key)
+            if widget is None:
                 raise Http404('field_id not found')
-        return field
+        return widget

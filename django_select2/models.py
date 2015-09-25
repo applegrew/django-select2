@@ -1,1 +1,1 @@
-# Django legacy file
+"""Django legacy file."""
