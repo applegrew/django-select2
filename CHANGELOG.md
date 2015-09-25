@@ -1,9 +1,11 @@
 Changelog Summary
 =================
 
-### v5.0.0
+### v4.3.2
 
-* Lots code refactoring and improvements.
+* Use `django.contrib.staticfiles.templatetags.staticfiles.static` over `django.templatetags.static.static` to allow hashing.
+* Py23 unicode fixes
+
 
 ### v4.3.1
 
