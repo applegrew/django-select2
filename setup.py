@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 import codecs
 import os
-import sys
 
 from setuptools import Command, find_packages, setup
 
@@ -49,7 +48,7 @@ setup(
     author_email=AUTHOR_EMAIL,
     license="LICENSE.txt",
     url=URL,
-    packages=find_packages('django_select2'),
+    packages=find_packages(),
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
