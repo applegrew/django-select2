@@ -19,7 +19,8 @@ from django_select2.forms import (
     Select2Widget
 )
 from tests.testapp import forms
-from tests.testapp.forms import NUMBER_CHOICES, HeavySelect2MultipleWidgetForm
+from tests.testapp.forms import NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, \
+    TitleModelSelect2Widget
 from tests.testapp.models import Genre
 
 
@@ -147,6 +148,10 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.search_fields = ['title__icontains']
         assert isinstance(widget.get_search_fields(), collections.Iterable)
         assert all(isinstance(x, text_type) for x in widget.get_search_fields())
+
+    def test_filter_queryset(self, genres):
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(genres[0].title[:3]).exists()
 
     def test_model_kwarg(self):
         widget = ModelSelect2Widget(model=Genre, search_fields=['title__icontains'])

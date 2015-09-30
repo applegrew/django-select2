@@ -311,7 +311,7 @@ class ModelSelect2Mixin(object):
         """
         qs = self.get_queryset()
         search_fields = self.get_search_fields()
-        select = reduce(lambda x, y: Q(**{x: term}) | Q(**{y: term}), search_fields,
+        select = reduce(lambda x, y: x | Q(**{y: term}), search_fields,
                         Q(**{search_fields.pop(): term}))
         return qs.filter(select).distinct()
 

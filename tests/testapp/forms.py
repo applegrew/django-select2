@@ -14,7 +14,8 @@ from tests.testapp.models import Album
 
 class TitleSearchFieldMixin(object):
     search_fields = [
-        'title__icontains'
+        'title__icontains',
+        'pk__startswith'
     ]
 
 
