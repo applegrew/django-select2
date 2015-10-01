@@ -52,7 +52,7 @@ class AutoResponseView(BaseListView):
 
     def get_queryset(self):
         """Get queryset from cached widget."""
-        return self.widget.filter_queryset(self.term)
+        return self.widget.filter_queryset(self.term, self.queryset)
 
     def get_paginate_by(self, queryset):
         """Paginate response by size of widget's `max_results` parameter."""
@@ -76,7 +76,11 @@ class AutoResponseView(BaseListView):
             raise Http404('Invalid "field_id".')
         else:
             cache_key = '%s%s' % (settings.SELECT2_CACHE_PREFIX, key)
-            widget = cache.get(cache_key)
-            if widget is None:
+            widget_dict = cache.get(cache_key)
+            if widget_dict is None:
                 raise Http404('field_id not found')
-        return widget
+        qs, qs.query = widget_dict.pop('queryset')
+        self.queryset = qs.all()
+        widget_dict['queryset'] = self.queryset
+        widget_cls = widget_dict.pop('cls')
+        return widget_cls(**widget_dict)

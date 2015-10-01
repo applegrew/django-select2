@@ -300,7 +300,25 @@ class ModelSelect2Mixin(object):
         defaults.update(kwargs)
         super(ModelSelect2Mixin, self).__init__(*args, **defaults)
 
-    def filter_queryset(self, term):
+    def set_to_cache(self):
+        """
+        Add widget's attributes to Djnago's cache.
+
+        Split the queryset, to not pickle the result set.
+        """
+        queryset = self.get_queryset()
+        cache.set(self._get_cache_key(), {
+            'queryset':
+                [
+                    queryset.none(),
+                    queryset.query,
+                ],
+            'cls': self.__class__,
+            'search_fields': self.search_fields,
+            'max_results': self.max_results,
+        })
+
+    def filter_queryset(self, term, queryset=None):
         """
         Return queryset filtered by search_fields matching the passed term.
 
@@ -309,7 +327,8 @@ class ModelSelect2Mixin(object):
         :return: Filtered queryset
         :rtype: :class:`.django.db.models.QuerySet`
         """
-        qs = self.get_queryset()
+        if not queryset:
+            queryset = self.get_queryset()
         search_fields = self.get_search_fields()
         select = Q()
         term = term.replace('\t', ' ')
@@ -317,7 +336,7 @@ class ModelSelect2Mixin(object):
         for t in [t for t in term.split(' ') if not t == '']:
             select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields,
                              Q(**{search_fields.pop(): t}))
-        return qs.filter(select).distinct()
+        return queryset.filter(select).distinct()
 
     def get_queryset(self):
         """

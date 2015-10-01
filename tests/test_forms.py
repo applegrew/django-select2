@@ -161,13 +161,13 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         assert result.exists()
 
     def test_queryset_kwarg(self):
-        widget = ModelSelect2Widget(queryset=Genre.objects, search_fields=['title__icontains'])
+        widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         genre = Genre.objects.last()
         result = widget.filter_queryset(genre.title)
         assert result.exists()
 
     def test_ajax_view_registration(self, client):
-        widget = ModelSelect2Widget(queryset=Genre.objects, search_fields=['title__icontains'])
+        widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         widget.render('name', 'value')
         url = reverse('django_select2-json')
         genre = Genre.objects.last()
@@ -178,16 +178,20 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         assert genre.pk in [result['id'] for result in data['results']]
 
     def test_render(self):
-        widget = ModelSelect2Widget()
+        widget = ModelSelect2Widget(queryset=Genre.objects.all())
         widget.render('name', 'value')
         cached_widget = cache.get(widget._get_cache_key())
-        assert isinstance(cached_widget, ModelSelect2Widget)
+        assert cached_widget['max_results'] == widget.max_results
+        assert cached_widget['search_fields'] == widget.search_fields
+        qs = widget.get_queryset()
+        assert isinstance(cached_widget['queryset'][0], qs.__class__)
+        assert text_type(cached_widget['queryset'][1]) == text_type(qs.query)
 
 
 class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
 
     def test_tag_attrs(self):
-        widget = ModelSelect2TagWidget(queryset=Genre.objects, search_fields=['title__icontains'])
+        widget = ModelSelect2TagWidget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         output = widget.render('name', 'value')
         assert 'data-minimum-input-length="1"' in output
         assert 'data-tags="true"' in output
