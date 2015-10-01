@@ -1,6 +1,10 @@
 Changelog Summary
 =================
 
+### v5.1.0
+* Added search term splitting
+* Model widgets get smarter pickling to reduce size and avoid pickling issues
+
 ### v5.0.0
 Version 5 is a complete rewrite of the package to drastically reduce
 the code base and to ensure a future maintainability.
