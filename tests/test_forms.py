@@ -19,8 +19,9 @@ from django_select2.forms import (
     Select2Widget
 )
 from tests.testapp import forms
-from tests.testapp.forms import NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, \
-    TitleModelSelect2Widget
+from tests.testapp.forms import (
+    NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, TitleModelSelect2Widget
+)
 from tests.testapp.models import Genre
 
 

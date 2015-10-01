@@ -23,7 +23,6 @@ matrix:
     - env: DJANGO="-e git+https://github.com/django/django.git@master#egg=Django"
 install:
   - pip install --upgrade pip
-  - pip install -e .
   - pip install -r requirements_dev.txt
   - if [[ $TRAVIS_PYTHON_VERSION == 2* ]] || [[ $TRAVIS_PYTHON_VERSION == pypy ]]; then pip install python-memcached; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 3* ]] || [[ $TRAVIS_PYTHON_VERSION == pypy3 ]]; then pip install python3-memcached; fi
