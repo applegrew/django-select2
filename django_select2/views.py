@@ -40,10 +40,11 @@ class AutoResponseView(BaseListView):
         self.term = kwargs.get('term', request.GET.get('term', ''))
         self.object_list = self.get_queryset()
         context = self.get_context_data()
+        get_label = getattr(self.widget, 'label_from_instance', None)
         return JsonResponse({
             'results': [
                 {
-                    'text': smart_text(obj),
+                    'text': get_label(obj) if get_label else smart_text(obj),
                     'id': obj.pk,
                 }
                 for obj in context['object_list']

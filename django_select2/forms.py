@@ -382,6 +382,15 @@ class ModelSelect2Mixin(object):
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
 
+    def label_from_instance(self, instance):
+        """
+        Return label from instance.
+
+        :return: choice label
+        :rtype: str
+        """
+        return force_text(instance)
+
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
 
