@@ -5,7 +5,6 @@ from __future__ import absolute_import, unicode_literals
 from django.core import signing
 from django.core.signing import BadSignature
 from django.http import Http404, JsonResponse
-from django.utils.encoding import smart_text
 from django.views.generic.list import BaseListView
 
 from .cache import cache
