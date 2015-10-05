@@ -335,7 +335,7 @@ class ModelSelect2Mixin(object):
         term = term.replace('\n', ' ')
         for t in [t for t in term.split(' ') if not t == '']:
             select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields,
-                             Q(**{search_fields.pop(): t}))
+                             Q(**{search_fields[0]: t}))
         return queryset.filter(select).distinct()
 
     def get_queryset(self):
