@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from django.core import signing
 from django.core.signing import BadSignature
 from django.http import Http404, JsonResponse
+from django.utils.encoding import smart_text
 from django.views.generic.list import BaseListView
 
 from .cache import cache
@@ -39,10 +40,11 @@ class AutoResponseView(BaseListView):
         self.term = kwargs.get('term', request.GET.get('term', ''))
         self.object_list = self.get_queryset()
         context = self.get_context_data()
+        label_from_instance = getattr(self.widget, 'label_from_instance', smart_text)
         return JsonResponse({
             'results': [
                 {
-                    'text': self.widget.label_from_instance(obj),
+                    'text': label_from_instance(obj),
                     'id': obj.pk,
                 }
                 for obj in context['object_list']
