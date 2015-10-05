@@ -7,7 +7,9 @@ from django.core import signing
 from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_text
 
+from django_select2.forms import ModelSelect2Widget
 from tests.testapp.forms import AlbumModelSelect2WidgetForm
+from tests.testapp.models import Genre
 
 
 class TestAutoResponseView(object):
@@ -41,3 +43,26 @@ class TestAutoResponseView(object):
         url = reverse('django_select2-json')
         response = client.get(url, {'field_id': field_id, 'term': artist.title})
         assert response.status_code == 404
+
+    def test_pagination(self, genres, client):
+        url = reverse('django_select2-json')
+        widget = ModelSelect2Widget(
+            max_results=10,
+            model=Genre,
+            search_fields=['title__icontains']
+        )
+        widget.render('name', None)
+        field_id = signing.dumps(id(widget))
+
+        response = client.get(url, {'field_id': field_id, 'term': ''})
+        assert response.status_code == 200
+        data = json.loads(response.content.decode('utf-8'))
+        assert data['more'] is True
+
+        response = client.get(url, {'field_id': field_id, 'term': '', 'page': 1000})
+        assert response.status_code == 404
+
+        response = client.get(url, {'field_id': field_id, 'term': '', 'page': 'last'})
+        assert response.status_code == 200
+        data = json.loads(response.content.decode('utf-8'))
+        assert data['more'] is False

@@ -9,12 +9,15 @@ $(function () {
                         term: params.term,
                         page: params.page,
                         field_id: field_id
-                    };
+                    }
                 },
                 processResults: function (data, page) {
-                  return {
-                    results: data.results
-                  };
+                    return {
+                        results: data.results,
+                        pagination: {
+                            more: data.more
+                        }
+                  }
                 }
             }
         });

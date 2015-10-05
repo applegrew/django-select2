@@ -32,7 +32,8 @@ class AutoResponseView(BaseListView):
                         'text': "foo",
                         'id': 123
                     }
-                ]
+                ],
+                'more': true
             }
 
         """
@@ -48,6 +49,7 @@ class AutoResponseView(BaseListView):
                 }
                 for obj in context['object_list']
                 ],
+            'more': context['page_obj'].has_next()
         })
 
     def get_queryset(self):
