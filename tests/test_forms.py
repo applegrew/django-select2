@@ -159,8 +159,6 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         qs = widget.filter_queryset(" ".join([genres[0].title[:3], genres[0].title[3:]]))
         assert qs.exists()
 
-
-
     def test_model_kwarg(self):
         widget = ModelSelect2Widget(model=Genre, search_fields=['title__icontains'])
         genre = Genre.objects.last()
