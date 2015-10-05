@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.2.0
+* Added pagination
+
 ### v5.1.0
 * Added search term splitting
 * Model widgets get smarter pickling to reduce size and avoid pickling issues
