@@ -371,6 +371,7 @@ class ModelSelect2Mixin(object):
         if isinstance(self.choices, ModelChoiceIterator):
             if not self.queryset:
                 self.queryset = self.choices.queryset
+                self.label_from_instance = self.choices.field.label_from_instance
             selected_choices = {c for c in selected_choices
                                 if c not in self.choices.field.empty_values}
             choices = {self.choices.choice(obj)
@@ -381,15 +382,6 @@ class ModelSelect2Mixin(object):
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
-
-    def label_from_instance(self, instance):
-        """
-        Return label from instance.
-
-        :return: choice label
-        :rtype: str
-        """
-        return force_text(instance)
 
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
