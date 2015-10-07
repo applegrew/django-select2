@@ -1,6 +1,10 @@
 Changelog Summary
 =================
 
+### v5.3.0
+* Added djangoSelect2 jQuery plugin to support
+  dynamic field initialisation
+
 ### v5.2.0
 * Added pagination
 
