@@ -296,6 +296,7 @@ class ModelSelect2Mixin(object):
         self.queryset = kwargs.pop('queryset', self.queryset)
         self.search_fields = kwargs.pop('search_fields', self.search_fields)
         self.max_results = kwargs.pop('max_results', self.max_results)
+        self.field = kwargs.pop('field', None)
         defaults = {'data_view': 'django_select2-json'}
         defaults.update(kwargs)
         super(ModelSelect2Mixin, self).__init__(*args, **defaults)
@@ -316,6 +317,7 @@ class ModelSelect2Mixin(object):
             'cls': self.__class__,
             'search_fields': self.search_fields,
             'max_results': self.max_results,
+            'field': self.field
         })
 
     def filter_queryset(self, term, queryset=None):
@@ -371,6 +373,7 @@ class ModelSelect2Mixin(object):
         if isinstance(self.choices, ModelChoiceIterator):
             if not self.queryset:
                 self.queryset = self.choices.queryset
+                self.field = self.choices.field
             selected_choices = {c for c in selected_choices
                                 if c not in self.choices.field.empty_values}
             choices = {self.choices.choice(obj)
