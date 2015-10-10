@@ -9,7 +9,7 @@ $(function () {
                         term: params.term,
                         page: params.page,
                         field_id: field_id
-                    }
+                    };
                 },
                 processResults: function (data, page) {
                     return {
@@ -17,7 +17,7 @@ $(function () {
                         pagination: {
                             more: data.more
                         }
-                  }
+                    };
                 }
             }
         });
