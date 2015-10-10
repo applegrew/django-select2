@@ -248,11 +248,10 @@ class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
 
     def build_attrs(self, extra_attrs=None, **kwargs):
         """Add select2's tag attributes."""
-        attrs = super(HeavySelect2TagWidget, self).build_attrs(extra_attrs, **kwargs)
-        attrs['data-minimum-input-length'] = 1
-        attrs['data-tags'] = 'true'
-        attrs['data-token-separators'] = [",", " "]
-        return attrs
+        self.attrs.setdefault('data-minimum-input-length', 1)
+        self.attrs.setdefault('data-tags', 'true')
+        self.attrs.setdefault('data-token-separators', [",", " "])
+        return super(HeavySelect2TagWidget, self).build_attrs(extra_attrs, **kwargs)
 
 
 # Auto Heavy widgets
