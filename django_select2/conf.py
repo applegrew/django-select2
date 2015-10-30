@@ -49,5 +49,13 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
+    MEDIA_PREFIX = getattr(settings, 'SELECT2_MEDIA_PREFIX', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/')
+    """
+    Normally external referenced JavaScript and StyleSheet files are loaded using a CDN. This may be
+    unacceptable for some kind of applications, where no Internet connection is available.
+    In settings.py, use ``SELECT2_MEDIA_PREFIX`` to override the location where external JS and CSS
+    media files shall be loaded from.
+    """
+
     class Meta:
         prefix = 'SELECT2'
