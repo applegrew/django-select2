@@ -85,7 +85,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
     widget_cls = HeavySelect2Widget
 
     def test_initial_form_class(self):
-        widget = self.widget_cls(data_view='heavy_data', attrs={'class': 'my-class'})
+        widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
         assert 'my-class' in widget.render('name', None)
         assert 'django-select2' in widget.render('name', None)
         assert 'django-select2-heavy' in widget.render('name', None), widget.render('name', None)
@@ -107,6 +107,23 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
 
         assert selected_option in widget_output, widget_output
         assert selected_option2 in widget_output
+
+    def test_multiple_widgets(self, db, live_server, driver):
+        driver.get(live_server + self.url)
+        with pytest.raises(NoSuchElementException):
+            driver.find_element_by_css_selector('.select2-results')
+
+        elem1, elem2 = driver.find_elements_by_css_selector('.select2-selection')
+        elem1.click()
+        result1 = driver.find_element_by_css_selector('.select2-results li:first-child').text
+        elem2.click()
+        result2 = driver.find_element_by_css_selector('.select2-results li:first-child').text
+
+        assert result1 != result2
+
+        with pytest.raises(NoSuchElementException):
+            error = driver.find_element_by_xpath('//body[@JSError]')
+            pytest.fail(error.get_attribute('JSError'))
 
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):

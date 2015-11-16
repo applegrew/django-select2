@@ -7,7 +7,7 @@ from .forms import (
     AlbumModelSelect2WidgetForm, HeavySelect2MultipleWidgetForm,
     HeavySelect2WidgetForm, ModelSelect2TagWidgetForm, Select2WidgetForm
 )
-from .views import TemplateFormView, heavy_data
+from .views import TemplateFormView, heavy_data_1, heavy_data_2
 
 urlpatterns = patterns(
     '',
@@ -27,7 +27,8 @@ urlpatterns = patterns(
         TemplateFormView.as_view(form_class=ModelSelect2TagWidgetForm),
         name='model_select2_tag_widget'),
 
-    url(r'^heavy_data/$', heavy_data, name='heavy_data'),
+    url(r'^heavy_data_1/$', heavy_data_1, name='heavy_data_1'),
+    url(r'^heavy_data_2/$', heavy_data_2, name='heavy_data_2'),
 
     url(r'^select2/', include('django_select2.urls')),
 )
