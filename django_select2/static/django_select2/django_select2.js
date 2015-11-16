@@ -1,18 +1,17 @@
 (function ($) {
 
-    var init = function ($el, options) {
-        $el.select2(options);
-        return $el;
+    var init = function ($element, options) {
+        $element.select2(options);
     };
 
-    var initHeavy = function ($el, options) {
+    var initHeavy = function ($element, options) {
         var settings = $.extend({
             ajax: {
                 data: function (params) {
                     return {
                         term: params.term,
                         page: params.page,
-                        field_id: $el.data('field_id')
+                        field_id: $element.data('field_id')
                     };
                 },
                 processResults: function (data, page) {
@@ -26,17 +25,20 @@
             }
         }, options);
 
-        $el.select2(settings);
-        return $el;
+        $element.select2(settings);
     };
 
     $.fn.djangoSelect2 = function (options) {
         var settings = $.extend({}, options);
-        var heavy = $(this).hasClass('django-select2-heavy');
-        if (heavy) {
-            return initHeavy(this, settings);
-        }
-        return init(this, settings);
+        $.each(this, function (i, element) {
+            var $element = $(element);
+            if ($element.hasClass('django-select2-heavy')) {
+                initHeavy($element, settings);
+            } else {
+                init($element, settings);
+            }
+        });
+        return this;
     };
 
     $(function () {
