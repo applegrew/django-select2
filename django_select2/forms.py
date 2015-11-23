@@ -109,6 +109,18 @@ class Select2Mixin(object):
     media = property(_get_media)
 
 
+class Select2TagMixin(object):
+
+    """Mixin to add select2 tag functionality."""
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        """Add select2's tag attributes."""
+        self.attrs.setdefault('data-minimum-input-length', 1)
+        self.attrs.setdefault('data-tags', 'true')
+        self.attrs.setdefault('data-token-separators', [",", " "])
+        return super(Select2TagMixin, self).build_attrs(extra_attrs, **kwargs)
+
+
 class Select2Widget(Select2Mixin, forms.Select):
 
     """
@@ -140,6 +152,24 @@ class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
     Select2 drop in widget for multiple select.
 
     Works just like :class:`.Select2Widget` but for multi select.
+    """
+
+    pass
+
+
+class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
+
+    """
+    Select2 drop in widget for for tagging.
+
+    Example for :class:`.django.contrib.postgres.fields.ArrayField`::
+
+        class MyWidget(Select2TagWidget):
+
+            def value_from_datadict(self, data, files, name):
+                values = super(MyWidget, self).value_from_datadict(data, files, name):
+                return ",".join(values)
+
     """
 
     pass
@@ -242,16 +272,9 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.SelectMultiple):
     pass
 
 
-class HeavySelect2TagWidget(HeavySelect2MultipleWidget):
+class HeavySelect2TagWidget(Select2TagMixin, HeavySelect2MultipleWidget):
 
-    """Mixin to add select2 tag functionality."""
-
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        """Add select2's tag attributes."""
-        self.attrs.setdefault('data-minimum-input-length', 1)
-        self.attrs.setdefault('data-tags', 'true')
-        self.attrs.setdefault('data-token-separators', [",", " "])
-        return super(HeavySelect2TagWidget, self).build_attrs(extra_attrs, **kwargs)
+    pass
 
 
 # Auto Heavy widgets
@@ -432,7 +455,7 @@ class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
     pass
 
 
-class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
+class ModelSelect2TagWidget(Select2TagMixin, ModelSelect2MultipleWidget):
 
     """
     Select2 model field with tag support.
@@ -447,7 +470,7 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
             queryset = MyModel.objects.all()
 
             def value_from_datadict(self, data, files, name):
-                values = super().value_from_datadict(self, data, files, name):
+                values = super().value_from_datadict(self, data, files, name)
                 qs = self.queryset.filter(**{'pk__in': list(values)})
                 pks = set(force_text(getattr(o, pk)) for o in qs)
                 cleaned_values = []

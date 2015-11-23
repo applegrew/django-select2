@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.4.0
+* Added `Select2TagWidget` a light widget with tagging support
+
 ### v5.3.0
 * Added djangoSelect2 jQuery plugin to support
   dynamic field initialisation
