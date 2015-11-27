@@ -414,7 +414,7 @@ class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
 
         class MyWidget(ModelSelect2Widget):
             search_fields = [
-                'title__icontians',
+                'title__icontains',
             ]
 
         class MyModelForm(forms.ModelForm):
