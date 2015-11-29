@@ -30,6 +30,11 @@ class TestSelect2Mixin(object):
     form = forms.AlbumSelect2WidgetForm()
     widget_cls = Select2Widget
 
+    def test_initial_data(self, genres):
+        genre = genres[0]
+        form = self.form.__class__(initial={'primary_genre': genre.pk})
+        assert text_type(genre) in form.as_p()
+
     def test_initial_form_class(self):
         widget = self.widget_cls(attrs={'class': 'my-class'})
         assert 'my-class' in widget.render('name', None)
@@ -81,8 +86,11 @@ class TestSelect2Mixin(object):
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
     url = reverse('heavy_select2_widget')
-    form = forms.HeavySelect2WidgetForm(initial={'primary_genre': [1]})
+    form = forms.HeavySelect2WidgetForm(initial={'primary_genre': 1})
     widget_cls = HeavySelect2Widget
+
+    def test_initial_data(self):
+        assert 'One' in self.form.as_p()
 
     def test_initial_form_class(self):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
@@ -128,6 +136,11 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     form = forms.AlbumModelSelect2WidgetForm(initial={'primary_genre': 1})
+
+    def test_initial_data(self, genres):
+        genre = genres[0]
+        form = self.form.__class__(initial={'primary_genre': genre.pk})
+        assert text_type(genre) in form.as_p()
 
     @pytest.fixture(autouse=True)
     def genres(self, db):

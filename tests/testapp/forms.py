@@ -114,11 +114,13 @@ class Select2WidgetForm(forms.Form):
 
 class HeavySelect2WidgetForm(forms.Form):
     artist = forms.ChoiceField(
-        widget=HeavySelect2Widget(data_view='heavy_data_1', choices=NUMBER_CHOICES)
+        widget=HeavySelect2Widget(data_view='heavy_data_1'),
+        choices=NUMBER_CHOICES
     )
     primary_genre = forms.ChoiceField(
-        widget=HeavySelect2Widget(data_view='heavy_data_2', choices=NUMBER_CHOICES),
-        required=False
+        widget=HeavySelect2Widget(data_view='heavy_data_2'),
+        required=False,
+        choices=NUMBER_CHOICES
     )
 
 
