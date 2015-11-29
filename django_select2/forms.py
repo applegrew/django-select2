@@ -274,6 +274,8 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.SelectMultiple):
 
 class HeavySelect2TagWidget(Select2TagMixin, HeavySelect2MultipleWidget):
 
+    """Select2 tag widget."""
+
     pass
 
 
@@ -458,7 +460,7 @@ class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
 class ModelSelect2TagWidget(Select2TagMixin, ModelSelect2MultipleWidget):
 
     """
-    Select2 model field with tag support.
+    Select2 model widget with tag support.
 
     This it not a simple drop in widget.
     It requires to implement you own :func:`.value_from_datadict`
