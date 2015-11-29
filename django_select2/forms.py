@@ -49,6 +49,7 @@ Light widgets are normally named, i.e. there is no
 from __future__ import absolute_import, unicode_literals
 
 from functools import reduce
+from itertools import chain
 
 from django import forms
 from django.core import signing
@@ -233,6 +234,7 @@ class HeavySelect2Mixin(Select2Mixin):
 
     def render_options(self, choices, selected_choices):
         """Render only selected options."""
+        choices = chain(choices, self.choices)
         output = ['<option></option>' if not self.is_required else '']
         choices = {(k, v) for k, v in choices if k in selected_choices}
         selected_choices = {force_text(v) for v in selected_choices}
@@ -400,6 +402,7 @@ class ModelSelect2Mixin(object):
             choices = {self.choices.choice(obj)
                        for obj in self.choices.queryset.filter(pk__in=selected_choices)}
         else:
+            choices = chain(choices, self.choices)
             choices = {(k, v) for k, v in choices if k in selected_choices}
         selected_choices = {force_text(v) for v in selected_choices}
         for option_value, option_label in choices:

@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.4.2
+* Fixed initial data not being shown for heavy widgets.
+
 ### v5.4.1
 * Fixed memory leak in `ModelSelect2Mixin` and subclasses
 
