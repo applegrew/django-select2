@@ -351,7 +351,7 @@ class ModelSelect2Mixin(object):
         :return: Filtered queryset
         :rtype: :class:`.django.db.models.QuerySet`
         """
-        if not queryset:
+        if queryset is None:
             queryset = self.get_queryset()
         search_fields = self.get_search_fields()
         select = Q()

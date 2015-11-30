@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.4.1
+* Fixed memory leak in `ModelSelect2Mixin` and subclasses
+
 ### v5.4.0
 * Added `Select2TagWidget` a light widget with tagging support
 
