@@ -1,0 +1,10 @@
+django-appconf
+flake8
+pep8-naming
+mccabe
+isort
+pep257
+pytest
+pytest-django
+selenium
+model-mommy

@@ -31,6 +31,6 @@ script:
   - isort --check-only --recursive --diff .
   - flake8 --jobs=2 .
   - pep257 django_select2
-  - coverage run --source=django_select2 runtests.py
+  - coverage run --source=django_select2 py.test
 after_success:
   - coveralls
