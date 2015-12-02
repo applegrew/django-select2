@@ -59,9 +59,9 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
-        "Framework :: Django :: 1.7",
-        "Framework :: Django :: 1.8",
         "Framework :: Django",
+        "Framework :: Django :: 1.8",
+        "Framework :: Django :: 1.9",
     ],
     install_requires=[
         'django-appconf>=0.6.0',
