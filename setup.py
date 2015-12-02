@@ -22,23 +22,6 @@ URL = "https://github.com/applegrew/django-select2"
 VERSION = __import__(PACKAGE).__version__
 
 
-class PyTest(Command):
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        import sys
-        import subprocess
-
-        errno = subprocess.call([sys.executable, 'runtests.py'])
-        raise SystemExit(errno)
-
-
 setup(
     name=NAME,
     version=VERSION,
@@ -67,5 +50,4 @@ setup(
         'django-appconf>=0.6.0',
     ],
     zip_safe=False,
-    cmdclass={'test': PyTest},
 )
