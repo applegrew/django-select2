@@ -9,7 +9,6 @@ from django.core import signing
 from django.core.urlresolvers import reverse
 from django.db.models import QuerySet
 from django.utils.encoding import force_text
-from model_mommy import mommy
 from selenium.common.exceptions import NoSuchElementException
 from six import text_type
 
@@ -143,8 +142,8 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         assert text_type(genre) in form.as_p()
 
     @pytest.fixture(autouse=True)
-    def genres(self, db):
-        return mommy.make(Genre, 100)
+    def genres(self, genres):
+        return genres
 
     def test_selected_option(self, db, genres):
         genre = genres[0]

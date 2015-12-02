@@ -7,4 +7,3 @@ pep257
 pytest
 pytest-django
 selenium
-model-mommy

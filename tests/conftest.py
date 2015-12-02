@@ -2,9 +2,10 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
+import random
+import string
 
 import pytest
-from model_mommy import mommy
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 
@@ -13,6 +14,13 @@ browsers = {
     # 'chrome': webdriver.Chrome,
     'phantomjs': webdriver.PhantomJS,
 }
+
+
+def random_string(n):
+    return ''.join(
+        random.choice(string.ascii_uppercase + string.digits)
+        for _ in range(n)
+    )
 
 
 @pytest.fixture(scope='session',
@@ -33,9 +41,16 @@ def driver(request):
 
 @pytest.fixture
 def genres(db):
-    return mommy.make('testapp.Genre', _quantity=100)
+    from .testapp.models import Genre
+
+    return Genre.objects.bulk_create(
+        [Genre(pk=pk, title=random_string(50)) for pk in range(100)]
+    )
 
 
 @pytest.fixture
 def artists(db):
-    return mommy.make('testapp.Artist', _quantity=100)
+    from .testapp.models import Artist
+    return Artist.objects.bulk_create(
+        [Artist(pk=pk, title=random_string(50)) for pk in range(100)]
+    )
