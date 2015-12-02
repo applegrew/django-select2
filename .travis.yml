@@ -30,7 +30,7 @@ install:
 script:
   - isort --check-only --recursive --diff .
   - flake8 --jobs=2 .
-  - pep257 django_select2
+  - pep257 --explain --source --count django_select2
   - coverage run --source=django_select2 -m py.test
 after_success:
   - coveralls

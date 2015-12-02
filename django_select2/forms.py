@@ -63,7 +63,6 @@ from .conf import settings
 
 
 class Select2Mixin(object):
-
     """
     The base mixin of all Select2 widgets.
 
@@ -111,7 +110,6 @@ class Select2Mixin(object):
 
 
 class Select2TagMixin(object):
-
     """Mixin to add select2 tag functionality."""
 
     def build_attrs(self, extra_attrs=None, **kwargs):
@@ -123,7 +121,6 @@ class Select2TagMixin(object):
 
 
 class Select2Widget(Select2Mixin, forms.Select):
-
     """
     Select2 drop in widget.
 
@@ -148,7 +145,6 @@ class Select2Widget(Select2Mixin, forms.Select):
 
 
 class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
-
     """
     Select2 drop in widget for multiple select.
 
@@ -159,7 +155,6 @@ class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
 
 
 class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
-
     """
     Select2 drop in widget for for tagging.
 
@@ -177,7 +172,6 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
 
 
 class HeavySelect2Mixin(Select2Mixin):
-
     """Mixin that adds select2's ajax options and registers itself on django's cache."""
 
     def __init__(self, **kwargs):
@@ -244,7 +238,6 @@ class HeavySelect2Mixin(Select2Mixin):
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, forms.Select):
-
     """
     Select2 widget with AJAX support that registers itself to Django's Cache.
 
@@ -268,14 +261,12 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.Select):
 
 
 class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.SelectMultiple):
-
     """Select2 multi select widget similar to :class:`.HeavySelect2Widget`."""
 
     pass
 
 
 class HeavySelect2TagWidget(Select2TagMixin, HeavySelect2MultipleWidget):
-
     """Select2 tag widget."""
 
     pass
@@ -285,7 +276,6 @@ class HeavySelect2TagWidget(Select2TagMixin, HeavySelect2MultipleWidget):
 
 
 class ModelSelect2Mixin(object):
-
     """Widget mixin that provides attributes and methods for :class:`.AutoResponseView`."""
 
     model = None
@@ -411,7 +401,6 @@ class ModelSelect2Mixin(object):
 
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
-
     """
     Select2 drop in model select widget.
 
@@ -450,7 +439,6 @@ class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
 
 
 class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
-
     """
     Select2 drop in model multiple select widget.
 
@@ -461,7 +449,6 @@ class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
 
 
 class ModelSelect2TagWidget(Select2TagMixin, ModelSelect2MultipleWidget):
-
     """
     Select2 model widget with tag support.
 

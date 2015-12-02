@@ -9,7 +9,6 @@ __all__ = ('settings', 'Select2Conf')
 
 
 class Select2Conf(AppConf):
-
     """Settings for Django-Select2."""
 
     CACHE_BACKEND = 'default'

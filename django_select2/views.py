@@ -13,7 +13,6 @@ from .conf import settings
 
 
 class AutoResponseView(BaseListView):
-
     """
     View that handles requests from heavy model widgets.
 
