@@ -56,7 +56,7 @@ from django.core import signing
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
-from django.utils.encoding import force_text
+from django.utils.encoding import force_text, smart_text
 
 from .cache import cache
 from .conf import settings
@@ -398,6 +398,20 @@ class ModelSelect2Mixin(object):
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
+
+    def label_from_instance(self, obj):
+        """
+        Label representation from instance.
+
+        Can be overriden to change the representation of each choice.
+
+        Example usage::
+
+            class MyWidget(ModelSelect2Widget):
+                def label_from_instance(obj):
+                    return smart_text(obj.title.upper())
+        """
+        return smart_text(obj)
 
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):

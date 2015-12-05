@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django import forms
+from django.utils.encoding import smart_text
 
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
@@ -32,6 +33,16 @@ class GenreSelect2TagWidget(TitleSearchFieldMixin, ModelSelect2TagWidget):
 
     def create_value(self, value):
         self.get_queryset().create(title=value)
+
+
+class ArtistCustomTitleWidget(ModelSelect2Widget):
+    model = models.Artist
+    search_fields = [
+        'title__icontains'
+    ]
+
+    def label_from_instance(self, obj):
+        return smart_text(obj.title.upper())
 
 
 class AlbumSelect2WidgetForm(forms.ModelForm):
