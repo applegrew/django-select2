@@ -388,7 +388,7 @@ class ModelSelect2Mixin(object):
                 self.queryset = self.choices.queryset
             selected_choices = {c for c in selected_choices
                                 if c not in self.choices.field.empty_values}
-            choices = {self.choices.choice(obj)
+            choices = {(obj.pk, self.label_from_instance(obj))
                        for obj in self.choices.queryset.filter(pk__in=selected_choices)}
         else:
             choices = chain(choices, self.choices)
@@ -397,6 +397,25 @@ class ModelSelect2Mixin(object):
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
+
+    def label_from_instance(self, obj):
+        """
+        Return option label representation from instance.
+
+        Can be overridden to change the representation of each choice.
+
+        Example usage::
+
+            class MyWidget(ModelSelect2Widget):
+                def label_from_instance(obj):
+                    return force_text(obj.title).upper()
+
+        :param obj: Instance of django model.
+        :type obj: django.db.models.Model
+        :return Option label.
+        :rtype: str
+        """
+        return force_text(obj)
 
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):

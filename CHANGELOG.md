@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.6.0
+* Added `label_from_instance` method for model widgets to define custom option labels.
+
 ### v5.5.0
 * Added settings to delivery static assets from different source.
 

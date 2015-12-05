@@ -8,7 +8,9 @@ from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_text
 
 from django_select2.forms import ModelSelect2Widget
-from tests.testapp.forms import AlbumModelSelect2WidgetForm
+from tests.testapp.forms import (
+    AlbumModelSelect2WidgetForm, ArtistCustomTitleWidget
+)
 from tests.testapp.models import Genre
 
 
@@ -66,3 +68,19 @@ class TestAutoResponseView(object):
         assert response.status_code == 200
         data = json.loads(response.content.decode('utf-8'))
         assert data['more'] is False
+
+    def test_label_from_instance(self, artists, client):
+        url = reverse('django_select2-json')
+
+        form = AlbumModelSelect2WidgetForm()
+        form.fields['artist'].widget = ArtistCustomTitleWidget()
+        assert form.as_p()
+        field_id = signing.dumps(id(form.fields['artist'].widget))
+
+        artist = artists[0]
+        response = client.get(url, {'field_id': field_id, 'term': artist.title})
+        assert response.status_code == 200
+
+        data = json.loads(response.content.decode('utf-8'))
+        assert data['results']
+        assert {'id': artist.pk, 'text': smart_text(artist.title.upper())} in data['results']
