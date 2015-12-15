@@ -8,7 +8,7 @@ import pytest
 from django.core import signing
 from django.core.urlresolvers import reverse
 from django.db.models import QuerySet
-from django.test import TestCase
+from django.test import override_settings
 from django.utils.encoding import force_text
 from selenium.common.exceptions import NoSuchElementException
 from six import text_type
@@ -83,8 +83,6 @@ class TestSelect2Mixin(object):
         widget = HeavySelect2Widget(data_url='/foo/bar')
         assert widget.get_url() == '/foo/bar'
 
-
-class TestSelect2MixinSettings(TestCase):
     def test_default_media_is_cloudflare_4_0_0_version(self):
         sut = Select2Widget()
         result = sut.media.render()
@@ -92,34 +90,34 @@ class TestSelect2MixinSettings(TestCase):
         assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
         assert 'django_select2/django_select2.js' in result
 
+    @override_settings(SELECT2_JS_LIB_FILE='alternate_select2_lib_file')
     def test_js_media_contains_alternate_file_if_supplied_through_settings(self):
         sut = Select2Widget()
-        with self.settings(SELECT2_JS_LIB_FILE='alternate_select2_lib_file', SELECT_JS_MEDIA=[]):
-            result = sut.media.render()
-            assert 'alternate_select2_lib_file' in result
-            assert 'django_select2/django_select2.js' in result
+        result = sut.media.render()
+        assert 'alternate_select2_lib_file' in result
+        assert 'django_select2/django_select2.js' in result
 
+    @override_settings(SELECT2_CSS_LIB_FILE='alternate_select2_lib_file')
     def test_css_media_contains_alternate_file_if_supplied_through_settings(self):
         sut = Select2Widget()
-        with self.settings(SELECT2_CSS_LIB_FILE='alternate_select2_lib_file'):
-            result = sut.media.render()
-            assert 'alternate_select2_lib_file' in result
+        result = sut.media.render()
+        assert 'alternate_select2_lib_file' in result
 
+    @override_settings(SELECT2_MEDIA_JS=[])
     def test_js_media_entirely_replaced_if_supplied_through_settings(self):
         sut = Select2Widget()
-        with self.settings(SELECT2_JS_MEDIA=[]):
-            result = sut.media.render()
-            assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' not in result
-            assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
-            assert 'django_select2/django_select2.js' not in result
+        result = sut.media.render()
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' not in result
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
+        assert 'django_select2/django_select2.js' not in result
 
+    @override_settings(SELECT2_MEDIA_CSS={})
     def test_css_media_entirely_replaced_if_supplied_through_settings(self):
         sut = Select2Widget()
-        with self.settings(SELECT2_CSS_MEDIA={}):
-            result = sut.media.render()
-            assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
-            assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' not in result
-            assert 'django_select2/django_select2.js' in result
+        result = sut.media.render()
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' not in result
+        assert 'django_select2/django_select2.js' in result
 
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
