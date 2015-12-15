@@ -83,15 +83,15 @@ class TestSelect2Mixin(object):
         widget = HeavySelect2Widget(data_url='/foo/bar')
         assert widget.get_url() == '/foo/bar'
 
+
+class TestSelect2MixinSettings(TestCase):
     def test_default_media_is_cloudflare_4_0_0_version(self):
-        sut = self.widget_cls()
+        sut = Select2Widget()
         result = sut.media.render()
         assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
         assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
         assert 'django_select2/django_select2.js' in result
 
-
-class TestSelect2MixinSettings(TestCase):
     def test_js_media_contains_alternate_file_if_supplied_through_settings(self):
         sut = Select2Widget()
         with self.settings(SELECT2_JS_LIB_FILE='alternate_select2_lib_file', SELECT_JS_MEDIA=[]):
