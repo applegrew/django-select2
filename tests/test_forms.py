@@ -9,6 +9,7 @@ from django.core import signing
 from django.core.urlresolvers import reverse
 from django.db.models import QuerySet
 from django.utils.encoding import force_text
+from django.test import modify_settings
 from selenium.common.exceptions import NoSuchElementException
 from six import text_type
 
@@ -82,6 +83,32 @@ class TestSelect2Mixin(object):
         widget = HeavySelect2Widget(data_url='/foo/bar')
         assert widget.get_url() == '/foo/bar'
 
+    def test_default_media_is_cloudflare_4_0_0_version(self):
+        sut = self.widget_cls()
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in sut.media.js
+        assert 'django_select2/django_select.js' in sut.media.js
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in sut.media.css['screen']
+
+    @modify_settings(SELECT2_JS_LIB_FILE='alternate_select2_lib_file')
+    def test_js_media_contains_alternate_file_if_supplied_through_settings(self):
+        sut = self.widget_cls()
+        assert 'alternate_select2_lib_file' in sut.media.js
+        assert 'django_select2/django_select.js' in sut.media.js
+
+    @modify_settings(SELECT2_CSS_LIB_FILE='alternate_select2_lib_file')
+    def test_css_media_contains_alternate_file_if_supplied_through_settings(self):
+        sut = self.widget_cls()
+        assert 'alternate_select2_lib_file' in sut.media.css['screen']
+
+    @modify_settings(SELECT2_JS_MEDIA=(None,))
+    def test_js_media_entirely_replaced_if_supplied_through_settings(self):
+        sut = self.widget_cls()
+        assert (None, ) == sut.media.js
+
+    @modify_settings(SELECT2_CSS_LIB_FILE={})
+    def test_css_media_entirely_replaced_if_supplied_through_settings(self):
+        sut = self.widget_cls()
+        assert {} == sut.media.css
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
     url = reverse('heavy_select2_widget')
