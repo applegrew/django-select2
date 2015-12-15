@@ -83,6 +83,28 @@ class TestSelect2Mixin(object):
         assert widget.get_url() == '/foo/bar'
 
 
+class TestSelect2MixinSettings(object):
+    def test_default_media(self):
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
+        assert 'django_select2/django_select2.js' in result
+
+    def test_js_setting(self, settings):
+        settings.SELECT2_JS = 'alternate.js'
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert 'alternate.js' in result
+        assert 'django_select2/django_select2.js' in result
+
+    def test_css_setting(self, settings):
+        settings.SELECT2_CSS = 'alternate.css'
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert 'alternate.css' in result
+
+
 class TestHeavySelect2Mixin(TestSelect2Mixin):
     url = reverse('heavy_select2_widget')
     form = forms.HeavySelect2WidgetForm(initial={'primary_genre': 1})

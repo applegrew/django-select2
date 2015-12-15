@@ -48,5 +48,31 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
+    JS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js'
+    """
+    The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
+
+    If you want to select the version of the JS library used, or want to serve it from
+    the local 'static' resources, add a line to your settings.py like so::
+
+        SELECT2_JS = 'assets/css/select2.min.js'
+
+    .. tip:: Change this setting to a local asset in your development environment to
+        develop without an internet connection.
+    """
+
+    CSS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css'
+    """
+    The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
+
+    If you want to select the version of the library used, or want to serve it from
+    the local 'static' resources, add a line to your settings.py like so::
+
+        SELECT2_CSS = 'assets/css/select2.css'
+
+    .. tip:: Change this setting to a local asset in your development environment to
+        develop without an internet connection.
+    """
+
     class Meta:
         prefix = 'SELECT2'

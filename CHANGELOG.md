@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.5.0
+* Added settings to delivery static assets from different source.
+
 ### v5.4.2
 * Fixed initial data not being shown for heavy widgets.
 
