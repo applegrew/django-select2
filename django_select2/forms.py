@@ -100,9 +100,14 @@ class Select2Mixin(object):
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
+        js_media = settings.SELECT2_JS_MEDIA if settings.SELECT2_JS_MEDIA is not None else (
+            settings.SELECT2_JS_LIB_FILE, 'django_select2/django_select2.js')
+        css_media = settings.SELECT2_CSS_MEDIA if settings.SELECT2_CSS_MEDIA is not None else {
+            'screen': (settings.SELECT2_CSS_LIB_FILE,)}
+
         return forms.Media(
-            js=settings.SELECT2_JS_MEDIA,
-            css=settings.SELECT2_CSS_MEDIA
+            js=js_media,
+            css=css_media
         )
 
     media = property(_get_media)

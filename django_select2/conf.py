@@ -66,14 +66,14 @@ class Select2Conf(AppConf):
 
         SELECT2_CSS_LIB_FILE = 'assets/css/select2-4.0.1.css.js'
     """
-    JS_MEDIA = (getattr(settings, 'SELECT2_JS_LIB_FILE', JS_LIB_FILE), 'django_select2/django_select2.js')
+    JS_MEDIA = None
     """
     The configuration provided for ``js`` to the ``media`` attibute of the ``Select2Mixin``.
 
     .. note:: If you need to change this, we assume you have read the code and know
         what you are doing.
     """
-    CSS_MEDIA = {'screen': (getattr(settings, 'SELECT2_CSS_LIB_FILE', CSS_LIB_FILE), )}
+    CSS_MEDIA = None
     """
     The configuration provided for ``css`` to the ``media`` attibute of the ``Select2Mixin``.
 
