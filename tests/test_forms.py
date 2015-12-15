@@ -8,7 +8,6 @@ import pytest
 from django.core import signing
 from django.core.urlresolvers import reverse
 from django.db.models import QuerySet
-from django.test import override_settings
 from django.utils.encoding import force_text
 from selenium.common.exceptions import NoSuchElementException
 from six import text_type
