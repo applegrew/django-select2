@@ -90,35 +90,6 @@ class TestSelect2Mixin(object):
         assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
         assert 'django_select2/django_select2.js' in result
 
-    @override_settings(SELECT2_JS_LIB_FILE='alternate_select2_lib_file')
-    def test_js_media_contains_alternate_file_if_supplied_through_settings(self):
-        sut = Select2Widget()
-        result = sut.media.render()
-        assert 'alternate_select2_lib_file' in result
-        assert 'django_select2/django_select2.js' in result
-
-    @override_settings(SELECT2_CSS_LIB_FILE='alternate_select2_lib_file')
-    def test_css_media_contains_alternate_file_if_supplied_through_settings(self):
-        sut = Select2Widget()
-        result = sut.media.render()
-        assert 'alternate_select2_lib_file' in result
-
-    @override_settings(SELECT2_MEDIA_JS=[])
-    def test_js_media_entirely_replaced_if_supplied_through_settings(self):
-        sut = Select2Widget()
-        result = sut.media.render()
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' not in result
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
-        assert 'django_select2/django_select2.js' not in result
-
-    @override_settings(SELECT2_MEDIA_CSS={})
-    def test_css_media_entirely_replaced_if_supplied_through_settings(self):
-        sut = Select2Widget()
-        result = sut.media.render()
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' not in result
-        assert 'django_select2/django_select2.js' in result
-
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
     url = reverse('heavy_select2_widget')
