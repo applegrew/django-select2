@@ -52,7 +52,7 @@ class Select2Conf(AppConf):
     """
     The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
 
-    If you want to select the version of the JS library used, or want to serve it from 
+    If you want to select the version of the JS library used, or want to serve it from
     the local 'static' resources, add a line to your settings.py like so::
 
         SELECT2_JS_LIB_FILE = 'mylocaljslibs/select2.min.js'
@@ -61,7 +61,7 @@ class Select2Conf(AppConf):
     """
     The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
 
-    If you want to select the version of the library used, or want to serve it from 
+    If you want to select the version of the library used, or want to serve it from
     the local 'static' resources, add a line to your settings.py like so::
 
         SELECT2_CSS_LIB_FILE = 'assets/css/select2-4.0.1.css.js'
