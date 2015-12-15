@@ -82,6 +82,13 @@ class TestSelect2Mixin(object):
         widget = HeavySelect2Widget(data_url='/foo/bar')
         assert widget.get_url() == '/foo/bar'
 
+    def test_default_media_is_cloudflare_4_0_0_version(self):
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
+        assert 'django_select2/django_select2.js' in result
+
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
     url = reverse('heavy_select2_widget')

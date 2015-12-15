@@ -48,5 +48,38 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
+    JS_LIB_FILE = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js'
+    """
+    The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
+
+    If you want to select the version of the JS library used, or want to serve it from
+    the local 'static' resources, add a line to your settings.py like so::
+
+        SELECT2_JS_LIB_FILE = 'mylocaljslibs/select2.min.js'
+    """
+    CSS_LIB_FILE = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css'
+    """
+    The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
+
+    If you want to select the version of the library used, or want to serve it from
+    the local 'static' resources, add a line to your settings.py like so::
+
+        SELECT2_CSS_LIB_FILE = 'assets/css/select2-4.0.1.css.js'
+    """
+    MEDIA_JS = (getattr(settings, 'SELECT2_JS_LIB_FILE', JS_LIB_FILE), 'django_select2/django_select2.js')
+    """
+    The configuration provided for ``js`` to the ``media`` attibute of the ``Select2Mixin``.
+
+    .. note:: If you need to change this, we assume you have read the code and know
+        what you are doing.
+    """
+    MEDIA_CSS = {'screen': (getattr(settings, 'SELECT2_CSS_LIB_FILE', CSS_LIB_FILE), )}
+    """
+    The configuration provided for ``css`` to the ``media`` attibute of the ``Select2Mixin``.
+
+    .. note:: If you need to change this, we assume you have read the code and know
+        what you are doing.
+    """
+
     class Meta:
         prefix = 'SELECT2'
