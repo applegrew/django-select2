@@ -55,7 +55,7 @@ class Select2Conf(AppConf):
     If you want to select the version of the JS library used, or want to serve it from
     the local 'static' resources, add a line to your settings.py like so::
 
-        SELECT2_JS = 'assets/css/select2.min.js'
+        SELECT2_JS = 'assets/js/select2.min.js'
 
     .. tip:: Change this setting to a local asset in your development environment to
         develop without an internet connection.
