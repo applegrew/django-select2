@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django import forms
-from django.utils.encoding import smart_text
+from django.utils.encoding import force_text
 
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
@@ -42,7 +42,17 @@ class ArtistCustomTitleWidget(ModelSelect2Widget):
     ]
 
     def label_from_instance(self, obj):
-        return smart_text(obj.title.upper())
+        return force_text(obj.title.upper())
+
+
+class GenreCustomTitleWidget(ModelSelect2Widget):
+    model = models.Genre
+    search_fields = [
+        'title__icontains'
+    ]
+
+    def label_from_instance(self, obj):
+        return force_text(obj.title.upper())
 
 
 class AlbumSelect2WidgetForm(forms.ModelForm):
@@ -80,15 +90,13 @@ class AlbumModelSelect2WidgetForm(forms.ModelForm):
             'primary_genre',
         )
         widgets = {
-            'artist': ModelSelect2Widget(
-                model=models.Artist,
-                search_fields=['title__icontains']
-            ),
-            'primary_genre': ModelSelect2Widget(
-                model=models.Genre,
-                search_fields=['title__icontains']
-            ),
+            'artist': ArtistCustomTitleWidget(),
+            'primary_genre': GenreCustomTitleWidget(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AlbumModelSelect2WidgetForm, self).__init__(*args, **kwargs)
+        self.fields['primary_genre'].initial = 2
 
 
 class AlbumModelSelect2MultipleWidgetRequiredForm(forms.ModelForm):
