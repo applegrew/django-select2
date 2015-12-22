@@ -113,6 +113,10 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
     def test_initial_data(self):
         assert 'One' in self.form.as_p()
 
+    def test_initial_data_label_from_instance(self):
+        form = forms.HeavySelect2WidgetForm(initial={'artist': 1})
+        assert 'ONE' in form.as_p()
+
     def test_initial_form_class(self):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
         assert 'my-class' in widget.render('name', None)
@@ -125,6 +129,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         assert '<option value="1" selected="selected">One</option>' in \
                not_required_field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES), \
             not_required_field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES)
+
+    def test_selected_option_label_from_instance(self, db):
+        field = self.form.fields['artist']
+        output = field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES)
+        assert 'One' not in output
+        assert 'ONE' in output
 
     def test_many_selected_option(self, db, genres):
         field = HeavySelect2MultipleWidgetForm().fields['genres']
@@ -163,6 +173,15 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         form = self.form.__class__(initial={'primary_genre': genre.pk})
         assert text_type(genre) in form.as_p()
 
+    def test_label_from_instance_initial(self, genres):
+        genre = genres[0]
+        genre.title = genre.title.lower()
+        genre.save()
+
+        form = self.form.__class__(initial={'primary_genre': genre.pk})
+        assert genre.title not in form.as_p()
+        assert genre.title.upper() in form.as_p()
+
     @pytest.fixture(autouse=True)
     def genres(self, genres):
         return genres
@@ -181,6 +200,23 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
 
         assert selected_option in widget_output, widget_output
         assert unselected_option not in widget_output
+
+    def test_selected_option_label_from_instance(self, db, genres):
+        genre = genres[0]
+        genre.title = genre.title.lower()
+        genre.save()
+
+        field = self.form.fields['primary_genre']
+        widget_output = field.widget.render('primary_genre', genre.pk)
+
+        def get_selected_option(genre):
+            return '<option value="{pk}" selected="selected">{value}</option>'.format(
+                pk=genre.pk, value=force_text(genre))
+
+        assert get_selected_option(genre) not in widget_output
+        genre.title = genre.title.upper()
+
+        assert get_selected_option(genre) in widget_output
 
     def test_get_queryset(self):
         widget = ModelSelect2Widget()

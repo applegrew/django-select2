@@ -107,6 +107,21 @@ class Select2Mixin(object):
 
     media = property(_get_media)
 
+    def label_from_instance(self, obj):
+        """
+        Label representation from instance.
+
+        Can be overridden to change the representation of each choice.
+
+        Example usage::
+
+            class MyWidget(ModelSelect2Widget):
+                def label_from_instance(obj):
+                    return force_text(obj.title.upper())
+
+        """
+        return force_text(obj)
+
 
 class Select2TagMixin(object):
     """Mixin to add select2 tag functionality."""
@@ -227,6 +242,10 @@ class HeavySelect2Mixin(Select2Mixin):
 
     def render_options(self, choices, selected_choices):
         """Render only selected options."""
+        if choices:
+            choices = [(k, self.label_from_instance(v)) for k, v in choices]
+        if self.choices:
+            self.choices = [(k, self.label_from_instance(v)) for k, v in self.choices]
         choices = chain(choices, self.choices)
         output = ['<option></option>' if not self.is_required else '']
         choices = {(k, v) for k, v in choices if k in selected_choices}
@@ -388,7 +407,7 @@ class ModelSelect2Mixin(object):
                 self.queryset = self.choices.queryset
             selected_choices = {c for c in selected_choices
                                 if c not in self.choices.field.empty_values}
-            choices = {self.choices.choice(obj)
+            choices = {(obj.pk, self.label_from_instance(obj))
                        for obj in self.choices.queryset.filter(pk__in=selected_choices)}
         else:
             choices = chain(choices, self.choices)

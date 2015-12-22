@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django import forms
+from django.utils.encoding import force_text
 
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
@@ -32,6 +33,26 @@ class GenreSelect2TagWidget(TitleSearchFieldMixin, ModelSelect2TagWidget):
 
     def create_value(self, value):
         self.get_queryset().create(title=value)
+
+
+class ArtistCustomTitleWidget(ModelSelect2Widget):
+    model = models.Artist
+    search_fields = [
+        'title__icontains'
+    ]
+
+    def label_from_instance(self, obj):
+        return force_text(obj.title.upper())
+
+
+class GenreCustomTitleWidget(ModelSelect2Widget):
+    model = models.Genre
+    search_fields = [
+        'title__icontains'
+    ]
+
+    def label_from_instance(self, obj):
+        return force_text(obj.title.upper())
 
 
 class AlbumSelect2WidgetForm(forms.ModelForm):
@@ -69,15 +90,13 @@ class AlbumModelSelect2WidgetForm(forms.ModelForm):
             'primary_genre',
         )
         widgets = {
-            'artist': ModelSelect2Widget(
-                model=models.Artist,
-                search_fields=['title__icontains']
-            ),
-            'primary_genre': ModelSelect2Widget(
-                model=models.Genre,
-                search_fields=['title__icontains']
-            ),
+            'artist': ArtistCustomTitleWidget(),
+            'primary_genre': GenreCustomTitleWidget(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AlbumModelSelect2WidgetForm, self).__init__(*args, **kwargs)
+        self.fields['primary_genre'].initial = 2
 
 
 class AlbumModelSelect2MultipleWidgetRequiredForm(forms.ModelForm):
@@ -112,9 +131,15 @@ class Select2WidgetForm(forms.Form):
     number = forms.ChoiceField(widget=Select2Widget, choices=NUMBER_CHOICES, required=False)
 
 
+class ArtistCustomHeavySelect2Widget(HeavySelect2Widget):
+
+    def label_from_instance(self, obj):
+        return force_text(obj.upper())
+
+
 class HeavySelect2WidgetForm(forms.Form):
     artist = forms.ChoiceField(
-        widget=HeavySelect2Widget(data_view='heavy_data_1'),
+        widget=ArtistCustomHeavySelect2Widget(data_view='heavy_data_1'),
         choices=NUMBER_CHOICES
     )
     primary_genre = forms.ChoiceField(
