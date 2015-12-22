@@ -131,9 +131,15 @@ class Select2WidgetForm(forms.Form):
     number = forms.ChoiceField(widget=Select2Widget, choices=NUMBER_CHOICES, required=False)
 
 
+class ArtistCustomHeavySelect2Widget(HeavySelect2Widget):
+
+    def label_from_instance(self, obj):
+        return force_text(obj.upper())
+
+
 class HeavySelect2WidgetForm(forms.Form):
     artist = forms.ChoiceField(
-        widget=HeavySelect2Widget(data_view='heavy_data_1'),
+        widget=ArtistCustomHeavySelect2Widget(data_view='heavy_data_1'),
         choices=NUMBER_CHOICES
     )
     primary_genre = forms.ChoiceField(

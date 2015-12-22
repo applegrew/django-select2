@@ -91,6 +91,10 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
     def test_initial_data(self):
         assert 'One' in self.form.as_p()
 
+    def test_initial_data_label_from_instance(self):
+        form = forms.HeavySelect2WidgetForm(initial={'artist': 1})
+        assert 'ONE' in form.as_p()
+
     def test_initial_form_class(self):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
         assert 'my-class' in widget.render('name', None)
@@ -103,6 +107,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         assert '<option value="1" selected="selected">One</option>' in \
                not_required_field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES), \
             not_required_field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES)
+
+    def test_selected_option_label_from_instance(self, db):
+        field = self.form.fields['artist']
+        output = field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES)
+        assert 'One' not in output
+        assert 'ONE' in output
 
     def test_many_selected_option(self, db, genres):
         field = HeavySelect2MultipleWidgetForm().fields['genres']

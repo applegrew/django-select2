@@ -243,6 +243,10 @@ class HeavySelect2Mixin(Select2Mixin):
 
     def render_options(self, choices, selected_choices):
         """Render only selected options."""
+        if choices:
+            choices = [(k, self.label_from_instance(v)) for k, v in choices]
+        if self.choices:
+            self.choices = [(k, self.label_from_instance(v)) for k, v in self.choices]
         choices = chain(choices, self.choices)
         output = ['<option></option>' if not self.is_required else '']
         choices = {(k, v) for k, v in choices if k in selected_choices}
