@@ -112,13 +112,13 @@ class Select2Mixin(object):
         """
         Label representation from instance.
 
-        Can be overriden to change the representation of each choice.
+        Can be overridden to change the representation of each choice.
 
         Example usage::
 
             class MyWidget(ModelSelect2Widget):
                 def label_from_instance(obj):
-                    return smart_text(obj.title.upper())
+                    return force_text(obj.title.upper())
 
         """
         return force_text(obj)
