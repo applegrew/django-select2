@@ -16,10 +16,14 @@ class AutoResponseView(BaseListView):
     """
     View that handles requests from heavy model widgets.
 
-    The view only supports HTTP's GET method.
+    The view only supports HTTP's POST method, to keep the widget token safe
+    over HTTPS.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, *args, **kwargs):
+        raise http.HttpBadRequest()
+
+    def post(self, request, *args, **kwargs):
         """
         Return a :class:`.django.http.JsonResponse`.
 
@@ -37,7 +41,7 @@ class AutoResponseView(BaseListView):
 
         """
         self.widget = self.get_widget_or_404()
-        self.term = kwargs.get('term', request.GET.get('term', ''))
+        self.term = kwargs.get('term', request.POST.get('term', ''))
         self.object_list = self.get_queryset()
         context = self.get_context_data()
         return JsonResponse({
@@ -68,7 +72,7 @@ class AutoResponseView(BaseListView):
         :raises: Http404
         :return: ModelSelect2Mixin
         """
-        field_id = self.kwargs.get('field_id', self.request.GET.get('field_id', None))
+        field_id = self.kwargs.get('field_id', self.request.POST.get('field_id', None))
         if not field_id:
             raise Http404('No "field_id" provided.')
         try:
