@@ -58,3 +58,29 @@ heavy fields. Simply call ``djangoSelect2(options)`` on your select fields.::
 You can pass see `Select2 options <https://select2.github.io/options.html>`_ if needed::
 
         $('.django-select2').djangoSelect2({placeholder: 'Select an option'});
+
+Security & Authentication
+-------------------------
+
+Security is important. Therefore make sure to read and understand what
+the security measures in place and their limitations.
+
+Set up a separate cache. If you have a public form that uses a model widget
+make sure to setup a separate cache database for Select2. An attacker
+could constantly reload your site and fill up the select2 cache.
+Having a separate cache allows you to limit the effect to select2 only.
+
+You might want to add a secure select2 JSON endpoint for data you don't
+want to be accessible to the general public. Doing so is easy::
+
+    class UserSelect2View(LoginRequiredMixin, AutoResponseView):
+        pass
+
+    class UserSelect2WidgetMixin(object):
+        def __init__(self, *args, **kwargs):
+            kwargs['data_view'] = 'user-select2-view'
+            super(UserSelect2WidgetMixin, self).__init__(*args, **kwargs)
+
+    class MySecretWidget(UserSelect2WidgetMixin, Select2ModelWidget):
+        model = MySecretModel
+        search_fields = ['title__icontains']

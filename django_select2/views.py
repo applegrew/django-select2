@@ -79,6 +79,8 @@ class AutoResponseView(BaseListView):
             widget_dict = cache.get(cache_key)
             if widget_dict is None:
                 raise Http404('field_id not found')
+            if widget_dict.pop('url') != self.request.path:
+                raise Http404('field_id was issued for the view.')
         qs, qs.query = widget_dict.pop('queryset')
         self.queryset = qs.all()
         widget_dict['queryset'] = self.queryset

@@ -223,7 +223,10 @@ class HeavySelect2Mixin(Select2Mixin):
 
     def set_to_cache(self):
         """Add widget object to Djnago's cache."""
-        cache.set(self._get_cache_key(), self)
+        cache.set(self._get_cache_key(), {
+            'widget': self,
+            'url': self.get_url(),
+        })
 
     def render_options(self, choices, selected_choices):
         """Render only selected options."""
@@ -331,6 +334,7 @@ class ModelSelect2Mixin(object):
             'cls': self.__class__,
             'search_fields': self.search_fields,
             'max_results': self.max_results,
+            'url': self.get_url(),
         })
 
     def filter_queryset(self, term, queryset=None):

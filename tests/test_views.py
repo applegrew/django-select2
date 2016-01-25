@@ -7,11 +7,13 @@ from django.core import signing
 from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_text
 
+from django_select2.cache import cache
 from django_select2.forms import ModelSelect2Widget
 from tests.testapp.forms import (
     AlbumModelSelect2WidgetForm, ArtistCustomTitleWidget
 )
 from tests.testapp.models import Genre
+from django_select2.conf import settings
 
 
 class TestAutoResponseView(object):
@@ -84,3 +86,16 @@ class TestAutoResponseView(object):
         data = json.loads(response.content.decode('utf-8'))
         assert data['results']
         assert {'id': artist.pk, 'text': smart_text(artist.title.upper())} in data['results']
+
+    def test_url_check(self, client, artists):
+        artist = artists[0]
+        form = AlbumModelSelect2WidgetForm()
+        assert form.as_p()
+        field_id = signing.dumps(id(form.fields['artist'].widget))
+        cache_key = form.fields['artist'].widget._get_cache_key()
+        widget_dict = cache.get(cache_key)
+        widget_dict['url'] = 'yet/another/url'
+        cache.set(cache_key, widget_dict)
+        url = reverse('django_select2-json')
+        response = client.get(url, {'field_id': field_id, 'term': artist.title})
+        assert response.status_code == 404

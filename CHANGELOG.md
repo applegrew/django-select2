@@ -1,6 +1,25 @@
 Changelog Summary
 =================
 
+### v5.7.0
+* Security fix that allows a `field_id` to only be used for the intended JSON endpoint.
+  
+      Prior to that change you could use any `field_id` on any select2 JSON endpoint.
+      Even if the id was intended to be used on a private endpoint if could be used on
+      the default one and therefore leak sensitive data.
+      
+* Breaking change on how `Heavy` widgets are being cached.
+      
+      Heavy widgets used to add themselves to the cache. Now they add a dictionary to
+      the cache containing themselves and the target url.
+      
+      ```python
+      {
+          'widget': self,
+          'url': self.get_url(),
+      }
+      ```
+
 ### v5.6.0
 * Added `label_from_instance` method for model widgets to define custom option labels.
 
