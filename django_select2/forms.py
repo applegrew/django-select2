@@ -485,10 +485,10 @@ class ModelSelect2TagWidget(Select2TagMixin, ModelSelect2MultipleWidget):
 
             def value_from_datadict(self, data, files, name):
                 values = super().value_from_datadict(self, data, files, name)
-                qs = self.queryset.filter(**{'pk__in': list(values)})
-                pks = set(force_text(getattr(o, pk)) for o in qs)
+                queryset = self.get_queryset()
+                pks = queryset.filter(**{'pk__in': list(values)}).values_list('pk', flat=True)
                 cleaned_values = []
-                for val in value:
+                for val in values:
                     if force_text(val) not in pks:
                         val = queryset.create(title=val).pk
                     cleaned_values.append(val)
