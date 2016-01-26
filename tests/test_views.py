@@ -13,7 +13,6 @@ from tests.testapp.forms import (
     AlbumModelSelect2WidgetForm, ArtistCustomTitleWidget
 )
 from tests.testapp.models import Genre
-from django_select2.conf import settings
 
 
 class TestAutoResponseView(object):
