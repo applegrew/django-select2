@@ -154,6 +154,10 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
             error = driver.find_element_by_xpath('//body[@JSError]')
             pytest.fail(error.get_attribute('JSError'))
 
+    def test_get_url(self):
+        widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
+        assert isinstance(widget.get_url(), str)
+
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     form = forms.AlbumModelSelect2WidgetForm(initial={'primary_genre': 1})
@@ -268,6 +272,10 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         qs = widget.get_queryset()
         assert isinstance(cached_widget['queryset'][0], qs.__class__)
         assert text_type(cached_widget['queryset'][1]) == text_type(qs.query)
+
+    def test_get_url(self):
+        widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
+        assert isinstance(widget.get_url(), str)
 
 
 class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
