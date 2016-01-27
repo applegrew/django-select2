@@ -53,7 +53,7 @@ from itertools import chain
 
 from django import forms
 from django.core import signing
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
@@ -194,7 +194,7 @@ class HeavySelect2Mixin(Select2Mixin):
         """Return url from instance or by reversing :attr:`.data_view`."""
         if self.data_url:
             return self.data_url
-        return reverse_lazy(self.data_view)
+        return reverse(self.data_view)
 
     def build_attrs(self, extra_attrs=None, **kwargs):
         """Set select2's ajax attributes."""

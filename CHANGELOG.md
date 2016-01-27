@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.7.1
+* Fixes pickle bug of lazy object
+
 ### v5.7.0
 * Security fix that allows a `field_id` to only be used for the intended JSON endpoint.
   
