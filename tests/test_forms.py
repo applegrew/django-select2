@@ -156,7 +156,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
 
     def test_get_url(self):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
-        assert isinstance(widget.get_url(), str)
+        assert isinstance(widget.get_url(), text_type)
 
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
@@ -275,7 +275,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
 
     def test_get_url(self):
         widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
-        assert isinstance(widget.get_url(), str)
+        assert isinstance(widget.get_url(), text_type)
 
 
 class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
