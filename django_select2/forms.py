@@ -177,11 +177,10 @@ class HeavySelect2Mixin(Select2Mixin):
         """
         Return HeavySelect2Mixin.
 
-        :param data_view: url pattern name
-        :type data_view: str
-        :param data_url: url
-        :type data_url: str
-        :return:
+        Args:
+            data_view (str): URL pattern name
+            data_url (str): URL
+
         """
         self.data_view = kwargs.pop('data_view', None)
         self.data_url = kwargs.pop('data_url', None)
@@ -301,14 +300,12 @@ class ModelSelect2Mixin(object):
         """
         Overwrite class parameters if passed as keyword arguments.
 
-        :param model: model to select choices from
-        :type model: django.db.models.Model
-        :param queryset: queryset to select choices from
-        :type queryset: django.db.models.query.QuerySet
-        :param search_fields: list of model lookup strings
-        :type search_fields: list
-        :param max_results: max. JsonResponse view page size
-        :type max_results: int
+        Args:
+            model (django.db.models.Model): Model to select choices from.
+            queryset (django.db.models.QuerySet): QuerySet to select choices from.
+            search_fields (list): List of model lookup strings.
+            max_results (int): Max. JsonResponse view page size.
+
         """
         self.model = kwargs.pop('model', self.model)
         self.queryset = kwargs.pop('queryset', self.queryset)
@@ -339,12 +336,14 @@ class ModelSelect2Mixin(object):
 
     def filter_queryset(self, term, queryset=None):
         """
-        Return queryset filtered by search_fields matching the passed term.
+        Return QuerySet filtered by search_fields matching the passed term.
 
-        :param term: Search term
-        :type term: str
-        :return: Filtered queryset
-        :rtype: :class:`.django.db.models.QuerySet`
+        Args:
+            term (str): Search term
+
+        Returns:
+            QuerySet: Filtered QuerySet
+
         """
         if queryset is None:
             queryset = self.get_queryset()
@@ -359,10 +358,11 @@ class ModelSelect2Mixin(object):
 
     def get_queryset(self):
         """
-        Return queryset based on :attr:`.queryset` or :attr:`.model`.
+        Return QuerySet based on :attr:`.queryset` or :attr:`.model`.
 
-        :return: queryset of available choices
-        :rtype: :class:`.django.db.models.QuerySet`
+        Returns:
+            QuerySet: QuerySet of available choices.
+
         """
         if self.queryset is not None:
             queryset = self.queryset
@@ -414,10 +414,12 @@ class ModelSelect2Mixin(object):
                 def label_from_instance(obj):
                     return force_text(obj.title).upper()
 
-        :param obj: Instance of django model.
-        :type obj: django.db.models.Model
-        :return Option label.
-        :rtype: str
+        Args:
+            obj (django.db.models.Model): Instance of Django Model.
+
+        Returns:
+            str: Option label.
+
         """
         return force_text(obj)
 

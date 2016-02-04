@@ -41,7 +41,13 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc',  'sphinx.ext.inheritance_diagram', 'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.viewcode',
+]
 
 intersphinx_mapping = {
     'python': ('http://docs.python.org/3.5', None),

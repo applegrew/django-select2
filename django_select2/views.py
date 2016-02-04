@@ -62,10 +62,12 @@ class AutoResponseView(BaseListView):
         """
         Get and return widget from cache.
 
-        Raises a 404 if the widget can not be found or no id is provided.
+        Raises:
+            Http404: If if the widget can not be found or no id is provided.
 
-        :raises: Http404
-        :return: ModelSelect2Mixin
+        Returns:
+            ModelSelect2Mixin: Widget from cache.
+
         """
         field_id = self.kwargs.get('field_id', self.request.GET.get('field_id', None))
         if not field_id:
