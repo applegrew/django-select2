@@ -170,8 +170,8 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
     pass
 
 
-class HeavySelect2Mixin(Select2Mixin):
-    """Mixin that adds select2's ajax options and registers itself on django's cache."""
+class HeavySelect2Mixin(object):
+    """Mixin that adds select2's AJAX options and registers itself on Django's cache."""
 
     def __init__(self, **kwargs):
         """
@@ -238,7 +238,7 @@ class HeavySelect2Mixin(Select2Mixin):
         return '\n'.join(output)
 
 
-class HeavySelect2Widget(HeavySelect2Mixin, forms.Select):
+class HeavySelect2Widget(HeavySelect2Mixin, Select2Widget):
     """
     Select2 widget with AJAX support that registers itself to Django's Cache.
 
@@ -261,13 +261,13 @@ class HeavySelect2Widget(HeavySelect2Mixin, forms.Select):
     pass
 
 
-class HeavySelect2MultipleWidget(HeavySelect2Mixin, forms.SelectMultiple):
+class HeavySelect2MultipleWidget(HeavySelect2Mixin, Select2MultipleWidget):
     """Select2 multi select widget similar to :class:`.HeavySelect2Widget`."""
 
     pass
 
 
-class HeavySelect2TagWidget(Select2TagMixin, HeavySelect2MultipleWidget):
+class HeavySelect2TagWidget(HeavySelect2Mixin, Select2TagWidget):
     """Select2 tag widget."""
 
     pass
@@ -472,7 +472,7 @@ class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
     pass
 
 
-class ModelSelect2TagWidget(Select2TagMixin, ModelSelect2MultipleWidget):
+class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
     """
     Select2 model widget with tag support.
 
