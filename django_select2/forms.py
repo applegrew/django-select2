@@ -190,13 +190,13 @@ class HeavySelect2Mixin(object):
         super(HeavySelect2Mixin, self).__init__(**kwargs)
 
     def get_url(self):
-        """Return url from instance or by reversing :attr:`.data_view`."""
+        """Return URL from instance or by reversing :attr:`.data_view`."""
         if self.data_url:
             return self.data_url
         return reverse(self.data_view)
 
     def build_attrs(self, extra_attrs=None, **kwargs):
-        """Set select2's ajax attributes."""
+        """Set select2's AJAX attributes."""
         attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
 
         # encrypt instance Id
@@ -221,7 +221,7 @@ class HeavySelect2Mixin(object):
         return "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
 
     def set_to_cache(self):
-        """Add widget object to Djnago's cache."""
+        """Add widget object to Django's cache."""
         cache.set(self._get_cache_key(), {
             'widget': self,
             'url': self.get_url(),
@@ -283,7 +283,7 @@ class ModelSelect2Mixin(object):
     queryset = None
     search_fields = []
     """
-    Model lookups that are used to filter the queryset.
+    Model lookups that are used to filter the QuerySet.
 
     Example::
 
@@ -317,9 +317,9 @@ class ModelSelect2Mixin(object):
 
     def set_to_cache(self):
         """
-        Add widget's attributes to Djnago's cache.
+        Add widget's attributes to Django's cache.
 
-        Split the queryset, to not pickle the result set.
+        Split the QuerySet, to not pickle the result set.
         """
         queryset = self.get_queryset()
         cache.set(self._get_cache_key(), {
@@ -385,7 +385,7 @@ class ModelSelect2Mixin(object):
         raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
     def render_options(self, choices, selected_choices):
-        """Render only selected options and set queryset from :class:`ModelChoicesIterator`."""
+        """Render only selected options and set QuerySet from :class:`ModelChoicesIterator`."""
         output = ['<option></option>' if not self.is_required else '']
         if isinstance(self.choices, ModelChoiceIterator):
             if not self.queryset:
@@ -454,8 +454,8 @@ class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
             )
 
     .. tip:: The ModelSelect2(Multiple)Widget will try
-        to get the queryset from the fields choices.
-        Therefore you don't need to define a queryset,
+        to get the QuerySet from the fields choices.
+        Therefore you don't need to define a QuerySet,
         if you just drop in the widget for a ForeignKey field.
     """
 
@@ -478,7 +478,7 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
 
     This it not a simple drop in widget.
     It requires to implement you own :func:`.value_from_datadict`
-    that adds missing tags to you queryset.
+    that adds missing tags to you QuerySet.
 
     Example::
 
@@ -487,10 +487,10 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
 
             def value_from_datadict(self, data, files, name):
                 values = super().value_from_datadict(self, data, files, name)
-                queryset = self.get_queryset()
-                pks = queryset.filter(**{'pk__in': list(values)}).values_list('pk', flat=True)
+                qs = self.queryset.filter(**{'pk__in': list(values)})
+                pks = set(force_text(getattr(o, pk)) for o in qs)
                 cleaned_values = []
-                for val in values:
+                for val in value:
                     if force_text(val) not in pks:
                         val = queryset.create(title=val).pk
                     cleaned_values.append(val)

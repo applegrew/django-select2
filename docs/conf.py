@@ -47,6 +47,7 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.spelling',
 ]
 
 intersphinx_mapping = {
@@ -54,6 +55,11 @@ intersphinx_mapping = {
     'django': ('https://docs.djangoproject.com/en/dev/',
                'https://docs.djangoproject.com/en/dev/_objects/'),
 }
+
+# spell check
+spelling_word_list_filename = 'spelling_wordlist.txt'
+spelling_show_suggestions = True
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

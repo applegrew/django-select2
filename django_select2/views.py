@@ -51,7 +51,7 @@ class AutoResponseView(BaseListView):
         })
 
     def get_queryset(self):
-        """Get queryset from cached widget."""
+        """Get QuerySet from cached widget."""
         return self.widget.filter_queryset(self.term, self.queryset)
 
     def get_paginate_by(self, queryset):

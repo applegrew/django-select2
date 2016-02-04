@@ -58,7 +58,7 @@ class Select2Conf(AppConf):
         SELECT2_JS = 'assets/js/select2.min.js'
 
     .. tip:: Change this setting to a local asset in your development environment to
-        develop without an internet connection.
+        develop without an Internet connection.
     """
 
     CSS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css'
@@ -71,7 +71,7 @@ class Select2Conf(AppConf):
         SELECT2_CSS = 'assets/css/select2.css'
 
     .. tip:: Change this setting to a local asset in your development environment to
-        develop without an internet connection.
+        develop without an Internet connection.
     """
 
     class Meta:

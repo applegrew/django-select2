@@ -1,6 +1,7 @@
 language: python
 sudo: false
 cache:
+  - apt
   - pip
 services:
   - memcached
@@ -8,6 +9,12 @@ python:
   - "2.7"
   - "3.4"
   - "3.5"
+addons:
+  apt:
+    packages:
+      - python3-enchant
+      - python2-enchant
+      - graphviz
 env:
   global:
     - DISPLAY=:99.0
@@ -31,6 +38,7 @@ script:
   - isort --check-only --recursive --diff .
   - flake8 --jobs=2 .
   - pep257 --explain --source --count django_select2
+  - (cd docs; make spelling)
   - coverage run --source=django_select2 -m py.test
 after_success:
   - coveralls

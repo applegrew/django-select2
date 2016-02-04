@@ -7,3 +7,6 @@ pep257
 pytest
 pytest-django
 selenium
+sphinx
+sphinxcontrib-spelling
+pyenchant
