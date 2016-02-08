@@ -9,4 +9,4 @@ The app includes Select2 driven Django Widgets and Form Fields.
 
 """
 
-__version__ = "5.7.1"
+__version__ = "5.8.0"
