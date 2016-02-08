@@ -123,14 +123,13 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         not_required_field = self.form.fields['primary_genre']
         assert not_required_field.required is False
         assert '<option value="1" selected="selected">One</option>' in \
-               not_required_field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES), \
-            not_required_field.widget.render('primary_genre', 1, choices=NUMBER_CHOICES)
+               not_required_field.widget.render('primary_genre', 1), \
+            not_required_field.widget.render('primary_genre', 1)
 
     def test_many_selected_option(self, db, genres):
         field = HeavySelect2MultipleWidgetForm().fields['genres']
-        widget_output = field.widget.render(
-            'genres', [1, 2],
-            choices=NUMBER_CHOICES)
+        field.widget.choices = NUMBER_CHOICES
+        widget_output = field.widget.render('genres', [1, 2])
         selected_option = '<option value="{pk}" selected="selected">{value}</option>'.format(pk=1, value='One')
         selected_option2 = '<option value="{pk}" selected="selected">{value}</option>'.format(pk=2, value='Two')
 

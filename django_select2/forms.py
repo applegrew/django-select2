@@ -87,10 +87,10 @@ class Select2Mixin(object):
             attrs['class'] = 'django-select2'
         return attrs
 
-    def render_options(self, choices, selected_choices):
+    def render_options(self, *args, **kwargs):
         """Render options including an empty one, if the field is not required."""
         output = '<option></option>' if not self.is_required else ''
-        output += super(Select2Mixin, self).render_options(choices, selected_choices)
+        output += super(Select2Mixin, self).render_options(*args, **kwargs)
         return output
 
     def _get_media(self):
@@ -211,9 +211,9 @@ class HeavySelect2Mixin(object):
         attrs['class'] += ' django-select2-heavy'
         return attrs
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, *args, **kwargs):
         """Render widget and register it in Django's cache."""
-        output = super(HeavySelect2Mixin, self).render(name, value, attrs=attrs, choices=choices)
+        output = super(HeavySelect2Mixin, self).render(*args, **kwargs)
         self.set_to_cache()
         return output
 
@@ -227,9 +227,15 @@ class HeavySelect2Mixin(object):
             'url': self.get_url(),
         })
 
-    def render_options(self, choices, selected_choices):
+    def render_options(self, *args):
         """Render only selected options."""
-        choices = chain(choices, self.choices)
+        try:
+            selected_choices, = args
+        except ValueError:  # Signature contained `choices` prior to Django 1.10
+            choices, selected_choices = args
+            choices = chain(self.choices, choices)
+        else:
+            choices = self.choices
         output = ['<option></option>' if not self.is_required else '']
         choices = {(k, v) for k, v in choices if k in selected_choices}
         selected_choices = {force_text(v) for v in selected_choices}
@@ -384,8 +390,15 @@ class ModelSelect2Mixin(object):
             return self.search_fields
         raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
-    def render_options(self, choices, selected_choices):
+    def render_options(self, *args):
         """Render only selected options and set QuerySet from :class:`ModelChoicesIterator`."""
+        try:
+            selected_choices, = args
+        except ValueError:
+            choices, selected_choices = args
+            choices = chain(self.choices, choices)
+        else:
+            choices = self.choices
         output = ['<option></option>' if not self.is_required else '']
         if isinstance(self.choices, ModelChoiceIterator):
             if not self.queryset:
@@ -395,7 +408,6 @@ class ModelSelect2Mixin(object):
             choices = {(obj.pk, self.label_from_instance(obj))
                        for obj in self.choices.queryset.filter(pk__in=selected_choices)}
         else:
-            choices = chain(choices, self.choices)
             choices = {(k, v) for k, v in choices if k in selected_choices}
         selected_choices = {force_text(v) for v in selected_choices}
         for option_value, option_label in choices:

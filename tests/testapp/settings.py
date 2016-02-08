@@ -33,9 +33,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SITE_ID = 1
 ROOT_URLCONF = 'tests.testapp.urls'
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, "templates"),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+]
 
 SECRET_KEY = '123456'
 
