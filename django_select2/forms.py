@@ -410,7 +410,6 @@ class ModelSelect2Mixin(object):
                        for obj in self.choices.queryset.filter(pk__in=selected_choices)}
         else:
             choices = {(k, v) for k, v in choices if force_text(k) in selected_choices}
-        
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
