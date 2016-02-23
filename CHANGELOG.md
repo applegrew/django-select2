@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.8.2
+* Fixes #260 -- Fixes bug in render choices
+
 ### v5.8.0
 * Changed signature of `render` and `render_choices` to satisfy Django 1.10 changes.
 * Changed widgets' inheritance tree to be more consistent.

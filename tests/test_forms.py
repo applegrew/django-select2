@@ -14,8 +14,8 @@ from six import text_type
 
 from django_select2.cache import cache
 from django_select2.forms import (
-    HeavySelect2Widget, ModelSelect2TagWidget, ModelSelect2Widget,
-    Select2Widget
+    HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2TagWidget,
+    ModelSelect2Widget, Select2Widget
 )
 from tests.testapp import forms
 from tests.testapp.forms import (
@@ -301,3 +301,26 @@ class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
             queryset=Genre.objects.all(), search_fields=['title__icontains'], attrs={'data-minimum-input-length': '3'})
         output = widget.render('name', 'value')
         assert 'data-minimum-input-length="3"' in output
+
+
+class TestHeavySelect2MultipleWidget(object):
+    url = reverse('heavy_select2_multiple_widget')
+    form = forms.HeavySelect2MultipleWidgetForm()
+    widget_cls = HeavySelect2MultipleWidget
+
+    def test_widgets_selected_after_validation_error(self, db, live_server, driver):
+        driver.get(live_server + self.url)
+        title = driver.find_element_by_id('id_title')
+        title.send_keys('fo')
+        genres, fartists = driver.find_elements_by_css_selector('.select2-selection--multiple')
+        genres.click()
+        genres.send_keys('o')  # results are Zero One Two Four
+        # select second element - One
+        driver.find_element_by_css_selector('.select2-results li:nth-child(2)').click()
+        genres.submit()
+        # there is a ValidationError raised, check for it
+        errstring = driver.find_element_by_css_selector('ul.errorlist li').text
+        assert errstring == "Title must have more than 3 characters."
+        # genres should still have One as selected option
+        result_title = driver.find_element_by_css_selector('.select2-selection--multiple li').get_attribute('title')
+        assert result_title == 'One'

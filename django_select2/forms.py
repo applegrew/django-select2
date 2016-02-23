@@ -247,8 +247,8 @@ class HeavySelect2Mixin(object):
         else:
             choices = self.choices
         output = ['<option></option>' if not self.is_required else '']
-        choices = {(k, v) for k, v in choices if k in selected_choices}
         selected_choices = {force_text(v) for v in selected_choices}
+        choices = {(k, v) for k, v in choices if force_text(k) in selected_choices}
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
@@ -409,6 +409,7 @@ class ModelSelect2Mixin(object):
             choices = chain(self.choices, choices)
         else:
             choices = self.choices
+        selected_choices = {force_text(v) for v in selected_choices}
         output = ['<option></option>' if not self.is_required else '']
         if isinstance(self.choices, ModelChoiceIterator):
             if not self.queryset:
@@ -418,8 +419,7 @@ class ModelSelect2Mixin(object):
             choices = {(obj.pk, self.label_from_instance(obj))
                        for obj in self.choices.queryset.filter(pk__in=selected_choices)}
         else:
-            choices = {(k, v) for k, v in choices if k in selected_choices}
-        selected_choices = {force_text(v) for v in selected_choices}
+            choices = {(k, v) for k, v in choices if force_text(k) in selected_choices}
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)

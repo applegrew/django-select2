@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^heavy_select2_widget/$',
         TemplateFormView.as_view(form_class=HeavySelect2WidgetForm), name='heavy_select2_widget'),
     url(r'^heavy_select2_multiple_widget/$',
-        TemplateFormView.as_view(form_class=HeavySelect2MultipleWidgetForm),
+        TemplateFormView.as_view(form_class=HeavySelect2MultipleWidgetForm, success_url='/'),
         name='heavy_select2_multiple_widget'),
 
     url(r'^model_select2_widget/$',

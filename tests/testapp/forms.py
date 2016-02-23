@@ -144,13 +144,21 @@ class HeavySelect2WidgetForm(forms.Form):
 
 
 class HeavySelect2MultipleWidgetForm(forms.Form):
+    title = forms.CharField(max_length=50)
     genres = forms.MultipleChoiceField(
-        widget=HeavySelect2MultipleWidget(data_view='heavy_data_1', choices=NUMBER_CHOICES)
+        widget=HeavySelect2MultipleWidget(data_view='heavy_data_1', choices=NUMBER_CHOICES),
+        choices=NUMBER_CHOICES
     )
     featured_artists = forms.MultipleChoiceField(
         widget=HeavySelect2MultipleWidget(data_view='heavy_data_2', choices=NUMBER_CHOICES),
+        choices=NUMBER_CHOICES,
         required=False
     )
+
+    def clean_title(self):
+        if len(self.cleaned_data['title']) < 3:
+            raise forms.ValidationError("Title must have more than 3 characters.")
+        return self.cleaned_data["title"]
 
 
 class ModelSelect2TagWidgetForm(forms.ModelForm):
