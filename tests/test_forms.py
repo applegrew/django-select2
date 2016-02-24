@@ -157,6 +157,16 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
         assert isinstance(widget.get_url(), text_type)
 
+    def test_can_not_pickle(self):
+        widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
+
+        class NoPickle(object):
+            pass
+
+        widget.no_pickle = NoPickle()
+        with pytest.raises(NotImplementedError):
+            widget.set_to_cache()
+
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     form = forms.AlbumModelSelect2WidgetForm(initial={'primary_genre': 1})
