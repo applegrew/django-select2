@@ -50,6 +50,7 @@ from __future__ import absolute_import, unicode_literals
 
 from functools import reduce
 from itertools import chain
+from pickle import PicklingError
 
 from django import forms
 from django.core import signing
@@ -221,11 +222,20 @@ class HeavySelect2Mixin(object):
         return "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
 
     def set_to_cache(self):
-        """Add widget object to Django's cache."""
-        cache.set(self._get_cache_key(), {
-            'widget': self,
-            'url': self.get_url(),
-        })
+        """
+        Add widget object to Django's cache.
+
+        You may need to overwrite this method, to pickle all information
+        that is required to serve your JSON response view.
+        """
+        try:
+            cache.set(self._get_cache_key(), {
+                'widget': self,
+                'url': self.get_url(),
+            })
+        except (PicklingError, AttributeError):
+            msg = "You need to overwrite \"set_to_cache\" or ensure that %s is serialisable."
+            raise NotImplementedError(msg % self.__class__.__name__)
 
     def render_options(self, *args):
         """Render only selected options."""
