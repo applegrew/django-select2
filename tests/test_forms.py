@@ -14,7 +14,7 @@ from six import text_type
 
 from django_select2.cache import cache
 from django_select2.forms import (
-    HeavySelect2Widget, HeavySelect2MultipleWidget, ModelSelect2TagWidget,
+    HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2TagWidget,
     ModelSelect2Widget, Select2Widget
 )
 from tests.testapp import forms
