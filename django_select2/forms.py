@@ -51,7 +51,7 @@ from __future__ import absolute_import, unicode_literals
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError
-from cPickle import PicklingError as cPicklingError
+from six.moves.cPickle import PicklingError as cPicklingError
 
 from django import forms
 from django.core import signing
