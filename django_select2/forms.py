@@ -51,7 +51,6 @@ from __future__ import absolute_import, unicode_literals
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError
-from six.moves.cPickle import PicklingError as cPicklingError
 
 from django import forms
 from django.core import signing
@@ -59,6 +58,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
+
+from six.moves.cPickle import PicklingError as cPicklingError
 
 from .cache import cache
 from .conf import settings
