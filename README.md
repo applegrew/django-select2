@@ -3,7 +3,7 @@ Django-Select2
 
 [![PyPi Version](https://img.shields.io/pypi/v/Django-Select2.svg)](https://pypi.python.org/pypi/Django-Select2/)
 [![Build Status](https://travis-ci.org/applegrew/django-select2.svg?branch=master)](https://travis-ci.org/applegrew/django-select2)
-[![Test Coverage](https://coveralls.io/repos/applegrew/django-select2/badge.png?branch=master)](https://coveralls.io/r/applegrew/django-select2)
+[![Test Coverage](https://coveralls.io/repos/applegrew/django-select2/badge.svg?branch=master)](https://coveralls.io/r/applegrew/django-select2)
 [![GitHub license](https://img.shields.io/badge/license-APL2-blue.svg)](https://raw.githubusercontent.com/applegrew/django-select2/master/LICENSE.txt)
 [![Join the chat at https://gitter.im/applegrew/django-select2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/applegrew/django-select2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
