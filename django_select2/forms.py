@@ -59,6 +59,8 @@ from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
 
+from six.moves.cPickle import PicklingError as cPicklingError
+
 from .cache import cache
 from .conf import settings
 
@@ -233,7 +235,7 @@ class HeavySelect2Mixin(object):
                 'widget': self,
                 'url': self.get_url(),
             })
-        except (PicklingError, AttributeError):
+        except (PicklingError, cPicklingError, AttributeError):
             msg = "You need to overwrite \"set_to_cache\" or ensure that %s is serialisable."
             raise NotImplementedError(msg % self.__class__.__name__)
 
