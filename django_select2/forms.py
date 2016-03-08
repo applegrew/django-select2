@@ -118,7 +118,7 @@ class Select2TagMixin(object):
         """Add select2's tag attributes."""
         self.attrs.setdefault('data-minimum-input-length', 1)
         self.attrs.setdefault('data-tags', 'true')
-        self.attrs.setdefault('data-token-separators', [",", " "])
+        self.attrs.setdefault('data-token-separators', '[",", " "]')
         return super(Select2TagMixin, self).build_attrs(extra_attrs, **kwargs)
 
 
