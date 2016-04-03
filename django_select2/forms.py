@@ -262,14 +262,14 @@ class HeavySelect2Widget(HeavySelect2Mixin, Select2Widget):
 
     Usage example::
 
-        class MyWidget(HeavySelectWidget):
+        class MyWidget(HeavySelect2Widget):
             data_view = 'my_view_name'
 
     or::
 
         class MyForm(forms.Form):
             my_field = forms.ChoicesField(
-                widget=HeavySelectWidget(
+                widget=HeavySelect2Widget(
                     data_url='/url/to/json/response'
                 )
             )
