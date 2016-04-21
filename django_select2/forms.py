@@ -211,8 +211,6 @@ class HeavySelect2Mixin(object):
         attrs.setdefault('data-ajax--cache', "true")
         attrs.setdefault('data-ajax--type', "GET")
         attrs.setdefault('data-minimum-input-length', 2)
-        if self.depends_form_id:
-            attrs.setdefault('data-depends-id', self.depends_form_id)
 
         attrs['class'] += ' django-select2-heavy'
         return attrs
