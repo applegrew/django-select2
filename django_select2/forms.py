@@ -92,7 +92,7 @@ class Select2Mixin(object):
 
     def render_options(self, *args, **kwargs):
         """Render options including an empty one, if the field is not required."""
-        output = '<option></option>' if not self.is_required else ''
+        output = '<option></option>' if not self.is_required and not self.allow_multiple_selected else ''
         output += super(Select2Mixin, self).render_options(*args, **kwargs)
         return output
 
@@ -248,7 +248,7 @@ class HeavySelect2Mixin(object):
             choices = chain(self.choices, choices)
         else:
             choices = self.choices
-        output = ['<option></option>' if not self.is_required else '']
+        output = ['<option></option>' if not self.is_required and not self.allow_multiple_selected else '']
         selected_choices = {force_text(v) for v in selected_choices}
         choices = {(k, v) for k, v in choices if force_text(k) in selected_choices}
         for option_value, option_label in choices:
@@ -412,7 +412,7 @@ class ModelSelect2Mixin(object):
         else:
             choices = self.choices
         selected_choices = {force_text(v) for v in selected_choices}
-        output = ['<option></option>' if not self.is_required else '']
+        output = ['<option></option>' if not self.is_required and not self.allow_multiple_selected else '']
         if isinstance(self.choices, ModelChoiceIterator):
             if not self.queryset:
                 self.queryset = self.choices.queryset

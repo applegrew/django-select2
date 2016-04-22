@@ -27,6 +27,7 @@ from tests.testapp.models import Genre
 class TestSelect2Mixin(object):
     url = reverse('select2_widget')
     form = forms.AlbumSelect2WidgetForm()
+    multiple_form = forms.AlbumSelect2MultipleWidgetForm()
     widget_cls = Select2Widget
 
     def test_initial_data(self, genres):
@@ -81,6 +82,18 @@ class TestSelect2Mixin(object):
 
         widget = HeavySelect2Widget(data_url='/foo/bar')
         assert widget.get_url() == '/foo/bar'
+
+    def test_empty_option(self, db):
+        # Empty options is only required for single selects
+        # https://select2.github.io/options.html#allowClear
+        single_select = self.form.fields['primary_genre']
+        assert single_select.required is False
+        assert '<option></option>' in single_select.widget.render('primary_genre', None)
+
+        multiple_select = self.multiple_form.fields['featured_artists']
+        assert multiple_select.required is False
+        assert multiple_select.widget.allow_multiple_selected
+        assert '<option></option>' not in multiple_select.widget.render('featured_artists', None)
 
 
 class TestSelect2MixinSettings(object):
@@ -170,6 +183,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     form = forms.AlbumModelSelect2WidgetForm(initial={'primary_genre': 1})
+    multiple_form = forms.ArtistModelSelect2MultipleWidgetForm()
 
     def test_initial_data(self, genres):
         genre = genres[0]
