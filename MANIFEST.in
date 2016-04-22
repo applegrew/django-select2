@@ -3,3 +3,6 @@ recursive-include django_select2/static *.*
 recursive-exclude django_select2/static .DS_Store
 exclude requirements_dev.txt
 prune tests
+
+[bdist_wheel]
+universal=1
