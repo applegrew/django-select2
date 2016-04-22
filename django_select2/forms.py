@@ -48,10 +48,10 @@ Light widgets are normally named, i.e. there is no
 """
 from __future__ import absolute_import, unicode_literals
 
+import operator
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError
-import operator
 
 from django import forms
 from django.core import signing
