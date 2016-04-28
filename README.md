@@ -54,7 +54,7 @@ Major changes:
 ## Documentation
 
 
-Documentation available at http://django-select2.readthedocs.org/.
+Documentation available at http://django-select2.readthedocs.io/.
 
 ## External Dependencies
 
