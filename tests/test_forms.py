@@ -9,8 +9,8 @@ from django.core import signing
 from django.core.urlresolvers import reverse
 from django.db.models import QuerySet
 from django.utils.encoding import force_text
+from django.utils.six import text_type
 from selenium.common.exceptions import NoSuchElementException
-from six import text_type
 
 from django_select2.cache import cache
 from django_select2.forms import (
