@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.8.3
+* Remove six dependency -- User django.utils.six instead.
+
 ### v5.8.2
 * Fixes #260 -- Fixes bug in render choices
 
