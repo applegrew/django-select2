@@ -58,8 +58,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
-
-from six.moves.cPickle import PicklingError as cPicklingError
+from django.utils.six.moves.cPickle import PicklingError as cPicklingError
 
 from .cache import cache
 from .conf import settings
