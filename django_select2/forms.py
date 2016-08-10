@@ -413,7 +413,7 @@ class ModelSelect2Mixin(object):
         selected_choices = {force_text(v) for v in selected_choices}
         output = ['<option></option>' if not self.is_required and not self.allow_multiple_selected else '']
         if isinstance(self.choices, ModelChoiceIterator):
-            if not self.queryset:
+            if self.queryset is None:
                 self.queryset = self.choices.queryset
             selected_choices = {c for c in selected_choices
                                 if c not in self.choices.field.empty_values}
