@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.8.7
+* Fix #285 -- Do not evaluate queryset in `render_options`.
+
 ### v5.8.3
 * Remove six dependency -- User django.utils.six instead.
 
