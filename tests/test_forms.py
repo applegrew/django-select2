@@ -100,8 +100,8 @@ class TestSelect2MixinSettings(object):
     def test_default_media(self):
         sut = Select2Widget()
         result = sut.media.render()
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js' in result
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css' in result
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js' in result
+        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' in result
         assert 'django_select2/django_select2.js' in result
 
     def test_js_setting(self, settings):
