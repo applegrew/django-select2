@@ -1,6 +1,9 @@
 Changelog Summary
 =================
 
+### v5.8.8
+* Upgrade Select2 to version 4.0.3
+
 ### v5.8.7
 * Fix #285 -- Do not evaluate queryset in `render_options`.
 
