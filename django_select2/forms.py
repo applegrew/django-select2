@@ -249,7 +249,7 @@ class HeavySelect2Mixin(object):
             choices = self.choices
         output = ['<option></option>' if not self.is_required and not self.allow_multiple_selected else '']
         selected_choices = {force_text(v) for v in selected_choices}
-        choices = {(k, v) for k, v in choices if force_text(k) in selected_choices}
+        choices = [(k, v) for k, v in choices if force_text(k) in selected_choices]
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
@@ -417,10 +417,10 @@ class ModelSelect2Mixin(object):
                 self.queryset = self.choices.queryset
             selected_choices = {c for c in selected_choices
                                 if c not in self.choices.field.empty_values}
-            choices = {(obj.pk, self.label_from_instance(obj))
-                       for obj in self.choices.queryset.filter(pk__in=selected_choices)}
+            choices = [(obj.pk, self.label_from_instance(obj))
+                       for obj in self.choices.queryset.filter(pk__in=selected_choices)]
         else:
-            choices = {(k, v) for k, v in choices if force_text(k) in selected_choices}
+            choices = [(k, v) for k, v in choices if force_text(k) in selected_choices]
         for option_value, option_label in choices:
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
