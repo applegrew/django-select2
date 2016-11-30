@@ -402,7 +402,7 @@ class ModelSelect2Mixin(object):
         raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
     def render_options(self, *args):
-        """Render only selected options and set QuerySet from :class:`ModelChoicesIterator`."""
+        """Render only selected options and set QuerySet from :class:`ModelChoiceIterator`."""
         try:
             selected_choices, = args
         except ValueError:
