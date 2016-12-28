@@ -75,4 +75,6 @@ class Select2Conf(AppConf):
     """
 
     class Meta:
+        """Prefix for all Django-Select2 settings."""
+
         prefix = 'SELECT2'

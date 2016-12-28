@@ -4,14 +4,16 @@ from __future__ import absolute_import, print_function, unicode_literals
 import os
 import random
 import string
+from time import sleep
 
 import pytest
+from django.utils.encoding import force_text
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 
 browsers = {
-    # 'firefox': webdriver.Firefox,
-    # 'chrome': webdriver.Chrome,
+    'chrome': webdriver.Chrome,
+    'firefox': webdriver.Firefox,
     'phantomjs': webdriver.PhantomJS,
 }
 
@@ -23,8 +25,7 @@ def random_string(n):
     )
 
 
-@pytest.fixture(scope='session',
-                params=browsers.keys())
+@pytest.yield_fixture(scope='session', params=sorted(browsers.keys()))
 def driver(request):
     if 'DISPLAY' not in os.environ:
         pytest.skip('Test requires display server (export DISPLAY)')
@@ -32,11 +33,14 @@ def driver(request):
     try:
         b = browsers[request.param]()
     except WebDriverException as e:
-        pytest.skip(e)
+        pytest.skip(force_text(e))
     else:
         b.set_window_size(1200, 800)
-        request.addfinalizer(lambda *args: b.quit())
-        return b
+        yield b
+        if request.param == 'chrome':
+            # chrome needs a couple of seconds before it can be quit
+            sleep(5)
+        b.quit()
 
 
 @pytest.fixture
