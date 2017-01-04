@@ -24,7 +24,7 @@ pyflakes==1.0.0           # via flake8
 pygments==2.1             # via sphinx
 pytest-django==3.1.2
 pytest==3.0.5
-pytz==2015.7              # via babel
+pytz==2016.10 # via babel
 redis==2.10.5             # via django-redis
 selenium==3.0.2
 six==1.10.0               # via django-appconf, sphinx, sphinxcontrib-spelling
