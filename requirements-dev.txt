@@ -23,7 +23,7 @@ pyenchant==1.6.6
 pyflakes==1.0.0           # via flake8
 pygments==2.1             # via sphinx
 pytest-django==2.9.1
-pytest==2.8.7
+pytest==3.0.5
 pytz==2015.7              # via babel
 redis==2.10.5             # via django-redis
 selenium==2.50.1
