@@ -9,7 +9,7 @@ babel==2.3.4 # via sphinx
 coverage==4.3
 django-appconf==1.0.2
 django-redis==4.6.0
-docutils==0.12            # via sphinx
+docutils==0.13.1 # via sphinx
 flake8==2.5.2
 isort==4.2.5
 jinja2==2.8.1 # via sphinx
