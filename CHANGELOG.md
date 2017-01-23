@@ -1,6 +1,13 @@
 Changelog Summary
 =================
 
+### v5.8.10
+* Fixes tests for Django 1.10+
+* retain order of choices [299](https://github.com/applegrew/django-select2/pull/299)
+
+### v5.8.9
+* Fixes tests.  No functional change from 5.8.8.
+
 ### v5.8.8
 * Upgrade Select2 to version 4.0.3
 
