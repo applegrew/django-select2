@@ -37,6 +37,7 @@ class AutoResponseView(BaseListView):
         """
         self.widget = self.get_widget_or_404()
         self.term = kwargs.get('term', request.GET.get('term', ''))
+        self.depends_values = kwargs.get('depends', request.GET.get('depends', None))
         self.object_list = self.get_queryset()
         context = self.get_context_data()
         return JsonResponse({
@@ -52,7 +53,7 @@ class AutoResponseView(BaseListView):
 
     def get_queryset(self):
         """Get QuerySet from cached widget."""
-        return self.widget.filter_queryset(self.term, self.queryset)
+        return self.widget.filter_queryset(self.term, self.queryset, self.depends_values)
 
     def get_paginate_by(self, queryset):
         """Paginate response by size of widget's `max_results` parameter."""

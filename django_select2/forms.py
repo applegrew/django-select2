@@ -48,6 +48,7 @@ Light widgets are normally named, i.e. there is no
 """
 from __future__ import absolute_import, unicode_literals
 
+import operator
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError
@@ -299,6 +300,8 @@ class ModelSelect2Mixin(object):
     model = None
     queryset = None
     search_fields = []
+    depends_form_id = None
+    queryset_extra = None
     """
     Model lookups that are used to filter the QuerySet.
 
@@ -327,6 +330,8 @@ class ModelSelect2Mixin(object):
         self.model = kwargs.pop('model', self.model)
         self.queryset = kwargs.pop('queryset', self.queryset)
         self.search_fields = kwargs.pop('search_fields', self.search_fields)
+        self.depends_form_id = kwargs.pop('depends_form_id', self.depends_form_id)
+        self.queryset_extra = kwargs.pop('queryset_extra', self.queryset_extra)
         self.max_results = kwargs.pop('max_results', self.max_results)
         defaults = {'data_view': 'django_select2-json'}
         defaults.update(kwargs)
@@ -347,11 +352,13 @@ class ModelSelect2Mixin(object):
                 ],
             'cls': self.__class__,
             'search_fields': self.search_fields,
+            'depends_form_id': self.depends_form_id,
+            'queryset_extra': self.queryset_extra,
             'max_results': self.max_results,
             'url': self.get_url(),
         })
 
-    def filter_queryset(self, term, queryset=None):
+    def filter_queryset(self, term, queryset=None, depends_values=None):
         """
         Return QuerySet filtered by search_fields matching the passed term.
 
@@ -365,13 +372,22 @@ class ModelSelect2Mixin(object):
         if queryset is None:
             queryset = self.get_queryset()
         search_fields = self.get_search_fields()
+        queryset_extra = self.queryset_extra
         select = Q()
         term = term.replace('\t', ' ')
         term = term.replace('\n', ' ')
         for t in [t for t in term.split(' ') if not t == '']:
             select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields,
                              Q(**{search_fields[0]: t}))
-        return queryset.filter(select).distinct()
+
+        extra_select = Q()
+        if depends_values and queryset_extra:
+            extra_values = depends_values.split('|')
+            extra_select = reduce(operator.or_,
+                                  map(lambda x: Q(**{queryset_extra: x}),
+                                      extra_values))
+
+        return queryset.filter(select & extra_select).distinct()
 
     def get_queryset(self):
         """

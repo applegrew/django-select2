@@ -1,4 +1,12 @@
 (function ($) {
+    var depends = function($element){
+        var data = $('#'+$element.data('depends-id')).serializeArray();
+        r = Object.keys(data).reduce(function(res, v) {
+            return res.concat(data[v].value);
+        }, []);
+        if(r.length !== 0) return r.join('|');
+        return undefined;
+    }
 
     var init = function ($element, options) {
         $element.select2(options);
@@ -11,6 +19,7 @@
                     return {
                         term: params.term,
                         page: params.page,
+                        depends: depends($element),
                         field_id: $element.data('field_id')
                     };
                 },
