@@ -124,6 +124,7 @@ class ArtistModelSelect2MultipleWidgetForm(forms.Form):
         search_fields=['title__icontains'],
     ), queryset=models.Artist.objects.all(), required=False)
 
+
 NUMBER_CHOICES = [
     (1, 'One'),
     (2, 'Two'),
