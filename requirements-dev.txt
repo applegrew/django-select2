@@ -6,7 +6,7 @@
 #
 alabaster==0.7.9 # via sphinx
 babel==2.3.4 # via sphinx
-coverage==4.3.1
+coverage==4.3.4
 django-appconf==1.0.2
 django-redis==4.7.0
 docutils==0.13.1 # via sphinx
