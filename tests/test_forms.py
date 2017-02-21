@@ -11,6 +11,9 @@ from django.db.models import QuerySet
 from django.utils.encoding import force_text
 from django.utils.six import text_type
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 from django_select2.cache import cache
 from django_select2.forms import (
@@ -333,7 +336,9 @@ class TestHeavySelect2MultipleWidget(object):
         driver.find_element_by_css_selector('.select2-results li:nth-child(2)').click()
         genres.submit()
         # there is a ValidationError raised, check for it
-        errstring = driver.find_element_by_css_selector('ul.errorlist li').text
+        errstring = WebDriverWait(driver, 10).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'ul.errorlist li'))
+        ).text
         assert errstring == "Title must have more than 3 characters."
         # genres should still have One as selected option
         result_title = driver.find_element_by_css_selector('.select2-selection--multiple li').get_attribute('title')
