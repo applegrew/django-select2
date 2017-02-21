@@ -10,7 +10,7 @@ coverage==4.3.4
 django-appconf==1.0.2
 django-redis==4.7.0
 docutils==0.13.1 # via sphinx
-flake8==3.2.1
+flake8==3.3.0
 isort==4.2.5
 jinja2==2.8.1 # via sphinx
 markupsafe==0.23          # via jinja2
