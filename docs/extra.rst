@@ -51,7 +51,7 @@ Lets link two widgets via *country_selector* (it's an arbitrary name for CSS cla
                 data_url='/cities_by_country/',
                 search_fields=['name__icontains'],
                 attrs={
-                    'data-chain-parent': 'country_selector'
+                    'data-select2-parents': 'country_selector'
                 }
             )
         )
@@ -114,7 +114,7 @@ Customize the form in a manner:
                 search_fields=['name__icontains'],
                 attrs={
                     'class': 'country_selector',
-                    'data-chain-parent': 'city_selector'
+                    'data-select2-parents': 'city_selector'
                 }
             )
         )
@@ -126,7 +126,7 @@ Customize the form in a manner:
                 search_fields=['name__icontains'],
                 attrs={
                     'class': 'city_selector',
-                    'data-chain-parent': 'country_selector'
+                    'data-select2-parents': 'country_selector'
                 }
             )
         )
@@ -161,7 +161,7 @@ Furthermore you may want to filter options on two or more select2 selections (so
             widget=ModelSelect2Widget(
                 data_url='/field3_by_field1_and_field2/',
                 attrs={
-                    'data-chain-parent': 'field1_selector field2_selector'
+                    'data-select2-parents': 'field1_selector field2_selector'
                 }
             )
         )

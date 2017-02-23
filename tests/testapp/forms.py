@@ -195,7 +195,7 @@ class AddressChainedSelect2WidgetForm(forms.Form):
             data_url='/cities_by_country/',
             search_fields=['name__icontains'],
             attrs={
-                'data-chain-parent': 'country_selector'
+                'data-select2-parents': 'country_selector'
             }
         )
     )
