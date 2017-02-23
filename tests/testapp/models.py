@@ -32,3 +32,20 @@ class Album(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@python_2_unicode_compatible
+class Country(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+@python_2_unicode_compatible
+class City(models.Model):
+    name = models.CharField(max_length=255)
+    country = models.ForeignKey('Country')
+
+    def __str__(self):
+        return self.name

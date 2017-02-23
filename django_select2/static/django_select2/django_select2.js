@@ -7,11 +7,20 @@
     var settings = $.extend({
       ajax: {
         data: function (params) {
-          return {
+          var res = {
             term: params.term,
             page: params.page,
             field_id: $element.data('field_id')
           }
+
+          var parentClasses = $element.data('chain-parent')
+          if (parentClasses) {
+            parentClasses = parentClasses.trim().split(/\s+/)
+            $.each(parentClasses, function (i, parentClass) {
+              res[parentClass] = $('.' + parentClass).val()
+            })
+          }
+          return res
         },
         processResults: function (data, page) {
           return {

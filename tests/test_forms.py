@@ -24,7 +24,7 @@ from tests.testapp import forms
 from tests.testapp.forms import (
     NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, TitleModelSelect2Widget
 )
-from tests.testapp.models import Genre
+from tests.testapp.models import City, Country, Genre
 
 
 class TestSelect2Mixin(object):
@@ -348,3 +348,24 @@ class TestHeavySelect2MultipleWidget(object):
         # genres should still have One as selected option
         result_title = driver.find_element_by_css_selector('.select2-selection--multiple li').get_attribute('title')
         assert result_title == 'One'
+
+
+class TestAddressChainedSelect2Widget(object):
+    url = reverse('model_chained_select2_widget')
+    form = forms.AddressChainedSelect2WidgetForm()
+
+    def test_widgets_selected_after_validation_error(self, db, live_server, driver, countries, cities):
+        driver.get(live_server + self.url)
+        country_container, city_container = driver.find_elements_by_css_selector('.select2-selection--single')
+        country_container.click()
+        country_option = driver.find_element_by_css_selector('.select2-results li:nth-child(2)')
+        country_name = country_option.text
+        country_option.click()
+        assert country_name == country_container.text
+
+        city_container.click()
+        city_options = driver.find_elements_by_css_selector('.select2-results li')
+        city_names = set([option.text for option in city_options])
+        city_names2 = set(Country.objects.get(name=country_name).city_set.values_list('name', flat=True))
+        assert city_names == city_names2
+        assert len(city_names) != City.objects.count()
