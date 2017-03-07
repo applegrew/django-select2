@@ -13,7 +13,7 @@ docutils==0.13.1 # via sphinx
 flake8==3.3.0
 isort==4.2.5
 jinja2==2.9.5 # via sphinx
-markupsafe==0.23          # via jinja2
+markupsafe==1.0          # via jinja2
 mccabe==0.6.1
 pydocstyle==1.1.1
 pep8-naming==0.4.1
