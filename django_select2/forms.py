@@ -73,9 +73,13 @@ class Select2Mixin(object):
     form media.
     """
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
-        attrs = super(Select2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
+        battrs = base_attrs.copy()
+        if extra_attrs is not None:
+            battrs.update(extra_attrs)
+        attrs = super(Select2Mixin, self).build_attrs(base_attrs=battrs)
+        #attrs = super(Select2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
         if self.is_required:
             attrs.setdefault('data-allow-clear', 'false')
         else:
@@ -113,12 +117,16 @@ class Select2Mixin(object):
 class Select2TagMixin(object):
     """Mixin to add select2 tag functionality."""
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2's tag attributes."""
         self.attrs.setdefault('data-minimum-input-length', 1)
         self.attrs.setdefault('data-tags', 'true')
         self.attrs.setdefault('data-token-separators', '[",", " "]')
-        return super(Select2TagMixin, self).build_attrs(extra_attrs, **kwargs)
+        attrs = base_attrs.copy()
+        if extra_attrs is not None:
+            attrs.update(extra_attrs)
+        return super(Select2TagMixin, self).build_attrs(base_attrs=attrs)
+        # return super(Select2TagMixin, self).build_attrs(extra_attrs, **kwargs)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -197,9 +205,13 @@ class HeavySelect2Mixin(object):
             return self.data_url
         return reverse(self.data_view)
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, base_attrs, extra_attrs=None):
         """Set select2's AJAX attributes."""
-        attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
+        battrs = base_attrs.copy()
+        if extra_attrs is not None:
+            battrs.update(extra_attrs)
+        attrs = super(HeavySelect2Mixin, self).build_attrs(base_attrs=battrs)
+        # attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
 
         # encrypt instance Id
         self.widget_id = signing.dumps(id(self))
@@ -385,6 +397,8 @@ class ModelSelect2Mixin(object):
             queryset = self.queryset
         elif self.model is not None:
             queryset = self.model._default_manager.all()
+        elif self.choices is not None:
+            queryset = self.choices.queryset
         else:
             raise NotImplementedError(
                 "%(cls)s is missing a QuerySet. Define "
@@ -402,7 +416,7 @@ class ModelSelect2Mixin(object):
         raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
     def render_options(self, *args):
-        """Render only selected options and set QuerySet from :class:`ModelChoiceIterator`."""
+        """Render only selected options and set QuerySet from :class:`ModelChoicesIterator`."""
         try:
             selected_choices, = args
         except ValueError:
