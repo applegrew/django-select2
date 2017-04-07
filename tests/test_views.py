@@ -98,3 +98,35 @@ class TestAutoResponseView(object):
         url = reverse('django_select2-json')
         response = client.get(url, {'field_id': field_id, 'term': artist.title})
         assert response.status_code == 404
+
+    def test_cities_by_country_url_returns_filtered_list_of_cities(self, client, countries, cities):
+        assert len(countries) == 10
+        assert len(cities) == 100
+
+        url = reverse('cities_by_country')
+        request_count = 0
+        for country in countries:
+            if country.city_set.count() > 0:
+                response = client.get(url, {'country_selector': country.pk})
+                request_count += 1
+                assert response.status_code == 200
+
+                data = json.loads(response.content.decode('utf-8'))
+                assert data['results']
+                assert len(data['results']) == country.city_set.count()
+        else:
+            assert request_count > 0, "At least one request to this URL should be done."
+
+    def test_cities_by_country_url_returns_all_cities(self, client, countries, cities):
+        # _when_called_without_country_selector
+        assert len(countries) == 10
+        assert len(cities) == 100
+
+        url = reverse('cities_by_country')
+
+        response = client.get(url)
+        assert response.status_code == 200
+
+        data = json.loads(response.content.decode('utf-8'))
+        assert data['results']
+        assert len(data['results']) == len(cities)
