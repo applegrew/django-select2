@@ -4,8 +4,9 @@ from __future__ import absolute_import, unicode_literals
 from django.conf.urls import include, url
 
 from .forms import (
-    AlbumModelSelect2WidgetForm, HeavySelect2MultipleWidgetForm,
-    HeavySelect2WidgetForm, ModelSelect2TagWidgetForm, Select2WidgetForm
+    AddressChainedSelect2WidgetForm, AlbumModelSelect2WidgetForm,
+    HeavySelect2MultipleWidgetForm, HeavySelect2WidgetForm,
+    ModelSelect2TagWidgetForm, Select2WidgetForm
 )
 from .views import TemplateFormView, heavy_data_1, heavy_data_2
 
@@ -25,6 +26,10 @@ urlpatterns = [
     url(r'^model_select2_tag_widget/$',
         TemplateFormView.as_view(form_class=ModelSelect2TagWidgetForm),
         name='model_select2_tag_widget'),
+
+    url(r'^model_chained_select2_widget/$',
+        TemplateFormView.as_view(form_class=AddressChainedSelect2WidgetForm),
+        name='model_chained_select2_widget'),
 
     url(r'^heavy_data_1/$', heavy_data_1, name='heavy_data_1'),
     url(r'^heavy_data_2/$', heavy_data_2, name='heavy_data_2'),

@@ -10,7 +10,7 @@ from django_select2.forms import (
     Select2Widget
 )
 from tests.testapp import models
-from tests.testapp.models import Album
+from tests.testapp.models import Album, City, Country
 
 
 class TitleSearchFieldMixin(object):
@@ -174,3 +174,27 @@ class ModelSelect2TagWidgetForm(forms.ModelForm):
         widgets = {
             'genres': GenreSelect2TagWidget
         }
+
+
+class AddressChainedSelect2WidgetForm(forms.Form):
+    country = forms.ModelChoiceField(
+        queryset=Country.objects.all(),
+        label='Country',
+        widget=ModelSelect2Widget(
+            model=Country,
+            search_fields=['name__icontains'],
+            max_results=500,
+            dependent_fields={'city': 'cities'},
+        )
+    )
+
+    city = forms.ModelChoiceField(
+        queryset=City.objects.all(),
+        label='City',
+        widget=ModelSelect2Widget(
+            model=City,
+            search_fields=['name__icontains'],
+            dependent_fields={'country': 'country'},
+            max_results=500,
+        )
+    )
