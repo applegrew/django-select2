@@ -23,7 +23,7 @@ from tests.testapp import forms
 from tests.testapp.forms import (
     NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, TitleModelSelect2Widget
 )
-from tests.testapp.models import Genre
+from tests.testapp.models import City, Country, Genre
 
 try:
     from django.urls import reverse
@@ -359,3 +359,65 @@ class TestHeavySelect2MultipleWidget(object):
         # genres should still have One as selected option
         result_title = driver.find_element_by_css_selector('.select2-selection--multiple li').get_attribute('title')
         assert result_title == 'One'
+
+
+class TestAddressChainedSelect2Widget(object):
+    url = reverse('model_chained_select2_widget')
+    form = forms.AddressChainedSelect2WidgetForm()
+
+    def test_widgets_selected_after_validation_error(self, db, live_server, driver, countries, cities):
+        driver.get(live_server + self.url)
+
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-selection--single'))
+        )
+        country_container, city_container = driver.find_elements_by_css_selector('.select2-selection--single')
+
+        # clicking city select2 lists all available cities
+        city_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li'))
+        )
+        city_options = driver.find_elements_by_css_selector('.select2-results li')
+        city_names_from_browser = {option.text for option in city_options}
+        city_names_from_db = set(City.objects.values_list('name', flat=True))
+        assert len(city_names_from_browser) == City.objects.count()
+        assert city_names_from_browser == city_names_from_db
+
+        # selecting a country really does it
+        country_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:nth-child(2)'))
+        )
+        country_option = driver.find_element_by_css_selector('.select2-results li:nth-child(2)')
+        country_name = country_option.text
+        country_option.click()
+        assert country_name == country_container.text
+
+        # clicking city select2 lists reduced list of cities belonging to the country
+        city_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li'))
+        )
+        city_options = driver.find_elements_by_css_selector('.select2-results li')
+        city_names_from_browser = {option.text for option in city_options}
+        city_names_from_db = set(Country.objects.get(name=country_name).cities.values_list('name', flat=True))
+        assert len(city_names_from_browser) != City.objects.count()
+        assert city_names_from_browser == city_names_from_db
+
+        # selecting a city reaaly does it
+        city_option = driver.find_element_by_css_selector('.select2-results li:nth-child(2)')
+        city_name = city_option.text
+        city_option.click()
+        assert city_name == city_container.text
+
+        # clicking country select2 lists reduced list to the only country available to the city
+        country_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li'))
+        )
+        country_options = driver.find_elements_by_css_selector('.select2-results li')
+        country_names_from_browser = {option.text for option in country_options}
+        country_names_from_db = {City.objects.get(name=city_name).country.name}
+        assert len(country_names_from_browser) != Country.objects.count()
+        assert country_names_from_browser == country_names_from_db

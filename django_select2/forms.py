@@ -185,6 +185,8 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
 class HeavySelect2Mixin(object):
     """Mixin that adds select2's AJAX options and registers itself on Django's cache."""
 
+    dependent_fields = {}
+
     def __init__(self, attrs=None, choices=(), **kwargs):
         """
         Return HeavySelect2Mixin.
@@ -192,7 +194,12 @@ class HeavySelect2Mixin(object):
         Args:
             data_view (str): URL pattern name
             data_url (str): URL
-
+            dependent_fields (dict): Dictionary of dependent parent fields.
+                The value of the dependent field will be passed as to :func:`.filter_queryset`.
+                It can be used to further restrict the search results. For example, a city
+                widget could be dependent on a country.
+                Key is a name of a field in a form.
+                Value is a name of a field in a model (used in `queryset`).
         """
         self.choices = choices
         if attrs is not None:
@@ -202,6 +209,10 @@ class HeavySelect2Mixin(object):
 
         self.data_view = kwargs.pop('data_view', None)
         self.data_url = kwargs.pop('data_url', None)
+
+        dependent_fields = kwargs.pop('dependent_fields', None)
+        if dependent_fields is not None:
+            self.dependent_fields = dict(dependent_fields)
         if not (self.data_view or self.data_url):
             raise ValueError('You must ether specify "data_view" or "data_url".')
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
@@ -224,6 +235,8 @@ class HeavySelect2Mixin(object):
         attrs.setdefault('data-ajax--cache', "true")
         attrs.setdefault('data-ajax--type', "GET")
         attrs.setdefault('data-minimum-input-length', 2)
+        if self.dependent_fields:
+            attrs.setdefault('data-select2-dependent-fields', " ".join(self.dependent_fields))
 
         attrs['class'] += ' django-select2-heavy'
         return attrs
@@ -334,7 +347,7 @@ class ModelSelect2Mixin(object):
 
         Args:
             model (django.db.models.Model): Model to select choices from.
-            queryset (django.db.models.QuerySet): QuerySet to select choices from.
+            queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
             search_fields (list): List of model lookup strings.
             max_results (int): Max. JsonResponse view page size.
 
@@ -364,14 +377,19 @@ class ModelSelect2Mixin(object):
             'search_fields': self.search_fields,
             'max_results': self.max_results,
             'url': self.get_url(),
+            'dependent_fields': self.dependent_fields,
         })
 
-    def filter_queryset(self, term, queryset=None):
+    def filter_queryset(self, term, queryset=None, **dependent_fields):
         """
         Return QuerySet filtered by search_fields matching the passed term.
 
         Args:
             term (str): Search term
+            queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
+            **dependent_fields: Dependent fields and their values. If you want to inherit
+            from ModelSelect2Mixin and later call to this method, be sure to pop
+            from kwargs everything if it is not a dependent field.
 
         Returns:
             QuerySet: Filtered QuerySet
@@ -386,6 +404,9 @@ class ModelSelect2Mixin(object):
         for t in [t for t in term.split(' ') if not t == '']:
             select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields,
                              Q(**{search_fields[0]: t}))
+        if dependent_fields:
+            select &= Q(**dependent_fields)
+
         return queryset.filter(select).distinct()
 
     def get_queryset(self):
