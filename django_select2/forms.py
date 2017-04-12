@@ -73,9 +73,9 @@ class Select2Mixin(object):
     form media.
     """
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, *args, **kwargs):
         """Add select2 data attributes."""
-        attrs = super(Select2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs = super(Select2Mixin, self).build_attrs(*args, **kwargs)
         if self.is_required:
             attrs.setdefault('data-allow-clear', 'false')
         else:
@@ -113,12 +113,12 @@ class Select2Mixin(object):
 class Select2TagMixin(object):
     """Mixin to add select2 tag functionality."""
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, *args, **kwargs):
         """Add select2's tag attributes."""
         self.attrs.setdefault('data-minimum-input-length', 1)
         self.attrs.setdefault('data-tags', 'true')
         self.attrs.setdefault('data-token-separators', '[",", " "]')
-        return super(Select2TagMixin, self).build_attrs(extra_attrs, **kwargs)
+        return super(Select2TagMixin, self).build_attrs(*args, **kwargs)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -197,9 +197,9 @@ class HeavySelect2Mixin(object):
             return self.data_url
         return reverse(self.data_view)
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, *args, **kwargs):
         """Set select2's AJAX attributes."""
-        attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs = super(HeavySelect2Mixin, self).build_attrs(*args, **kwargs)
 
         # encrypt instance Id
         self.widget_id = signing.dumps(id(self))
