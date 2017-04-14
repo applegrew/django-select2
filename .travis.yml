@@ -25,16 +25,27 @@ env:
   - DISPLAY=:99.0
   - GECKO_DRIVER_VERSION=v0.14.0
   matrix:
+  - DJANGO=18
+  - DJANGO=110
+  - DJANGO=111
+  - DJANGO=master
   - TOXENV=qa
   - TOXENV=docs
-  - DJANGO=18
-  - DJANGO=19
-  - DJANGO=110
-  - DJANGO=master
 matrix:
   fast_finish: true
   allow_failures:
   - env: DJANGO=master
+  exclude:
+  - env: DJANGO=master
+    python: "2.7"
+  - env: TOXENV=qa
+    python: "2.7"
+  - env: TOXENV=qa
+    python: "3.5"
+  - env: TOXENV=docs
+    python: "2.7"
+  - env: TOXENV=docs
+    python: "3.5"
 install:
 - pip install --upgrade pip tox
 - pip install -U coveralls

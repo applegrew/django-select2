@@ -1,6 +1,10 @@
 Changelog Summary
 =================
 
+### v5.9.0
+* Add support for Django 1.11 LTS
+* Drop support for Django 1.9
+
 ### v5.8.10
 * Fixes tests for Django 1.10+
 * retain order of choices [299](https://github.com/applegrew/django-select2/pull/299)

@@ -4,7 +4,6 @@ from __future__ import absolute_import, unicode_literals
 import json
 
 from django.core import signing
-from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_text
 
 from django_select2.cache import cache
@@ -13,6 +12,11 @@ from tests.testapp.forms import (
     AlbumModelSelect2WidgetForm, ArtistCustomTitleWidget
 )
 from tests.testapp.models import Genre
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 class TestAutoResponseView(object):

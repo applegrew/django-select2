@@ -1,6 +1,3 @@
-
-testapp/tt.py
-
 *.pyc
 
 Django_Select2.egg-info
@@ -19,3 +16,7 @@ docs/_build
 env/
 venv/
 .cache/
+.tox/
+geckodriver.log
+ghostdriver.log
+.coverage

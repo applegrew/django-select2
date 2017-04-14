@@ -25,9 +25,10 @@ class Artist(models.Model):
 @python_2_unicode_compatible
 class Album(models.Model):
     title = models.CharField(max_length=255)
-    artist = models.ForeignKey(Artist)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
     featured_artists = models.ManyToManyField(Artist, blank=True, related_name='featured_album_set')
-    primary_genre = models.ForeignKey(Genre, blank=True, null=True, related_name='primary_album_set')
+    primary_genre = models.ForeignKey(Genre, on_delete=models.CASCADE, blank=True, null=True,
+                                      related_name='primary_album_set')
     genres = models.ManyToManyField(Genre)
 
     def __str__(self):

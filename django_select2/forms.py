@@ -54,7 +54,6 @@ from pickle import PicklingError
 
 from django import forms
 from django.core import signing
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
@@ -62,6 +61,11 @@ from django.utils.six.moves.cPickle import PicklingError as cPicklingError
 
 from .cache import cache
 from .conf import settings
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 class Select2Mixin(object):
@@ -73,9 +77,9 @@ class Select2Mixin(object):
     form media.
     """
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, *args, **kwargs):
         """Add select2 data attributes."""
-        attrs = super(Select2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs = super(Select2Mixin, self).build_attrs(*args, **kwargs)
         if self.is_required:
             attrs.setdefault('data-allow-clear', 'false')
         else:
@@ -89,9 +93,15 @@ class Select2Mixin(object):
             attrs['class'] = 'django-select2'
         return attrs
 
+    def optgroups(self, name, value, attrs=None):
+        """Add empty option for clearable selects."""
+        if not self.is_required and not self.allow_multiple_selected:
+            self.choices = list(chain([('', '')], self.choices))
+        return super(Select2Mixin, self).optgroups(name, value, attrs=attrs)
+
     def render_options(self, *args, **kwargs):
         """Render options including an empty one, if the field is not required."""
-        output = '<option></option>' if not self.is_required and not self.allow_multiple_selected else ''
+        output = '<option value=""></option>' if not self.is_required and not self.allow_multiple_selected else ''
         output += super(Select2Mixin, self).render_options(*args, **kwargs)
         return output
 
@@ -113,12 +123,12 @@ class Select2Mixin(object):
 class Select2TagMixin(object):
     """Mixin to add select2 tag functionality."""
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, *args, **kwargs):
         """Add select2's tag attributes."""
         self.attrs.setdefault('data-minimum-input-length', 1)
         self.attrs.setdefault('data-tags', 'true')
         self.attrs.setdefault('data-token-separators', '[",", " "]')
-        return super(Select2TagMixin, self).build_attrs(extra_attrs, **kwargs)
+        return super(Select2TagMixin, self).build_attrs(*args, **kwargs)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -175,7 +185,7 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
 class HeavySelect2Mixin(object):
     """Mixin that adds select2's AJAX options and registers itself on Django's cache."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, attrs=None, choices=(), **kwargs):
         """
         Return HeavySelect2Mixin.
 
@@ -184,12 +194,17 @@ class HeavySelect2Mixin(object):
             data_url (str): URL
 
         """
+        self.choices = choices
+        if attrs is not None:
+            self.attrs = attrs.copy()
+        else:
+            self.attrs = {}
+
         self.data_view = kwargs.pop('data_view', None)
         self.data_url = kwargs.pop('data_url', None)
         if not (self.data_view or self.data_url):
             raise ValueError('You must ether specify "data_view" or "data_url".')
         self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
-        super(HeavySelect2Mixin, self).__init__(**kwargs)
 
     def get_url(self):
         """Return URL from instance or by reversing :attr:`.data_view`."""
@@ -197,9 +212,9 @@ class HeavySelect2Mixin(object):
             return self.data_url
         return reverse(self.data_view)
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
+    def build_attrs(self, *args, **kwargs):
         """Set select2's AJAX attributes."""
-        attrs = super(HeavySelect2Mixin, self).build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs = super(HeavySelect2Mixin, self).build_attrs(*args, **kwargs)
 
         # encrypt instance Id
         self.widget_id = signing.dumps(id(self))
@@ -247,7 +262,7 @@ class HeavySelect2Mixin(object):
             choices = chain(self.choices, choices)
         else:
             choices = self.choices
-        output = ['<option></option>' if not self.is_required and not self.allow_multiple_selected else '']
+        output = ['<option value=""></option>' if not self.is_required and not self.allow_multiple_selected else '']
         selected_choices = {force_text(v) for v in selected_choices}
         choices = [(k, v) for k, v in choices if force_text(k) in selected_choices]
         for option_value, option_label in choices:
@@ -401,6 +416,36 @@ class ModelSelect2Mixin(object):
             return self.search_fields
         raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
 
+    def optgroups(self, name, value, attrs=None):
+        """Return only selected options and set QuerySet from `ModelChoicesIterator`."""
+        default = (None, [], 0)
+        groups = [default]
+        has_selected = False
+        selected_choices = {force_text(v) for v in value}
+        if not self.is_required and not self.allow_multiple_selected:
+            default[1].append(self.create_option(name, '', '', False, 0))
+        if not isinstance(self.choices, ModelChoiceIterator):
+            return super(ModelSelect2Mixin, self).optgroups(name, value, attrs=attrs)
+        selected_choices = {
+            c for c in selected_choices
+            if c not in self.choices.field.empty_values
+        }
+        choices = (
+            (obj.pk, self.label_from_instance(obj))
+            for obj in self.choices.queryset.filter(pk__in=selected_choices)
+        )
+        for option_value, option_label in choices:
+            selected = (
+                force_text(option_value) in value and
+                (has_selected is False or self.allow_multiple_selected)
+            )
+            if selected is True and has_selected is False:
+                has_selected = True
+            index = len(default[1])
+            subgroup = default[1]
+            subgroup.append(self.create_option(name, option_value, option_label, selected_choices, index))
+        return groups
+
     def render_options(self, *args):
         """Render only selected options and set QuerySet from :class:`ModelChoiceIterator`."""
         try:
@@ -411,7 +456,7 @@ class ModelSelect2Mixin(object):
         else:
             choices = self.choices
         selected_choices = {force_text(v) for v in selected_choices}
-        output = ['<option></option>' if not self.is_required and not self.allow_multiple_selected else '']
+        output = ['<option value=""></option>' if not self.is_required and not self.allow_multiple_selected else '']
         if isinstance(self.choices, ModelChoiceIterator):
             if self.queryset is None:
                 self.queryset = self.choices.queryset

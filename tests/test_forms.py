@@ -6,7 +6,6 @@ import json
 
 import pytest
 from django.core import signing
-from django.core.urlresolvers import reverse
 from django.db.models import QuerySet
 from django.utils.encoding import force_text
 from django.utils.six import text_type
@@ -25,6 +24,11 @@ from tests.testapp.forms import (
     NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, TitleModelSelect2Widget
 )
 from tests.testapp.models import Genre
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 class TestSelect2Mixin(object):
@@ -48,7 +52,7 @@ class TestSelect2Mixin(object):
         assert required_field.required is True
         assert 'data-allow-clear="true"' not in required_field.widget.render('artist', None)
         assert 'data-allow-clear="false"' in required_field.widget.render('artist', None)
-        assert '<option></option>' not in required_field.widget.render('artist', None)
+        assert '<option value=""></option>' not in required_field.widget.render('artist', None)
 
         not_required_field = self.form.fields['primary_genre']
         assert not_required_field.required is False
@@ -56,7 +60,7 @@ class TestSelect2Mixin(object):
         assert 'data-allow-clear="false"' not in not_required_field.widget.render('primary_genre',
                                                                                   None)
         assert 'data-placeholder' in not_required_field.widget.render('primary_genre', None)
-        assert '<option></option>' in not_required_field.widget.render('primary_genre', None)
+        assert '<option value=""></option>' in not_required_field.widget.render('primary_genre', None)
 
     def test_no_js_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
@@ -91,12 +95,12 @@ class TestSelect2Mixin(object):
         # https://select2.github.io/options.html#allowClear
         single_select = self.form.fields['primary_genre']
         assert single_select.required is False
-        assert '<option></option>' in single_select.widget.render('primary_genre', None)
+        assert '<option value=""></option>' in single_select.widget.render('primary_genre', None)
 
         multiple_select = self.multiple_form.fields['featured_artists']
         assert multiple_select.required is False
         assert multiple_select.widget.allow_multiple_selected
-        assert '<option></option>' not in multiple_select.widget.render('featured_artists', None)
+        assert '<option value=""></option>' not in multiple_select.widget.render('featured_artists', None)
 
 
 class TestSelect2MixinSettings(object):
@@ -139,7 +143,9 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         not_required_field = self.form.fields['primary_genre']
         assert not_required_field.required is False
         assert '<option value="1" selected="selected">One</option>' in \
-               not_required_field.widget.render('primary_genre', 1), \
+               not_required_field.widget.render('primary_genre', 1) or \
+            '<option value="1" selected>One</option>' in \
+            not_required_field.widget.render('primary_genre', 1), \
             not_required_field.widget.render('primary_genre', 1)
 
     def test_many_selected_option(self, db, genres):
@@ -147,10 +153,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         field.widget.choices = NUMBER_CHOICES
         widget_output = field.widget.render('genres', [1, 2])
         selected_option = '<option value="{pk}" selected="selected">{value}</option>'.format(pk=1, value='One')
+        selected_option_a = '<option value="{pk}" selected>{value}</option>'.format(pk=1, value='One')
         selected_option2 = '<option value="{pk}" selected="selected">{value}</option>'.format(pk=2, value='Two')
+        selected_option2a = '<option value="{pk}" selected>{value}</option>'.format(pk=2, value='Two')
 
-        assert selected_option in widget_output, widget_output
-        assert selected_option2 in widget_output
+        assert selected_option in widget_output or selected_option_a in widget_output, widget_output
+        assert selected_option2 in widget_output or selected_option2a in widget_output
 
     def test_multiple_widgets(self, db, live_server, driver):
         driver.get(live_server + self.url)
@@ -160,11 +168,11 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         elem1, elem2 = driver.find_elements_by_css_selector('.select2-selection')
         elem1.click()
 
-        result1 = WebDriverWait(driver, 10).until(
+        result1 = WebDriverWait(driver, 60).until(
             expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:first-child'))
         ).text
         elem2.click()
-        result2 = WebDriverWait(driver, 10).until(
+        result2 = WebDriverWait(driver, 60).until(
             expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:first-child'))
         ).text
 
@@ -204,7 +212,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         genre.save()
 
         form = self.form.__class__(initial={'primary_genre': genre.pk})
-        assert genre.title not in form.as_p()
+        assert genre.title not in form.as_p(), form.as_p()
         assert genre.title.upper() in form.as_p()
 
     @pytest.fixture(autouse=True)
@@ -220,10 +228,12 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
             'primary_genre', genre.pk)
         selected_option = '<option value="{pk}" selected="selected">{value}</option>'.format(
             pk=genre.pk, value=force_text(genre))
+        selected_option_a = '<option value="{pk}" selected>{value}</option>'.format(
+            pk=genre.pk, value=force_text(genre))
         unselected_option = '<option value="{pk}">{value}</option>'.format(
             pk=genre2.pk, value=force_text(genre2))
 
-        assert selected_option in widget_output, widget_output
+        assert selected_option in widget_output or selected_option_a in widget_output, widget_output
         assert unselected_option not in widget_output
 
     def test_selected_option_label_from_instance(self, db, genres):
@@ -234,14 +244,15 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         field = self.form.fields['primary_genre']
         widget_output = field.widget.render('primary_genre', genre.pk)
 
-        def get_selected_option(genre):
+        def get_selected_options(genre):
             return '<option value="{pk}" selected="selected">{value}</option>'.format(
+                pk=genre.pk, value=force_text(genre)), '<option value="{pk}" selected>{value}</option>'.format(
                 pk=genre.pk, value=force_text(genre))
 
-        assert get_selected_option(genre) not in widget_output
+        assert all(o not in widget_output for o in get_selected_options(genre))
         genre.title = genre.title.upper()
 
-        assert get_selected_option(genre) in widget_output
+        assert any(o in widget_output for o in get_selected_options(genre))
 
     def test_get_queryset(self):
         widget = ModelSelect2Widget()
