@@ -14,6 +14,7 @@ Contents:
 
    get_started
    django_select2
+   extra
 
 Indices and tables
 ==================
