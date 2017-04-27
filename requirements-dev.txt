@@ -26,7 +26,7 @@ pytest-django==3.1.2
 pytest==3.0.7
 pytz==2017.2 # via babel
 redis==2.10.5             # via django-redis
-selenium==3.3.3
+selenium==3.4.1
 six==1.10.0               # via django-appconf, sphinx, sphinxcontrib-spelling
 snowballstemmer==1.2.1    # via sphinx
 sphinx-rtd-theme==0.2.4   # via sphinx
