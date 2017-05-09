@@ -343,6 +343,9 @@ class TestHeavySelect2MultipleWidget(object):
 
     def test_widgets_selected_after_validation_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.ID, 'it_title'))
+        )
         title = driver.find_element_by_id('id_title')
         title.send_keys('fo')
         genres, fartists = driver.find_elements_by_css_selector('.select2-selection--multiple')
