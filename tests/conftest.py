@@ -14,7 +14,6 @@ from selenium.common.exceptions import WebDriverException
 browsers = {
     'chrome': webdriver.Chrome,
     'firefox': webdriver.Firefox,
-    'phantomjs': webdriver.PhantomJS,
 }
 
 
