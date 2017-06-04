@@ -59,6 +59,8 @@ from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
 from django.utils.six.moves.cPickle import PicklingError as cPicklingError
 
+from six.moves.cPickle import PicklingError as cPicklingError
+
 from .cache import cache
 from .conf import settings
 
