@@ -4,6 +4,11 @@
   }
 
   var initHeavy = function ($element, options) {
+    var elemPrefix = '';
+    var prefixRe = /.*\-\d+\-/;
+    if (prefixRe.test($element.context.id)) {
+      elemPrefix = prefixRe.exec($element.context.id)[0].replace('id_', '');
+    }
     var settings = $.extend({
       ajax: {
         data: function (params) {
@@ -17,7 +22,8 @@
           if (dependentFields) {
             dependentFields = dependentFields.trim().split(/\s+/)
             $.each(dependentFields, function (i, dependentField) {
-              result[dependentField] = $('[name=' + dependentField + ']', $element.closest('form')).val()
+              var dependentFieldName = elemPrefix + dependentField;
+              result[dependentField] = $('[name=' + dependentFieldName + ']', $element.closest('form')).val()
             })
           }
 
