@@ -177,6 +177,12 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
                 values = super(MyWidget, self).value_from_datadict(data, files, name):
                 return ",".join(values)
 
+            def optgroups(self, name, value, attrs=None):
+                values = value[0].split(',') if value[0] else []
+                selected = set(values)
+                subgroup = [self.create_option(name, v, v, selected, i) for i, v in enumerate(values)]
+                return [(None, subgroup, 0)]
+
     """
 
     pass
