@@ -1,12 +1,12 @@
-(function($) {
-    var init = function($element, options) {
+(function ($) {
+    var init = function ($element, options) {
         $element.select2(options);
     };
 
-    var initHeavy = function($element, options) {
+    var initHeavy = function ($element, options) {
         var settings = $.extend({
             ajax: {
-                data: function(params) {
+                data: function (params) {
                     var result = {
                         term: params.term,
                         page: params.page,
@@ -16,14 +16,14 @@
                     var dependentFields = $element.data('select2-dependent-fields');
                     if (dependentFields) {
                         dependentFields = dependentFields.trim().split(/\s+/);
-                        $.each(dependentFields, function(i, dependentField) {
+                        $.each(dependentFields, function (i, dependentField) {
                             result[dependentField] = $('[name=' + dependentField + ']', $element.closest('form')).val();
                         });
                     }
 
                     return result;
                 },
-                processResults: function(data, page) {
+                processResults: function (data, page) {
                     return {
                         results: data.results,
                         pagination: {
@@ -37,9 +37,9 @@
         $element.select2(settings);
     };
 
-    $.fn.djangoSelect2 = function(options) {
+    $.fn.djangoSelect2 = function (options) {
         var settings = $.extend({}, options);
-        $.each(this, function(i, element) {
+        $.each(this, function (i, element) {
             var $element = $(element);
             if ($element.hasClass('django-select2-heavy')) {
                 initHeavy($element, settings);
@@ -64,14 +64,14 @@
         return this;
     };
 
-    $(function() {
+    $(function () {
         // --* CHANGED 20tab *--
         $('.django-select2').not('.empty-form .django-select2').djangoSelect2();
         // --* END CHANGED *---
     });
 
     // --*  NEW 20tab *--
-    django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
+    django.jQuery(document).on('formset:added', function (event, $row, formsetName) {
         $($row).find('.django-select2').djangoSelect2();
     });
     // --* END NEW *--

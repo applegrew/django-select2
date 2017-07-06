@@ -112,12 +112,8 @@ class Select2Mixin(object):
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
-        # *-- Added last two media 20tab --*
         return forms.Media(
-            js=(
-                settings.SELECT2_JS,
-                'django_select2/django_select2.js',
-                'django_select2/django_select2_RelatedObjectLookups_fix.js'),
+            js=(settings.SELECT2_JS, 'django_select2/django_select2.js'),
             css={'screen': (settings.SELECT2_CSS,)}
         )
 
@@ -615,11 +611,11 @@ class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
 # --* NEW 20tab *--
 class ModelSelect2FreeWidget(ModelSelect2Mixin, HeavySelect2FreeWidget):
     """
-    Select2 model widget with tag support.
+    Select2 model widget with drop-in support.
 
     This it not a simple drop in widget.
-    It requires to implement you own :func:`.value_from_datadict`
-    that adds missing tags to you QuerySet.
+    It requires to implement you own :func:`.value_from_datadict` method
+    in order to add dropped-in instances to your QuerySet.
 
     Example::
 
