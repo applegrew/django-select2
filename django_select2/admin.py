@@ -22,6 +22,7 @@ Django-Select2 Tools for Django Admin.
                 },
             }
 """
+from django.conf import settings
 from django.contrib import admin
 from django.db.models import ForeignKey, ManyToManyField
 
@@ -84,6 +85,9 @@ class Select2ModelAdminMixin(object):
     class Media:
         js = (
             '//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js',
+            settings.SELECT2_JS,
+            'django_select2/django_select2.js',
+            'django_select2/django_select2_formset_handlers.js',
             'django_select2/django_select2_RelatedObjectLookups_fix.js',
         )
 

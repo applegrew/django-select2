@@ -70,10 +70,4 @@
         // --* END CHANGED *---
     });
 
-    // --*  NEW 20tab *--
-    django.jQuery(document).on('formset:added', function (event, $row, formsetName) {
-        $($row).find('.django-select2').djangoSelect2();
-    });
-    // --* END NEW *--
-
 }(this.jQuery));
