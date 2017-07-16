@@ -8,6 +8,7 @@ import os
 import pytest
 from django.core import signing
 from django.db.models import QuerySet
+from django.utils import translation
 from django.utils.encoding import force_text
 from django.utils.six import text_type
 from selenium.common.exceptions import NoSuchElementException
@@ -102,6 +103,27 @@ class TestSelect2Mixin(object):
         assert multiple_select.required is False
         assert multiple_select.widget.allow_multiple_selected
         assert '<option value=""></option>' not in multiple_select.widget.render('featured_artists', None)
+
+    def test_i18n(self):
+        translation.activate('de')
+        assert Select2Widget().media._js == [
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/de.js',
+            'django_select2/django_select2.js'
+        ]
+
+        translation.activate('en')
+        assert Select2Widget().media._js == [
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/en.js',
+            'django_select2/django_select2.js'
+        ]
+
+        translation.activate('00')
+        assert Select2Widget().media._js == [
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            'django_select2/django_select2.js'
+        ]
 
 
 class TestSelect2MixinSettings(object):

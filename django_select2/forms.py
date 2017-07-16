@@ -58,6 +58,7 @@ from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.utils.encoding import force_text
 from django.utils.six.moves.cPickle import PicklingError as cPicklingError
+from django.utils.translation import get_language
 
 from .cache import cache
 from .conf import settings
@@ -112,8 +113,10 @@ class Select2Mixin(object):
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
+        i18n_file = '%s/%s.js' % (settings.SELECT2_I18N_PATH, get_language())
+        i18n_file = (i18n_file,) if get_language() in settings.SELECT2_I18N_AVAILABLE_LANGUAGES else ()
         return forms.Media(
-            js=(settings.SELECT2_JS, 'django_select2/django_select2.js'),
+            js=(settings.SELECT2_JS,) + i18n_file + ('django_select2/django_select2.js',),
             css={'screen': (settings.SELECT2_CSS,)}
         )
 
