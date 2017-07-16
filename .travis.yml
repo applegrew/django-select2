@@ -7,12 +7,9 @@ cache:
 services:
 - redis
 addons:
- firefox: latest
- apt:
-    sources:
-    - google-chrome
+  chrome: stable
+  apt:
     packages:
-    - google-chrome-stable
     - python3-enchant
     - python-enchant
     - graphviz
@@ -21,10 +18,6 @@ python:
   - "3.5"
   - "3.6"
 env:
-  global:
-  - DISPLAY=:99.0
-  - GECKO_DRIVER_VERSION=v0.16.1
-  - CHROME_DRIVER_VERSION=2.29
   matrix:
   - DJANGO=18
   - DJANGO=110
@@ -50,12 +43,11 @@ matrix:
 install:
 - pip install --upgrade pip tox
 - pip install -U coveralls
-- sh -e /etc/init.d/xvfb start
 before_script:
 - mkdir bin
+- export CHROME_DRIVER_VERSION=`curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE`
 - curl -O https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
 - unzip chromedriver_linux64.zip -d bin
-- curl -Lo - "https://github.com/mozilla/geckodriver/releases/download/${GECKO_DRIVER_VERSION}/geckodriver-${GECKO_DRIVER_VERSION}-linux64.tar.gz" | tar xzf - -C bin
 - PATH=$PATH:$PWD/bin
 - nvm install --lts
 - npm install -g standard

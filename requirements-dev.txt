@@ -24,7 +24,6 @@ pyflakes==1.5.0 # via flake8
 pygments==2.2.0 # via sphinx
 pytest-django==3.1.2
 pytest==3.1.3
-pytest-rerunfailures==2.2
 pytz==2017.2 # via babel
 redis==2.10.5             # via django-redis
 selenium==3.4.3

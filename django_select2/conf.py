@@ -43,7 +43,7 @@ class Select2Conf(AppConf):
     """
     CACHE_PREFIX = 'select2_'
     """
-    If you caching backend doesn't support multiple databases
+    If you caching backend does not support multiple databases
     you can isolate select2 using the cache prefix setting.
     It has set `select2_` as a default value, which you can change if needed.
     """

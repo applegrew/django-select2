@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import collections
 import json
+import os
 
 import pytest
 from django.core import signing
@@ -341,10 +342,12 @@ class TestHeavySelect2MultipleWidget(object):
     form = forms.HeavySelect2MultipleWidgetForm()
     widget_cls = HeavySelect2MultipleWidget
 
+    @pytest.mark.xfail(bool(os.environ.get('CI', False)),
+                       reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1772')
     def test_widgets_selected_after_validation_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
-        WebDriverWait(driver, 60).until(
-            expected_conditions.presence_of_element_located((By.ID, 'it_title'))
+        WebDriverWait(driver, 3).until(
+            expected_conditions.presence_of_element_located((By.ID, 'id_title'))
         )
         title = driver.find_element_by_id('id_title')
         title.send_keys('fo')
@@ -355,7 +358,7 @@ class TestHeavySelect2MultipleWidget(object):
         driver.find_element_by_css_selector('.select2-results li:nth-child(2)').click()
         genres.submit()
         # there is a ValidationError raised, check for it
-        errstring = WebDriverWait(driver, 10).until(
+        errstring = WebDriverWait(driver, 3).until(
             expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'ul.errorlist li'))
         ).text
         assert errstring == "Title must have more than 3 characters."
