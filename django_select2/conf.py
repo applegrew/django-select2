@@ -74,6 +74,88 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
+    I18N_PATH = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n'
+    """
+    The base URI for the Select2 i18n files. By default this points to the Cloudflare CDN.
+
+    If you want to select the version of the JS library used, or want to serve it from
+    the local 'static' resources, add a line to your settings.py like so::
+
+        SELECT2_JS = 'assets/js/i18n'
+
+    .. tip:: Change this setting to a local asset in your development environment to
+        develop without an Internet connection.
+    """
+
+    I18N_AVAILABLE_LANGUAGES = [
+        'ar',
+        'az',
+        'bg',
+        'ca',
+        'cs',
+        'da',
+        'de',
+        'el',
+        'en',
+        'es',
+        'et',
+        'eu',
+        'fa',
+        'fi',
+        'fr',
+        'gl',
+        'he',
+        'hi',
+        'hr',
+        'hu',
+        'id',
+        'is',
+        'it',
+        'ja',
+        'km',
+        'ko',
+        'lt',
+        'lv',
+        'mk',
+        'ms',
+        'nb',
+        'nl',
+        'pl',
+        'pt-BR',
+        'pt',
+        'ro',
+        'ru',
+        'sk',
+        'sr-Cyrl',
+        'sr',
+        'sv',
+        'th',
+        'tr',
+        'uk',
+        'vi',
+        'zh-CN',
+        'zh-TW',
+    ]
+    """
+    List of available translations.
+
+    List of ISO 639-1 language codes that are supported by Select2.
+    If currently set language code (e.g. using the HTTP ``Accept-Language`` header)
+    is in this list, Django-Select2 will use the language code to create load
+    the proper translation.
+
+    The full path for the language file consists of::
+
+        from django.utils import translations
+
+        full_path = "{i18n_path}/{language_code}.js".format(
+            i18n_path=settings.DJANGO_SELECT2_I18N,
+            language_code=translations.get_language(),
+        )
+
+    ``settings.DJANGO_SELECT2_I18N`` refers to :attr:`.I18N_PATH`.
+    """
+
     class Meta:
         """Prefix for all Django-Select2 settings."""
 
