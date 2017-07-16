@@ -7,7 +7,6 @@ isort
 pydocstyle
 pytest
 pytest-django
-pytest-rerunfailures
 selenium
 sphinx
 sphinxcontrib-spelling
