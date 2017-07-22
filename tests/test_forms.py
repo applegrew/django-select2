@@ -125,6 +125,20 @@ class TestSelect2Mixin(object):
             'django_select2/django_select2.js'
         ]
 
+        translation.activate('sr-cyrl')
+        assert Select2Widget().media._js == [
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/sr-Cyrl.js',
+            'django_select2/django_select2.js'
+        ]
+
+        translation.activate('zh-cn')
+        assert Select2Widget().media._js == [
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/zh-CN.js',
+            'django_select2/django_select2.js'
+        ]
+
 
 class TestSelect2MixinSettings(object):
     def test_default_media(self):

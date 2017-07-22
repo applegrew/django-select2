@@ -113,8 +113,12 @@ class Select2Mixin(object):
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
-        i18n_file = '%s/%s.js' % (settings.SELECT2_I18N_PATH, get_language())
-        i18n_file = (i18n_file,) if get_language() in settings.SELECT2_I18N_AVAILABLE_LANGUAGES else ()
+        try:
+            # get_language() will always return a lower case language code, where some files are named upper case.
+            i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(get_language())
+            i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, settings.SELECT2_I18N_AVAILABLE_LANGUAGES[i]), )
+        except ValueError:
+            i18n_file = ()
         return forms.Media(
             js=(settings.SELECT2_JS,) + i18n_file + ('django_select2/django_select2.js',),
             css={'screen': (settings.SELECT2_CSS,)}
