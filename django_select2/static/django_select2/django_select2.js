@@ -12,12 +12,19 @@
             page: params.page,
             field_id: $element.data('field_id')
           }
-
+          var namePrefix = $element.closest('div.inline-related').attr('id')
+          var elementId = $element.attr('id')
+          if (namePrefix && elementId && elementId.indexOf(namePrefix) !== -1) {
+            // in case the prefix if failed to fetch correctly reset it
+            namePrefix += '-'
+          } else {
+            namePrefix = ''
+          }
           var dependentFields = $element.data('select2-dependent-fields')
           if (dependentFields) {
             dependentFields = dependentFields.trim().split(/\s+/)
             $.each(dependentFields, function (i, dependentField) {
-              result[dependentField] = $('[name=' + dependentField + ']', $element.closest('form')).val()
+              result[dependentField] = $('[name=' + namePrefix + dependentField + ']', $element.closest('form')).val()
             })
           }
 
