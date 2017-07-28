@@ -66,5 +66,4 @@
     // do not trigger select2 initialization in hidden admin inline formset rows
     $('.django-select2').not('.empty-form .django-select2').djangoSelect2()
   })
-
 }(this.jQuery))

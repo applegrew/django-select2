@@ -49,5 +49,4 @@
 
     $('.related-widget-wrapper select').trigger('change')
   })
-
 })(this.jQuery)
