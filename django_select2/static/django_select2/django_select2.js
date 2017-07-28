@@ -43,15 +43,15 @@
       var $element = $(element)
       if ($element.hasClass('django-select2-heavy')) {
         initHeavy($element, settings)
-        $selected_option = $element.find(':selected')
-        if ($selected_option.val() & !$selected_option.text()) {
+        var $selectedOption = $element.find(':selected')
+        if ($selectedOption.val() & !$selectedOption.text()) {
           $.ajax({
             type: $element.data('ajax--type'),
-            url: $element.data('ajax--url') + $selected_option.val(),
+            url: $element.data('ajax--url') + $selectedOption.val(),
             dataType: 'json'
           }).then(function (data) {
-            $selected_option.text(data.text)
-            $selected_option.removeData()
+            $selectedOption.text(data.text)
+            $selectedOption.removeData()
             $element.trigger('change')
           })
         }

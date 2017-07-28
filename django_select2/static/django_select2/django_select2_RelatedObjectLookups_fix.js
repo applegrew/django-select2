@@ -1,15 +1,14 @@
 // Fixes Django admin related objects functionality for select2 elements
-
 (function ($) {
   'use strict'
 
-  function dismissChangeRelatedObjectPopup_fixed(win, objId, newRepr, newId) {
+  function dismissChangeRelatedObjectPopupFixed (win, objId, newRepr, newId) {
     var id = windowname_to_id(win.name).replace(/^edit_/, '')
     var selectsSelector = interpolate('#%s, #%s_from, #%s_to', [id, id, id])
     var selects = $(selectsSelector)
     // update all django_select2 fields related to the changed object
-    var related_model = selects.data("related-model")
-    selects = selects.add('*[data-related-model="' + related_model + '"]')
+    var relatedModel = selects.data('related-model')
+    selects = selects.add('*[data-related-model="' + relatedModel + '"]')
     selects.find('option').each(function () {
       if (this.value === objId) {
         this.textContent = newRepr
@@ -20,13 +19,13 @@
     win.close()
   }
 
-  function dismissDeleteRelatedObjectPopup(win, objId) {
+  function dismissDeleteRelatedObjectPopupFixed (win, objId) {
     var id = windowname_to_id(win.name).replace(/^delete_/, '')
     var selectsSelector = interpolate('#%s, #%s_from, #%s_to', [id, id, id])
     var selects = $(selectsSelector)
     // update all django_select2 fields related to the deleted object
-    var related_model = selects.data("related-model")
-    selects = selects.add('*[data-related-model="' + related_model + '"]')
+    var relatedModel = selects.data('related-model')
+    selects = selects.add('*[data-related-model="' + relatedModel + '"]')
 
     selects.find('option').each(function () {
       if (this.value === objId) {
@@ -36,8 +35,8 @@
     win.close()
   }
 
-  window.dismissChangeRelatedObjectPopup = dismissChangeRelatedObjectPopup_fixed
-  window.dismissDeleteRelatedObjectPopup = dismissDeleteRelatedObjectPopup
+  window.dismissChangeRelatedObjectPopup = dismissChangeRelatedObjectPopupFixed
+  window.dismissDeleteRelatedObjectPopup = dismissDeleteRelatedObjectPopupFixed
 
   $(document).ready(function () {
     $('body').on('change', '.related-widget-wrapper select', function (e) {
@@ -47,6 +46,7 @@
         updateRelatedObjectLinks(this)
       }
     })
+
     $('.related-widget-wrapper select').trigger('change')
   })
 
