@@ -20,4 +20,3 @@ venv/
 geckodriver.log
 ghostdriver.log
 .coverage
-.DS_Store
