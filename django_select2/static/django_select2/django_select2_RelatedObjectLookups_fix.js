@@ -15,7 +15,7 @@
         this.value = newId
       }
     })
-    selects.filter('.django-select2').djangoSelect2()
+    selects.filter('tr:not(.empty-form) .django-select2').djangoSelect2()
     win.close()
   }
 
@@ -26,7 +26,6 @@
     // update all django_select2 fields related to the deleted object
     var relatedModel = selects.data('related-model')
     selects = selects.add('*[data-related-model="' + relatedModel + '"]')
-
     selects.find('option').each(function () {
       if (this.value === objId) {
         $(this).remove()
