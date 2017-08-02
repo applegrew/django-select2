@@ -87,6 +87,7 @@ class Select2ModelAdminMixin(object):
 
     class Media:
         """Assure the correct js scripts import sequence."""
+
         js = (
             '//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js',
             settings.SELECT2_JS,
