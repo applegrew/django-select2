@@ -3,8 +3,8 @@
   'use strict'
 
   function dismissChangeRelatedObjectPopupFixed (win, objId, newRepr, newId) {
-    var id = windowname_to_id(win.name).replace(/^edit_/, '')
-    var selectsSelector = interpolate('#%s, #%s_from, #%s_to', [id, id, id])
+    var id = window.windowname_to_id(win.name).replace(/^edit_/, '')
+    var selectsSelector = window.interpolate('#%s, #%s_from, #%s_to', [id, id, id])
     var selects = $(selectsSelector)
     // update all django_select2 fields related to the changed object
     var relatedModel = selects.data('related-model')
@@ -20,8 +20,8 @@
   }
 
   function dismissDeleteRelatedObjectPopupFixed (win, objId) {
-    var id = windowname_to_id(win.name).replace(/^delete_/, '')
-    var selectsSelector = interpolate('#%s, #%s_from, #%s_to', [id, id, id])
+    var id = window.windowname_to_id(win.name).replace(/^delete_/, '')
+    var selectsSelector = window.interpolate('#%s, #%s_from, #%s_to', [id, id, id])
     var selects = $(selectsSelector)
     // update all django_select2 fields related to the deleted object
     var relatedModel = selects.data('related-model')
@@ -42,7 +42,7 @@
       var event = $.Event('django:update-related')
       $(this).trigger(event)
       if (!event.isDefaultPrevented()) {
-        updateRelatedObjectLinks(this)
+        window.updateRelatedObjectLinks(this)
       }
     })
 
