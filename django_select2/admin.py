@@ -68,7 +68,11 @@ class Select2ModelAdminMixin(object):
                     ModelSelect2MultipleWidget
                 )
                 if issubclass(widget, ModelSelect2Mixin):
-                    related_model = db_field.remote_field.model
+                    related_model = (
+                        hasattr(db_field, 'remote_field') and
+                        db_field.remote_field or db_field.rel
+                    ).model
+                    # FIXME Change previous line when Django 1.8 is unsupported
                     widget_kwargs['model'] = related_model
                     widget_kwargs.setdefault('attrs', {}).update({
                         'data-related-model': '{}.{}'.format(

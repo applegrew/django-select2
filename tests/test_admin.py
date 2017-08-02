@@ -6,8 +6,8 @@ from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.forms.widgets import Select, SelectMultiple
 
 from django_select2.admin import (
-    Select2ModelAdmin, Select2StackedInline,
-    Select2TabularInline, Select2Widget,
+    Select2ModelAdmin, Select2StackedInline, Select2TabularInline,
+    Select2Widget
 )
 from django_select2.forms import ModelSelect2MultipleWidget, ModelSelect2Widget
 from tests.testapp.models import Album, Genre
