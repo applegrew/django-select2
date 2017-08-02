@@ -35,8 +35,7 @@ from .forms import (
 
 class Select2ModelAdminMixin(object):
     """
-    Base mixin that allows to define and configure select2 widgets on model
-    fields.
+    Base mixin that allows to define and set select2 widgets on model fields.
 
     It relies on some Django admin.options.BaseModelAdmin attributes and needs
     a single configuration parameter to activate select2 on specific fields.
