@@ -49,9 +49,11 @@ class Select2ModelAdminMixin(object):
           (e.g. {'search_fields': ['name__icontains']}).
 
     """
+
     select2_fields = {}
 
     def get_widgets(self):
+        """Assign select2 widgets as defined via the select2_fields dict."""
         widgets = {}
         for field_name, field_options in self.select2_fields.items():
             user_widget = field_options.get('widget')
@@ -84,6 +86,7 @@ class Select2ModelAdminMixin(object):
         return widgets
 
     class Media:
+        """Assure the correct js scripts import sequence."""
         js = (
             '//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js',
             settings.SELECT2_JS,
@@ -94,19 +97,19 @@ class Select2ModelAdminMixin(object):
 
 
 class Select2ModelAdmin(Select2ModelAdminMixin, admin.ModelAdmin):
-    """
-    Django ModelAdmin supporting select2 on specific fields.
-    """
+    """Django ModelAdmin supporting select2 on specific fields."""
+
     def get_form(self, request, obj=None, **kwargs):
+        """Assign select2 widgets to user defined form fields."""
         kwargs.setdefault('widgets', {}).update(self.get_widgets())
         return super(Select2ModelAdmin, self).get_form(request, obj, **kwargs)
 
 
 class Select2InlineMixin(Select2ModelAdminMixin):
-    """
-    The base mixin for Django admin inline configuration classes.
-    """
+    """The base mixin for Django admin inline configuration classes."""
+
     def get_formset(self, request, obj=None, **kwargs):
+        """Assign select2 widgets to user defined formset form fields."""
         kwargs.setdefault('widgets', {}).update(self.get_widgets())
         return super(Select2InlineMixin, self).get_formset(
             request, obj, **kwargs
@@ -114,14 +117,12 @@ class Select2InlineMixin(Select2ModelAdminMixin):
 
 
 class Select2StackedInline(Select2InlineMixin, admin.StackedInline):
-    """
-    Django StackedInline supporting select2 on specific fields.
-    """
+    """Django StackedInline supporting select2 on specific fields."""
+
     pass
 
 
 class Select2TabularInline(Select2InlineMixin, admin.TabularInline):
-    """
-    Django TabularInline supporting select2 on specific fields.
-    """
+    """Django TabularInline supporting select2 on specific fields."""
+
     pass
