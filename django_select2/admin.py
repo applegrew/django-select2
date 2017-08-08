@@ -2,26 +2,28 @@
 """
 Django-Select2 Tools for Django Admin.
 
-    Sample usage:
-        from django_select2.admin import Select2ModelAdmin
-        from django_select2.forms import Select2Widget
+Example usage::
+
+    from django_select2.admin import Select2ModelAdmin
+    from django_select2.forms import Select2Widget
 
 
-        class MyModelAdmin(Select2ModelAdmin):
-            select2_fields = {
-                'my_choice_field': {
-                    'widget': Select2Widget,
-                },
-                'my_FK_field': {
-                    'widget_kwargs': {
-                        'search_fields': ['name__icontains'],
-                        'attrs': {
-                            'data-minimum-input-length': 2,
-                            'style': 'width:200px;',
-                        },
+    class MyModelAdmin(Select2ModelAdmin):
+        select2_fields = {
+            'my_choice_field': {
+                'widget': Select2Widget,
+            },
+            'my_FK_field': {
+                'widget_kwargs': {
+                    'search_fields': ['name__icontains'],
+                    'attrs': {
+                        'data-minimum-input-length': 2,
+                        'style': 'width:200px;',
                     },
                 },
-            }
+            },
+        }
+
 """
 from django.conf import settings
 from django.contrib import admin
@@ -53,7 +55,7 @@ class Select2ModelAdminMixin(object):
     select2_fields = {}
 
     def get_widgets(self):
-        """Assign select2 widgets as defined via the select2_fields dict."""
+        """Assign select2 widgets as defined via the `select2_fields` dict."""
         widgets = {}
         for field_name, field_options in self.select2_fields.items():
             user_widget = field_options.get('widget')
