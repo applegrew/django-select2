@@ -504,7 +504,8 @@ class ModelSelect2Mixin(object):
             output.append(self.render_option(selected_choices, option_value, option_label))
         return '\n'.join(output)
 
-    def label_from_instance(self, obj):
+    @staticmethod
+    def label_from_instance(obj):
         """
         Return option label representation from instance.
 
