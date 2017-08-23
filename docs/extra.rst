@@ -37,6 +37,7 @@ Lets link two widgets via *dependent_fields*.
             queryset=Country.objects.all(),
             label=u"Country",
             widget=ModelSelect2Widget(
+                model=Country,
                 search_fields=['name__icontains'],
             )
         )
@@ -45,6 +46,7 @@ Lets link two widgets via *dependent_fields*.
             queryset=City.objects.all(),
             label=u"City",
             widget=ModelSelect2Widget(
+                model=City,
                 search_fields=['name__icontains'],
                 dependent_fields={'country': 'country'},
                 max_results=500,
