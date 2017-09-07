@@ -78,10 +78,10 @@ class Select2Conf(AppConf):
     """
     The base URI for the Select2 i18n files. By default this points to the Cloudflare CDN.
 
-    If you want to select the version of the JS library used, or want to serve it from
+    If you want to select the version of the I18N library used, or want to serve it from
     the local 'static' resources, add a line to your settings.py like so::
 
-        SELECT2_JS = 'assets/js/i18n'
+        SELECT2_I18N_PATH = 'assets/js/i18n'
 
     .. tip:: Change this setting to a local asset in your development environment to
         develop without an Internet connection.
