@@ -31,4 +31,4 @@ six==1.11.0               # via django-appconf, sphinx, sphinxcontrib-spelling
 snowballstemmer==1.2.1    # via sphinx
 sphinx-rtd-theme==0.2.4   # via sphinx
 sphinx==1.6.4
-sphinxcontrib-spelling==2.3.0
+sphinxcontrib-spelling==4.0.0
