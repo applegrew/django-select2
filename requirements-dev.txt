@@ -17,7 +17,7 @@ markupsafe==1.0          # via jinja2
 mccabe==0.6.1
 pydocstyle==2.1.1
 pep8-naming==0.4.1
-pep8==1.7.0               # via flake8
+pep8==1.7.1               # via flake8
 py==1.4.34 # via pytest
 pyenchant==1.6.11
 pyflakes==1.6.0 # via flake8
