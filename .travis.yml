@@ -14,7 +14,6 @@ addons:
     - python-enchant
     - graphviz
 python:
-  - "2.7"
   - "3.5"
   - "3.6"
 env:
@@ -30,14 +29,8 @@ matrix:
   allow_failures:
   - env: DJANGO=master
   exclude:
-  - env: DJANGO=master
-    python: "2.7"
-  - env: TOXENV=qa
-    python: "2.7"
   - env: TOXENV=qa
     python: "3.5"
-  - env: TOXENV=docs
-    python: "2.7"
   - env: TOXENV=docs
     python: "3.5"
 install:

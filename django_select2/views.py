@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """JSONResponse views for model widgets."""
-from __future__ import absolute_import, unicode_literals
-
 from django.core import signing
 from django.core.signing import BadSignature
 from django.http import Http404, JsonResponse

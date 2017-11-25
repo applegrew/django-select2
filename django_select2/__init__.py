@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This is a Django_ integration of Select2_.
 

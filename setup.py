@@ -1,11 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import codecs
 import os
 
-from setuptools import Command, find_packages, setup
+from setuptools import find_packages, setup
 
 
 def read(file_name):
@@ -40,7 +37,6 @@ setup(
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Framework :: Django",
         "Framework :: Django :: 1.8",

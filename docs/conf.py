@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Django-Select2 documentation build configuration file, created by
 # sphinx-quickstart on Sat Aug 25 10:23:46 2012.
