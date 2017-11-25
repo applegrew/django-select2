@@ -17,8 +17,6 @@ python:
   - "3.6"
 env:
   matrix:
-  - DJANGO=18
-  - DJANGO=110
   - DJANGO=111
   - DJANGO=master
   - TOXENV=qa

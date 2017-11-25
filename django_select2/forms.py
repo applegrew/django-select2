@@ -53,17 +53,13 @@ from django import forms
 from django.core import signing
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
+from django.urls import reverse
 from django.utils.encoding import force_text
 from django.utils.six.moves.cPickle import PicklingError as cPicklingError
 from django.utils.translation import get_language
 
 from .cache import cache
 from .conf import settings
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
 
 
 class Select2Mixin(object):
@@ -96,12 +92,6 @@ class Select2Mixin(object):
         if not self.is_required and not self.allow_multiple_selected:
             self.choices = list(chain([('', '')], self.choices))
         return super(Select2Mixin, self).optgroups(name, value, attrs=attrs)
-
-    def render_options(self, *args, **kwargs):
-        """Render options including an empty one, if the field is not required."""
-        output = '<option value=""></option>' if not self.is_required and not self.allow_multiple_selected else ''
-        output += super(Select2Mixin, self).render_options(*args, **kwargs)
-        return output
 
     def _get_media(self):
         """
@@ -275,22 +265,6 @@ class HeavySelect2Mixin(object):
         except (PicklingError, cPicklingError, AttributeError):
             msg = "You need to overwrite \"set_to_cache\" or ensure that %s is serialisable."
             raise NotImplementedError(msg % self.__class__.__name__)
-
-    def render_options(self, *args):
-        """Render only selected options."""
-        try:
-            selected_choices, = args
-        except ValueError:  # Signature contained `choices` prior to Django 1.10
-            choices, selected_choices = args
-            choices = chain(self.choices, choices)
-        else:
-            choices = self.choices
-        output = ['<option value=""></option>' if not self.is_required and not self.allow_multiple_selected else '']
-        selected_choices = {force_text(v) for v in selected_choices}
-        choices = [(k, v) for k, v in choices if force_text(k) in selected_choices]
-        for option_value, option_label in choices:
-            output.append(self.render_option(selected_choices, option_value, option_label))
-        return '\n'.join(output)
 
 
 class HeavySelect2Widget(HeavySelect2Mixin, Select2Widget):
@@ -476,30 +450,6 @@ class ModelSelect2Mixin(object):
             subgroup = default[1]
             subgroup.append(self.create_option(name, option_value, option_label, selected_choices, index))
         return groups
-
-    def render_options(self, *args):
-        """Render only selected options and set QuerySet from :class:`ModelChoiceIterator`."""
-        try:
-            selected_choices, = args
-        except ValueError:
-            choices, selected_choices = args
-            choices = chain(self.choices, choices)
-        else:
-            choices = self.choices
-        selected_choices = {force_text(v) for v in selected_choices}
-        output = ['<option value=""></option>' if not self.is_required and not self.allow_multiple_selected else '']
-        if isinstance(self.choices, ModelChoiceIterator):
-            if self.queryset is None:
-                self.queryset = self.choices.queryset
-            selected_choices = {c for c in selected_choices
-                                if c not in self.choices.field.empty_values}
-            choices = [(obj.pk, self.label_from_instance(obj))
-                       for obj in self.choices.queryset.filter(pk__in=selected_choices)]
-        else:
-            choices = [(k, v) for k, v in choices if force_text(k) in selected_choices]
-        for option_value, option_label in choices:
-            output.append(self.render_option(selected_choices, option_value, option_label))
-        return '\n'.join(output)
 
     def label_from_instance(self, obj):
         """
