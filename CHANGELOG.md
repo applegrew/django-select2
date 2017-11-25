@@ -1,6 +1,8 @@
 Changelog Summary
 =================
 
+### v6.0.0
+
 * Drop Python 2 support
 
 ### v5.10.0
