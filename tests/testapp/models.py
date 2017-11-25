@@ -1,25 +1,27 @@
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class Genre(models.Model):
     title = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ('title',)
 
     def __str__(self):
         return self.title
 
 
-@python_2_unicode_compatible
 class Artist(models.Model):
     title = models.CharField(max_length=50)
     genres = models.ManyToManyField(Genre)
 
+    class Meta:
+        ordering = ('title',)
+
     def __str__(self):
         return self.title
 
 
-@python_2_unicode_compatible
 class Album(models.Model):
     title = models.CharField(max_length=255)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
@@ -28,22 +30,29 @@ class Album(models.Model):
                                       related_name='primary_album_set')
     genres = models.ManyToManyField(Genre)
 
+    class Meta:
+        ordering = ('title',)
+
     def __str__(self):
         return self.title
 
 
-@python_2_unicode_compatible
 class Country(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
 
 
-@python_2_unicode_compatible
 class City(models.Model):
     name = models.CharField(max_length=255)
     country = models.ForeignKey('Country', related_name="cities", on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         return self.name

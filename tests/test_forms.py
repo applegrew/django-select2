@@ -103,38 +103,38 @@ class TestSelect2Mixin(object):
 
     def test_i18n(self):
         translation.activate('de')
-        assert Select2Widget().media._js == [
+        assert tuple(Select2Widget().media._js) == (
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/de.js',
             'django_select2/django_select2.js'
-        ]
+        )
 
         translation.activate('en')
-        assert Select2Widget().media._js == [
+        assert tuple(Select2Widget().media._js) == (
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/en.js',
             'django_select2/django_select2.js'
-        ]
+        )
 
         translation.activate('00')
-        assert Select2Widget().media._js == [
+        assert tuple(Select2Widget().media._js) == (
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
             'django_select2/django_select2.js'
-        ]
+        )
 
         translation.activate('sr-cyrl')
-        assert Select2Widget().media._js == [
+        assert tuple(Select2Widget().media._js) == (
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/sr-Cyrl.js',
             'django_select2/django_select2.js'
-        ]
+        )
 
         translation.activate('zh-cn')
-        assert Select2Widget().media._js == [
+        assert tuple(Select2Widget().media._js) == (
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/zh-CN.js',
             'django_select2/django_select2.js'
-        ]
+        )
 
 
 class TestSelect2MixinSettings(object):

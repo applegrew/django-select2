@@ -54,8 +54,6 @@ from django.core import signing
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.urls import reverse
-from django.utils.encoding import force_text
-from django.utils.six.moves.cPickle import PicklingError as cPicklingError
 from django.utils.translation import get_language
 
 from .cache import cache
@@ -262,7 +260,7 @@ class HeavySelect2Mixin(object):
                 'widget': self,
                 'url': self.get_url(),
             })
-        except (PicklingError, cPicklingError, AttributeError):
+        except (PicklingError, AttributeError):
             msg = "You need to overwrite \"set_to_cache\" or ensure that %s is serialisable."
             raise NotImplementedError(msg % self.__class__.__name__)
 
@@ -426,7 +424,7 @@ class ModelSelect2Mixin(object):
         default = (None, [], 0)
         groups = [default]
         has_selected = False
-        selected_choices = {force_text(v) for v in value}
+        selected_choices = {str(v) for v in value}
         if not self.is_required and not self.allow_multiple_selected:
             default[1].append(self.create_option(name, '', '', False, 0))
         if not isinstance(self.choices, ModelChoiceIterator):
@@ -441,7 +439,7 @@ class ModelSelect2Mixin(object):
         )
         for option_value, option_label in choices:
             selected = (
-                force_text(option_value) in value and
+                str(option_value) in value and
                 (has_selected is False or self.allow_multiple_selected)
             )
             if selected is True and has_selected is False:
@@ -461,7 +459,7 @@ class ModelSelect2Mixin(object):
 
             class MyWidget(ModelSelect2Widget):
                 def label_from_instance(obj):
-                    return force_text(obj.title).upper()
+                    return str(obj.title).upper()
 
         Args:
             obj (django.db.models.Model): Instance of Django Model.
@@ -470,7 +468,7 @@ class ModelSelect2Mixin(object):
             str: Option label.
 
         """
-        return force_text(obj)
+        return str(obj)
 
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
@@ -537,10 +535,10 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
             def value_from_datadict(self, data, files, name):
                 values = super().value_from_datadict(self, data, files, name)
                 qs = self.queryset.filter(**{'pk__in': list(values)})
-                pks = set(force_text(getattr(o, pk)) for o in qs)
+                pks = set(str(getattr(o, pk)) for o in qs)
                 cleaned_values = []
                 for val in value:
-                    if force_text(val) not in pks:
+                    if str(val) not in pks:
                         val = queryset.create(title=val).pk
                     cleaned_values.append(val)
                 return cleaned_values

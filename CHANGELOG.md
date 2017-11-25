@@ -3,6 +3,7 @@ Changelog Summary
 
 ### v6.0.0
 
+* Add Support for Django 2.0
 * Drop Python 2 support
 * Drop Python 3.5 support
 * Drop Django 1.8 support
