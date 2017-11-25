@@ -5,6 +5,8 @@ Changelog Summary
 
 * Drop Python 2 support
 * Drop Python 3.5 support
+* Drop Django 1.8 support
+* Drop Django 1.10 support
 
 ### v5.10.0
 * Add support for dependent select fields [321](github.com/applegrew/django-select2/pull/321/).
