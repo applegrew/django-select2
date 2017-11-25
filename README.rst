@@ -57,7 +57,7 @@ See `CHANGELOG.md`_
    :target: https://pypi.python.org/pypi/Django-Select2/
 .. |ci| image:: https://travis-ci.org/applegrew/django-select2.svg?branch=master
    :target: https://travis-ci.org/applegrew/django-select2
-.. |coverage| image:: https://coveralls.io/repos/applegrew/django-select2/badge.svg?branch=master
-   :target: https://coveralls.io/r/applegrew/django-select2
+.. |coverage| image:: https://codecov.io/gh/applegrew/django-select2/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/applegrew/django-select2
 .. |license| image:: https://img.shields.io/badge/license-APL2-blue.svg
    :target: https://raw.githubusercontent.com/applegrew/django-select2/master/LICENSE.txt
