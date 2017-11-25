@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Shared memory across multiple machines to the heavy AJAX lookups.
 
@@ -12,8 +11,6 @@ It is advised to always setup a separate cache server for Select2.
 
 .. _django.core.cache: https://docs.djangoproject.com/en/dev/topics/cache/
 """
-from __future__ import absolute_import, unicode_literals
-
 from django.core.cache import caches
 
 from .conf import settings

@@ -1,6 +1,8 @@
 Changelog Summary
 =================
 
+* Drop Python 2 support
+
 ### v5.10.0
 * Add support for dependent select fields [321](github.com/applegrew/django-select2/pull/321/).
 

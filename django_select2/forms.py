@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Django-Select2 Widgets.
 
@@ -46,8 +45,6 @@ Light widgets are normally named, i.e. there is no
     :parts: 1
 
 """
-from __future__ import absolute_import, unicode_literals
-
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError
