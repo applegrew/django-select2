@@ -19,7 +19,7 @@ Installation
 2. Add ``django_select2`` to your ``INSTALLED_APPS`` in your project
    settings.
 
-3. Add ``django_select`` to your urlconf if you use any ‘Auto’ fields.
+3. Add ``django_select`` to your urlconf if you use any "Auto" fields.
 
 .. code:: python
 
