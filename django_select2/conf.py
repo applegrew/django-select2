@@ -23,17 +23,12 @@ class Select2Conf(AppConf):
                 }
             },
             'select2': {
-                'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-                'LOCATION': '127.0.0.1:11211',
+                "BACKEND": "django_redis.cache.RedisCache",
+                "LOCATION": "redis://127.0.0.1:6379/2",
+                "OPTIONS": {
+                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                }
             }
-            # Example with RedisCache
-            # 'select2': {
-            #     "BACKEND": "django_redis.cache.RedisCache",
-            #     "LOCATION": "redis://127.0.0.1:6379/2",
-            #     "OPTIONS": {
-            #         "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            #     }
-            # }
         }
 
         # Set the cache backend to select2
@@ -43,10 +38,9 @@ class Select2Conf(AppConf):
         a consistent external cache backend like Memcached, Redis or a database.
 
     .. note:: If you are having problems with the fetching of the results
-        (receiving the error 'Results cannot be loaded') in your production environment try
-        moving from MemcachedCache to RedisCache but don't forget to install
-        redis-server on your production machine, if you don't have it, with a
-        simple apt-get install redis-server.
+        (receiving the error 'Results cannot be loaded') in a production environment using
+        nginx and gunicorn check if you have redis-server, if you don't install it with
+        apt-get install redis-server.
 
     .. note:: The timeout of select2's caching backend determines
         how long a browser session can last.
