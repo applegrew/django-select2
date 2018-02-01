@@ -34,6 +34,10 @@ class Select2Conf(AppConf):
     .. tip:: To ensure a consistent state across all you machines you need to user
         a consistent external cache backend like Memcached, Redis or a database.
 
+    .. note:: If you are having problems with the fetching of the results (receiving the error 'Results cannot be loaded')
+        in your production environment try moving from MemcachedCache to RedisCache but don't forget to install
+        redis-server on your production machine, if you don't have it, with a simple apt-get install redis-server.
+
     .. note:: The timeout of select2's caching backend determines
         how long a browser session can last.
         Once widget is dropped from the cache the json response view will return a 404.
