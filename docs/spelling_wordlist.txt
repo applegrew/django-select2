@@ -16,5 +16,3 @@ plugin
 multi
 Indices
 clearable
-nginx
-gunicorn
