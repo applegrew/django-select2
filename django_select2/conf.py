@@ -37,10 +37,10 @@ class Select2Conf(AppConf):
     .. tip:: To ensure a consistent state across all you machines you need to user
         a consistent external cache backend like Memcached, Redis or a database.
 
-    .. note:: If you have problems with the recovery of the results
-        (receive the error "Results can not be loaded") in a production environment using
-        nginx and gunicorn check you have redis-server installed, if you do not have it install it with:
-        apt-get install redis-server.
+    .. note::
+        Should you have copied the example configuration please make sure you
+        have Redis setup. It's recommended to run a separate Redis server in a
+        production environment.
 
     .. note:: The timeout of select2's caching backend determines
         how long a browser session can last.
