@@ -23,8 +23,11 @@ class Select2Conf(AppConf):
                 }
             },
             'select2': {
-                'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-                'LOCATION': '127.0.0.1:11211',
+                "BACKEND": "django_redis.cache.RedisCache",
+                "LOCATION": "redis://127.0.0.1:6379/2",
+                "OPTIONS": {
+                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                }
             }
         }
 
@@ -33,6 +36,11 @@ class Select2Conf(AppConf):
 
     .. tip:: To ensure a consistent state across all you machines you need to user
         a consistent external cache backend like Memcached, Redis or a database.
+
+    .. note::
+        Should you have copied the example configuration please make sure you
+        have Redis setup. It's recommended to run a separate Redis server in a
+        production environment.
 
     .. note:: The timeout of select2's caching backend determines
         how long a browser session can last.
