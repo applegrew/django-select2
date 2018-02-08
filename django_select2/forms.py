@@ -86,8 +86,7 @@ class Select2Mixin(object):
             if settings.SELECT2_WIDTH:
                 attrs['style'] = 'width: %s' % settings.SELECT2_WIDTH
             else:
-                if settings.SELECT2_WIDTH:
-                    attrs['style'] = 'width: 100%'
+                attrs['style'] = 'width: 100%'
 
         if 'class' in attrs:
             attrs['class'] += ' django-select2'
@@ -251,8 +250,7 @@ class HeavySelect2Mixin(object):
             if settings.SELECT2_WIDTH:
                 attrs['style'] = 'width: %s' % settings.SELECT2_WIDTH
             else:
-                if settings.SELECT2_WIDTH:
-                    attrs['style'] = 'width: 100%'
+                attrs['style'] = 'width: 100%'
 
         if self.dependent_fields:
             attrs.setdefault('data-select2-dependent-fields', " ".join(self.dependent_fields))
