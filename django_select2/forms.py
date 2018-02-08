@@ -79,6 +79,15 @@ class Select2Mixin(object):
             attrs.setdefault('data-placeholder', '')
 
         attrs.setdefault('data-minimum-input-length', 0)
+
+        if 'style' in attrs:
+            pass
+        else:
+            if settings.SELECT2_WIDTH:
+                attrs['style'] = 'width: %s' % settings.SELECT2_WIDTH
+            else:
+                attrs['style'] = 'width: 100%'
+
         if 'class' in attrs:
             attrs['class'] += ' django-select2'
         else:
@@ -233,6 +242,16 @@ class HeavySelect2Mixin(object):
         attrs.setdefault('data-ajax--cache', "true")
         attrs.setdefault('data-ajax--type', "GET")
         attrs.setdefault('data-minimum-input-length', 2)
+
+
+        if 'style' in attrs:
+            pass
+        else:
+            if settings.SELECT2_WIDTH:
+                attrs['style'] = 'width: %s' % settings.SELECT2_WIDTH
+            else:
+                attrs['style'] = 'width: 100%'
+
         if self.dependent_fields:
             attrs.setdefault('data-select2-dependent-fields', " ".join(self.dependent_fields))
 
