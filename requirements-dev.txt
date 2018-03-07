@@ -8,7 +8,7 @@ pydocstyle
 pytest
 pytest-django
 selenium
-sphinx
+sphinx==1.6.5
 sphinxcontrib-spelling
 pyenchant
 django-redis
