@@ -33,12 +33,12 @@ before_script:
 - npm install -g standard
 - |
   if [[ -z $TOXENV ]]; then
-    export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
+  export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
   fi
 - echo $TOXENV
 script:
-- tox -e $TOXENV
 - standard
+- tox -e $TOXENV
 after_success:
 - codecov
 deploy:
