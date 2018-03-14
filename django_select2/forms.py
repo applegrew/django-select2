@@ -99,8 +99,17 @@ class Select2Mixin(object):
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
         try:
+            # Values in this dict had been removed from Django as language_code in favor of the keys
+            known_fallback_map = {
+                "zh-hans": "zh-cn",
+                "zh-hant": "zh-tw",
+            }
+
+            lang = get_language()
+            lang = known_fallback_map.get(lang, lang)
+
             # get_language() will always return a lower case language code, where some files are named upper case.
-            i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(get_language())
+            i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(lang)
             i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, settings.SELECT2_I18N_AVAILABLE_LANGUAGES[i]), )
         except ValueError:
             i18n_file = ()
