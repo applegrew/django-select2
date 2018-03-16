@@ -23,29 +23,30 @@ Installation
 
         url(r'^select2/', include('django_select2.urls')),
 
-Quickstart
-----------
-Here is a quick example to get you started.
+Quick Start
+-----------
 
-0. Follow the installation instructions above
+Here is a quick example to get you started:
 
-1. Add a select2 widget to the form. For example if you wanted Select2 with multiselect you would use
-`Select2MultipleWidget`
+0. Follow the installation instructions above.
+
+1. Add a select2 widget to the form. For example if you wanted Select2 with multi-select you would use
+``Select2MultipleWidget``
 Replacing::
 
         class MyForm(forms.Form):
-          things = ModelMultipleChoiceField(queryset=Thing.objects.all())
+            things = ModelMultipleChoiceField(queryset=Thing.objects.all())
 
 with::
 
         class MyForm(forms.Form):
-          things = ModelMultipleChoiceField(queryset=Thing.objects.all(), widget=Select2MultipleWidget)
+            things = ModelMultipleChoiceField(queryset=Thing.objects.all(), widget=Select2MultipleWidget)
 
-2. Add the css to the `head` of your Django template::
+2. Add the CSS to the ``head`` of your Django template::
 
         {{ form.media.css }}
 
-3. Add the javascript to the end of the `body` of your Django template::
+3. Add the JavaScript to the end of the ``body`` of your Django template::
 
         {{ form.media.js }}
 
