@@ -371,7 +371,7 @@ class ModelSelect2Mixin(object):
             queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
             **dependent_fields: Dependent fields and their values. If you want to inherit
                 from ModelSelect2Mixin and later call to this method, be sure to pop
-                everything from keyword arguements that is not a dependent field.
+                everything from keyword arguments that is not a dependent field.
 
         Returns:
             QuerySet: Filtered QuerySet
