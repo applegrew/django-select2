@@ -277,7 +277,7 @@ class HeavySelect2Widget(HeavySelect2Mixin, Select2Widget):
     or::
 
         class MyForm(forms.Form):
-            my_field = forms.ChoicesField(
+            my_field = forms.ChoiceField(
                 widget=HeavySelect2Widget(
                     data_url='/url/to/json/response'
                 )
