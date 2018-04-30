@@ -98,6 +98,9 @@ class Select2Mixin(object):
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
         """
+        if settings.SELECT2_MANUAL_MEDIA:
+            return
+
         try:
             # get_language() will always return a lower case language code, where some files are named upper case.
             i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(get_language())

@@ -53,6 +53,17 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
+    MANUAL_MEDIA = False
+    """
+    If you want to manage form media entirely manually, eg you use webpack, set
+    this to True.
+
+    You can get a UMD copy of the django-select2 static assets for use with
+    module bundlers like webpack with::
+
+        npm install --save django-select2 jquery select2
+    """
+
     JS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'
     """
     The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
