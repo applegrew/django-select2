@@ -55,7 +55,7 @@ class Select2Conf(AppConf):
 
     MANUAL_MEDIA = False
     """
-    If you want to manage form media entirely manually, eg you use webpack, set
+    If you want to manage form media entirely manually, e.g. you use webpack, set
     this to True.
 
     You can get a UMD copy of the django-select2 static assets for use with

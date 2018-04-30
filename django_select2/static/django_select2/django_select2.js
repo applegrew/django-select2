@@ -1,3 +1,4 @@
+/* global define, jQuery */
 (function (factory) {
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], factory)
@@ -8,7 +9,7 @@
     factory(jQuery)
   }
 }(function ($) {
-  "use strict"
+  'use strict'
   var init = function ($element, options) {
     $element.select2(options)
   }
@@ -64,5 +65,5 @@
     $('.django-select2').djangoSelect2()
   })
 
-  return $.fn.djangoSelect2;
-}));
+  return $.fn.djangoSelect2
+}))
