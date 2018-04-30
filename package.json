@@ -1,0 +1,27 @@
+{
+  "name": "django-select2",
+  "version": "0.0.0",
+  "description": "This is a Django integration of Select2.",
+  "main": "django_select2/static/django_select2/django_select2.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applegrew/django-select2.git"
+  },
+  "keywords": [
+    "django",
+    "select2"
+  ],
+  "author": "Johannes Hoppe",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/applegrew/django-select2/issues"
+  },
+  "homepage": "https://github.com/applegrew/django-select2#readme"
+}
