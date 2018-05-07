@@ -47,7 +47,7 @@ Light widgets are normally named, i.e. there is no
 """
 from functools import reduce
 from itertools import chain
-from pickle import PicklingError
+from pickle import PicklingError  # nosec
 
 from django import forms
 from django.core import signing
