@@ -47,12 +47,16 @@ script:
 - standard
 after_success:
 - codecov
+before_deploy: ./set_version.py
 deploy:
-  provider: pypi
-  user: codingjoe
-  password:
-    secure: fEP9K7y0ZF9fRvQEUN4kgPXQEZvi3Cx3ikUebG2UM/2uhcaUQm0+KpgZ2S+lvOTYcBnNgzPzFsVIZMcVcTxwIKuQDEMq9y2eop2hnisb9KXsIm9qPYSzOnRm74VuiOt4hNOZMe0qVBK2cO3vC9NDXuzdI8A0JynJhthfl4t+kFM=
+  - provider: pypi
+    distributions: sdist bdist_wheel
+    user: codingjoe
+    password:
+      secure: fEP9K7y0ZF9fRvQEUN4kgPXQEZvi3Cx3ikUebG2UM/2uhcaUQm0+KpgZ2S+lvOTYcBnNgzPzFsVIZMcVcTxwIKuQDEMq9y2eop2hnisb9KXsIm9qPYSzOnRm74VuiOt4hNOZMe0qVBK2cO3vC9NDXuzdI8A0JynJhthfl4t+kFM=
+  - provider: npm
+    email: info@johanneshoppe.com
+    api_key: YOUR_SECURE_API_KEY_HERE
   on:
     tags: true
-    distributions: sdist bdist_wheel
     repo: applegrew/django-select2
