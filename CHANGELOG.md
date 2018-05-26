@@ -1,7 +1,7 @@
 Changelog Summary
 =================
 
-Changes for django-select2 v6.0.1 and later are logged on the [github releases page](https://github.com/applegrew/django-select2/releases)
+Changes for django-select2 v6.0.1 and later are logged on the [github releases page](https://github.com/applegrew/django-select2/releases).
 
 ### v6.0.0
 
