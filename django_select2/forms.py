@@ -96,7 +96,7 @@ class Select2Mixin(object):
         Construct Media as a dynamic property.
 
         .. Note:: For more information visit
-            https://docs.djangoproject.com/en/1.8/topics/forms/media/#media-as-a-dynamic-property
+            https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
         try:
             # get_language() will always return a lower case language code, where some files are named upper case.
