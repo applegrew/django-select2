@@ -46,12 +46,13 @@ good example.
 Changelog
 ---------
 
-See `CHANGELOG.md`_
+See `Github releases`_
 
 
 .. _Django: https://www.djangoproject.com/
 .. _Select2: http://ivaynberg.github.com/select2/
 .. _CHANGELOG.md: CHANGELOG.md
+.. _Github releases: https://github.com/applegrew/django-select2/releases
 
 .. |version| image:: https://img.shields.io/pypi/v/Django-Select2.svg
    :target: https://pypi.python.org/pypi/Django-Select2/
