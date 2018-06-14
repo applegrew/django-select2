@@ -129,10 +129,19 @@ class TestSelect2Mixin(object):
             'django_select2/django_select2.js'
         )
 
-        translation.activate('zh-cn')
+        pytest.importorskip("django", minversion="2.0.4")
+
+        translation.activate('zh-hans')
         assert tuple(Select2Widget().media._js) == (
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
             '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/zh-CN.js',
+            'django_select2/django_select2.js'
+        )
+
+        translation.activate('zh-hant')
+        assert tuple(Select2Widget().media._js) == (
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/zh-TW.js',
             'django_select2/django_select2.js'
         )
 
