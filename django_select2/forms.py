@@ -98,12 +98,23 @@ class Select2Mixin(object):
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
+        lang = get_language()
+        i18n_name = None
         try:
-            # get_language() will always return a lower case language code, where some files are named upper case.
-            i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(get_language())
-            i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, settings.SELECT2_I18N_AVAILABLE_LANGUAGES[i]), )
-        except ValueError:
-            i18n_file = ()
+            from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
+            i18n_name = SELECT2_TRANSLATIONS.get(lang)
+            if i18n_name not in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
+                i18n_name = None
+        except ImportError:
+            # TODO: select2 widget feature needs to be backported into Django 1.11
+            try:
+                i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(lang)
+                i18n_name = settings.SELECT2_I18N_AVAILABLE_LANGUAGES[i]
+            except ValueError:
+                pass
+
+        i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, i18n_name),) if i18n_name else ()
+
         return forms.Media(
             js=(settings.SELECT2_JS,) + i18n_file + ('django_select2/django_select2.js',),
             css={'screen': (settings.SELECT2_CSS,)}
