@@ -62,6 +62,11 @@ class Select2Conf(AppConf):
 
         SELECT2_JS = 'assets/js/select2.min.js'
 
+    If you provide your own JS and would not like Django-Select2 to load any, change
+    this setting to a blank string like so::
+
+        SELECT2_JS = ''
+
     .. tip:: Change this setting to a local asset in your development environment to
         develop without an Internet connection.
     """
@@ -74,6 +79,11 @@ class Select2Conf(AppConf):
     the local 'static' resources, add a line to your settings.py like so::
 
         SELECT2_CSS = 'assets/css/select2.css'
+
+    If you provide your own CSS and would not like Django-Select2 to load any, change
+    this setting to a blank string like so::
+
+        SELECT2_CSS = ''
 
     .. tip:: Change this setting to a local asset in your development environment to
         develop without an Internet connection.

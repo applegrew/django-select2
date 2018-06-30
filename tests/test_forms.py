@@ -161,11 +161,23 @@ class TestSelect2MixinSettings(object):
         assert 'alternate.js' in result
         assert 'django_select2/django_select2.js' in result
 
+    def test_empty_js_setting(self, settings):
+        settings.SELECT2_JS = ''
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert 'django_select2/django_select2.js' in result
+
     def test_css_setting(self, settings):
         settings.SELECT2_CSS = 'alternate.css'
         sut = Select2Widget()
         result = sut.media.render()
         assert 'alternate.css' in result
+
+    def test_empty_css_setting(self, settings):
+        settings.SELECT2_CSS = ''
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert '.css' not in result
 
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
