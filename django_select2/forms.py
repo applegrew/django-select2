@@ -444,11 +444,12 @@ class ModelSelect2Mixin(object):
             c for c in selected_choices
             if c not in self.choices.field.empty_values
         }
-        choices = (
-            (obj.pk, self.label_from_instance(obj))
-            for obj in self.choices.queryset.filter(pk__in=selected_choices)
-        )
-        for option_value, option_label in choices:
+        field_name = self.choices.field.to_field_name or 'pk'
+        query = Q(**{'%s__in' % field_name: selected_choices})
+        for obj in self.choices.queryset.filter(query):
+            option_value = self.choices.choice(obj)[0]
+            option_label = self.label_from_instance(obj)
+
             selected = (
                 str(option_value) in value and
                 (has_selected is False or self.allow_multiple_selected)

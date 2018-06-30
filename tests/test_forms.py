@@ -22,7 +22,7 @@ from tests.testapp import forms
 from tests.testapp.forms import (
     NUMBER_CHOICES, HeavySelect2MultipleWidgetForm, TitleModelSelect2Widget
 )
-from tests.testapp.models import City, Country, Genre
+from tests.testapp.models import Artist, City, Country, Genre, Groupie
 
 try:
     from django.urls import reverse
@@ -361,6 +361,12 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     def test_get_url(self):
         widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         assert isinstance(widget.get_url(), text_type)
+
+    def test_custom_to_field_name(self):
+        the_best_band_in_the_world = Artist.objects.create(title='Take That')
+        groupie = Groupie.objects.create(obsession=the_best_band_in_the_world)
+        form = forms.GroupieForm(instance=groupie)
+        assert '<option value="Take That" selected>TAKE THAT</option>' in form.as_p()
 
 
 class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):

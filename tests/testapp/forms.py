@@ -195,3 +195,12 @@ class AddressChainedSelect2WidgetForm(forms.Form):
             max_results=500,
         )
     )
+
+
+class GroupieForm(forms.ModelForm):
+    class Meta:
+        model = models.Groupie
+        fields = '__all__'
+        widgets = {
+            'obsession': ArtistCustomTitleWidget
+        }

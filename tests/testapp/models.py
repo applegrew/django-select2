@@ -12,7 +12,7 @@ class Genre(models.Model):
 
 
 class Artist(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, unique=True)
     genres = models.ManyToManyField(Genre)
 
     class Meta:
@@ -56,3 +56,7 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Groupie(models.Model):
+    obsession = models.ForeignKey(Artist, to_field='title', on_delete=models.CASCADE)
