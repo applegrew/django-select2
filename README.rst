@@ -7,6 +7,8 @@ This is a `Django`_ integration of `Select2`_.
 
 The app includes Select2 driven Django Widgets.
 
+**Note:** If you are using Django 2.0 or newer and only need Select2 support in ModelAdmin fields, you should consider using the builtin `autocomplete_fields`_ feature instead.
+
 Installation
 ------------
 
@@ -51,6 +53,7 @@ See `Github releases`_
 
 .. _Django: https://www.djangoproject.com/
 .. _Select2: http://ivaynberg.github.com/select2/
+.. _autocomplete_fields: https://docs.djangoproject.com/en/2.0/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields
 .. _CHANGELOG.md: CHANGELOG.md
 .. _Github releases: https://github.com/applegrew/django-select2/releases
 
