@@ -5,7 +5,6 @@ import os
 import pytest
 from django.core import signing
 from django.db.models import QuerySet
-from django.forms import ModelChoiceField
 from django.utils import translation
 from django.utils.encoding import force_text
 from django.utils.six import text_type
