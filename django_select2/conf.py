@@ -8,7 +8,7 @@ __all__ = ('settings', 'Select2Conf')
 class Select2Conf(AppConf):
     """Settings for Django-Select2."""
 
-    LIB_VERSION = '4.0.3'
+    LIB_VERSION = '4.0.5'
     """Version of the Select2 library."""
 
     CACHE_BACKEND = 'default'
