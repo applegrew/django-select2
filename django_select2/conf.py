@@ -8,6 +8,9 @@ __all__ = ('settings', 'Select2Conf')
 class Select2Conf(AppConf):
     """Settings for Django-Select2."""
 
+    LIB_VERSION = '4.0.3'
+    """Version of the Select2 library."""
+
     CACHE_BACKEND = 'default'
     """
     Django-Select2 uses Django's cache to sure a consistent state across multiple machines.
@@ -53,7 +56,7 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
-    JS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'
+    JS = f'//cdnjs.cloudflare.com/ajax/libs/select2/{LIB_VERSION}/js/select2.min.js'
     """
     The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
 
@@ -71,7 +74,7 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    CSS = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css'
+    CSS = f'//cdnjs.cloudflare.com/ajax/libs/select2/{LIB_VERSION}/css/select2.min.css'
     """
     The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
 
@@ -89,7 +92,7 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    I18N_PATH = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n'
+    I18N_PATH = f'//cdnjs.cloudflare.com/ajax/libs/select2/{LIB_VERSION}/js/i18n'
     """
     The base URI for the Select2 i18n files. By default this points to the Cloudflare CDN.
 

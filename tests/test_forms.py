@@ -14,6 +14,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from django_select2.cache import cache
+from django_select2.conf import settings
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2TagWidget,
     ModelSelect2Widget, Select2Widget
@@ -104,28 +105,28 @@ class TestSelect2Mixin(object):
     def test_i18n(self):
         translation.activate('de')
         assert tuple(Select2Widget().media._js) == (
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/de.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/i18n/de.js',
             'django_select2/django_select2.js'
         )
 
         translation.activate('en')
         assert tuple(Select2Widget().media._js) == (
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/en.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/i18n/en.js',
             'django_select2/django_select2.js'
         )
 
         translation.activate('00')
         assert tuple(Select2Widget().media._js) == (
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js',
             'django_select2/django_select2.js'
         )
 
         translation.activate('sr-cyrl')
         assert tuple(Select2Widget().media._js) == (
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/sr-Cyrl.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/i18n/sr-Cyrl.js',
             'django_select2/django_select2.js'
         )
 
@@ -133,15 +134,15 @@ class TestSelect2Mixin(object):
 
         translation.activate('zh-hans')
         assert tuple(Select2Widget().media._js) == (
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/zh-CN.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/i18n/zh-CN.js',
             'django_select2/django_select2.js'
         )
 
         translation.activate('zh-hant')
         assert tuple(Select2Widget().media._js) == (
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/zh-TW.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js',
+            f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/i18n/zh-TW.js',
             'django_select2/django_select2.js'
         )
 
@@ -150,8 +151,8 @@ class TestSelect2MixinSettings(object):
     def test_default_media(self):
         sut = Select2Widget()
         result = sut.media.render()
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js' in result
-        assert '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' in result
+        assert f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js' in result
+        assert f'//cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/css/select2.min.css' in result
         assert 'django_select2/django_select2.js' in result
 
     def test_js_setting(self, settings):
