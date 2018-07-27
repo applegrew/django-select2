@@ -1,4 +1,6 @@
 language: python
+sudo: true
+dist: xenial
 cache:
 - apt
 - pip
