@@ -1,15 +1,13 @@
 language: python
-sudo: false
-dist: trusty
 cache:
 - apt
 - pip
 services:
 - redis
 addons:
-  chrome: stable
   apt:
     packages:
+    - chromium-chromedriver
     - python3-enchant
     - python-enchant
     - graphviz
@@ -30,11 +28,7 @@ install:
 - pip install --upgrade pip tox
 - pip install -U codecov
 before_script:
-- mkdir bin
-- export CHROME_DRIVER_VERSION=`curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE`
-- curl -O https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
-- unzip chromedriver_linux64.zip -d bin
-- PATH=$PATH:$PWD/bin
+- ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
 - nvm install --lts
 - npm install -g standard
 - |
