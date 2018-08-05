@@ -56,7 +56,7 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
-    JS = f'//cdnjs.cloudflare.com/ajax/libs/select2/{LIB_VERSION}/js/select2.min.js'
+    JS = '//cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/select2.min.js'.format(version=LIB_VERSION)
     """
     The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
 
@@ -74,7 +74,7 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    CSS = f'//cdnjs.cloudflare.com/ajax/libs/select2/{LIB_VERSION}/css/select2.min.css'
+    CSS = '//cdnjs.cloudflare.com/ajax/libs/select2/{version}/css/select2.min.css'.format(version=LIB_VERSION)
     """
     The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
 
@@ -92,7 +92,7 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    I18N_PATH = f'//cdnjs.cloudflare.com/ajax/libs/select2/{LIB_VERSION}/js/i18n'
+    I18N_PATH = '//cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/i18n'.format(version=LIB_VERSION)
     """
     The base URI for the Select2 i18n files. By default this points to the Cloudflare CDN.
 
