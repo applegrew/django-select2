@@ -52,5 +52,15 @@
 
   $(function () {
     $('.django-select2').djangoSelect2()
+
+    django.jQuery(document).on('formset:added', function (event, $row, formsetName) {
+      // Converting to the "normal jQuery"
+      var jqRow = jQuery($row)
+
+      // Because select2 was already instantiated on the empty form, we need to remove it and
+      // re-instantiate it.
+      jqRow.find('.select2-container').remove()
+      jqRow.find('.django-select2').djangoSelect2()
+    })
   })
 }(this.jQuery))
