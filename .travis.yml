@@ -1,4 +1,6 @@
 language: python
+sudo: true
+dist: xenial
 cache:
 - apt
 - pip
@@ -13,6 +15,7 @@ addons:
     - graphviz
 python:
   - "3.6"
+  - "3.7"
 env:
   matrix:
   - DJANGO=111
