@@ -1,3 +1,0 @@
-Django >= 1.8
-sphinxcontrib-spelling
-pyenchant

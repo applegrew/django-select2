@@ -37,8 +37,8 @@ before_script:
   fi
 - echo $TOXENV
 script:
-- tox -e $TOXENV
 - standard
+- tox -e $TOXENV
 after_success:
 - codecov
 deploy:
