@@ -1,4 +1,6 @@
 language: python
+sudo: true
+dist: xenial
 cache:
 - apt
 - pip
@@ -13,6 +15,7 @@ addons:
     - graphviz
 python:
   - "3.6"
+  - "3.7"
 env:
   matrix:
   - DJANGO=111
@@ -25,6 +28,13 @@ matrix:
   fast_finish: true
   allow_failures:
   - env: DJANGO=master
+  exclude:
+    - python: "3.7"
+      env: TOXENV=docs
+    - python: "3.7"
+      env: DJANGO=111
+    - python: "3.6"
+      env: TOXENV=qa
 install:
 - pip install --upgrade pip tox
 - pip install -U codecov
