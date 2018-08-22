@@ -52,20 +52,23 @@ script:
 - tox -e $TOXENV
 after_success:
 - codecov
-before_deploy: ./set_version.py
+before_deploy:
+  - git stash --all
+  - ./set_version.py
+_deploy_provider: &_deploy_provider
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: applegrew/django-select2
 deploy:
-  - provider: pypi
+  - <<: *_deploy_provider
+    provider: pypi
     distributions: sdist bdist_wheel
     user: codingjoe
     password:
       secure: fEP9K7y0ZF9fRvQEUN4kgPXQEZvi3Cx3ikUebG2UM/2uhcaUQm0+KpgZ2S+lvOTYcBnNgzPzFsVIZMcVcTxwIKuQDEMq9y2eop2hnisb9KXsIm9qPYSzOnRm74VuiOt4hNOZMe0qVBK2cO3vC9NDXuzdI8A0JynJhthfl4t+kFM=
-    on:
-      tags: true
-      repo: applegrew/django-select2
-  - provider: npm
+  - <<: *_deploy_provider
+    provider: npm
     email: info@johanneshoppe.com
     api_key:
       secure: PV38cQx9qhEFkpSdytbM72UzIMCfhpjmRJ8dzT+bCAaOIs5rEcyKN+h1r5ranunCxWyuFsMW4A2iW/SCxnKCR/oPAguuwUbT5ogBXlsskqPFWUxuoTHYMrd+zB+SC6+bMgq+o5ul+kJCYtEkWP6cMlIEzKyTLab7m5PsnDXNVnI=
-    on:
-      tags: true
-      repo: applegrew/django-select2
