@@ -1,4 +1,15 @@
-(function ($) {
+/* global define, jQuery */
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(['jquery'], factory)
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('jquery'))
+  } else {
+    // Browser globals
+    factory(jQuery)
+  }
+}(function ($) {
+  'use strict'
   var init = function ($element, options) {
     $element.select2(options)
   }
@@ -53,4 +64,6 @@
   $(function () {
     $('.django-select2').djangoSelect2()
   })
-}(this.jQuery))
+
+  return $.fn.djangoSelect2
+}))
