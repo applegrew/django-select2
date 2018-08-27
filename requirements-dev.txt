@@ -1,10 +1,6 @@
 coverage
 django-appconf
-flake8
-pep8-naming
-mccabe
 isort
-pydocstyle
 pytest
 pytest-django
 selenium
