@@ -415,6 +415,8 @@ class ModelSelect2Mixin(object):
         """
         if self.queryset is not None:
             queryset = self.queryset
+        elif self.choices.queryset:
+            queryset = self.choices.queryset
         elif self.model is not None:
             queryset = self.model._default_manager.all()
         else:
