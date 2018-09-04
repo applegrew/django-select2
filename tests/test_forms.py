@@ -4,7 +4,7 @@ import os
 
 import pytest
 from django.core import signing
-from django.db.models import QuerySet
+from django.db.models import F, QuerySet
 from django.utils import translation
 from django.utils.encoding import force_text
 from django.utils.six import text_type
@@ -315,6 +315,16 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
                                          queryset=Genre.objects.all())
         qs = widget.filter_queryset(" ".join([genres[0].title[:3], genres[0].title[3:]]))
         assert qs.exists()
+
+    def test_queryset_transform(self, genres):
+        def transform(queryset, term):
+            return queryset.annotate(sort_order=F('title')).order_by('-sort_order')
+
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all(), queryset_transform=transform)
+
+        qs = widget.filter_queryset(genres[0].title[:3])
+        item = qs[0]
+        assert item.title == item.sort_order
 
     def test_model_kwarg(self):
         widget = ModelSelect2Widget(model=Genre, search_fields=['title__icontains'])
