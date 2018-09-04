@@ -39,6 +39,8 @@ Replacing::
 
 with::
 
+        from django_select2.forms import Select2MultipleWidget
+        
         class MyForm(forms.Form):
             things = ModelMultipleChoiceField(queryset=Thing.objects.all(), widget=Select2MultipleWidget)
 
