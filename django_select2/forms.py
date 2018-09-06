@@ -344,12 +344,17 @@ class ModelSelect2Mixin(object):
         Args:
             model (django.db.models.Model): Model to select choices from.
             queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
+            queryset_transform: callable taking arguments (widget, QuerySet, term). to allow transforming it,
+                for example to add annotations to support sorting.
             search_fields (list): List of model lookup strings.
             max_results (int): Max. JsonResponse view page size.
 
         """
         self.model = kwargs.pop('model', self.model)
         self.queryset = kwargs.pop('queryset', self.queryset)
+        if 'queryset_transform' in kwargs:
+            self.queryset_transform = kwargs.pop('queryset_transform')
+
         self.search_fields = kwargs.pop('search_fields', self.search_fields)
         self.max_results = kwargs.pop('max_results', self.max_results)
         defaults = {'data_view': 'django_select2-json'}
@@ -403,7 +408,8 @@ class ModelSelect2Mixin(object):
         if dependent_fields:
             select &= Q(**dependent_fields)
 
-        return queryset.filter(select).distinct()
+        queryset = queryset.filter(select).distinct()
+        return self.queryset_transform(queryset, term)
 
     def get_queryset(self):
         """
@@ -425,6 +431,14 @@ class ModelSelect2Mixin(object):
                     'cls': self.__class__.__name__
                 }
             )
+        return queryset
+
+    def queryset_transform(self, queryset, term):
+        """
+        Transform the QuerySet after the filter is applied.
+
+        use `queryset_transform` keyword argument to `ModelSelect2Mixin` to pass a custom version of this callable.
+        """
         return queryset
 
     def get_search_fields(self):
