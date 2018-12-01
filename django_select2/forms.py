@@ -101,6 +101,7 @@ class Select2Mixin(object):
         lang = get_language()
         i18n_name = None
         select2_js = (settings.SELECT2_JS,) if settings.SELECT2_JS else ()
+        select2_django_js = (settings.SELECT2_DJANGO_JS,) if settings.SELECT2_DJANGO_JS else ()
         select2_css = (settings.SELECT2_CSS,) if settings.SELECT2_CSS else ()
 
         try:
@@ -119,7 +120,7 @@ class Select2Mixin(object):
         i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, i18n_name),) if i18n_name else ()
 
         return forms.Media(
-            js=select2_js + i18n_file + ('django_select2/django_select2.js',),
+            js=select2_js + i18n_file + select2_django_js,
             css={'screen': select2_css}
         )
 

@@ -168,6 +168,12 @@ class TestSelect2MixinSettings(object):
         result = sut.media.render()
         assert 'django_select2/django_select2.js' in result
 
+    def test_empty_django_js_setting(self, settings):
+        settings.SELECT2_DJANGO_JS = ''
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert not 'django_select2/django_select2.js' in result
+
     def test_css_setting(self, settings):
         settings.SELECT2_CSS = 'alternate.css'
         sut = Select2Widget()

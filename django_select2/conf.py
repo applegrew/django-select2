@@ -74,6 +74,15 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
+    DJANGO_JS = 'django_select2/django_select2.js'
+    """
+    If you provide django_select2.js through an alternative means (e.g. NPM + Webpack), change 
+    this setting to a blank string like so:
+    
+      SELECT2_DJANGO_JS = ''  #note that we transpose 'django' and 'select2' for consistency with the META prefix (below)
+     
+    """
+
     CSS = '//cdnjs.cloudflare.com/ajax/libs/select2/{version}/css/select2.min.css'.format(version=LIB_VERSION)
     """
     The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
