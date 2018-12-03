@@ -169,9 +169,11 @@ class TestSelect2MixinSettings(object):
         assert 'django_select2/django_select2.js' in result
 
     def test_empty_django_js_setting(self, settings):
+        """ #520 """
         settings.SELECT2_DJANGO_JS = ''
         sut = Select2Widget()
         result = sut.media.render()
+        # TODO: django_select2.js should not not be hard-coded.
         assert not 'django_select2/django_select2.js' in result
 
     def test_css_setting(self, settings):
