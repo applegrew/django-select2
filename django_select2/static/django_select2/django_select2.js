@@ -17,7 +17,7 @@
   var initHeavy = function ($element, options) {
     var settings = $.extend({
       ajax: {
-        delay: 250,
+        async: false,
         data: function (params) {
           var result = {
             term: params.term,
