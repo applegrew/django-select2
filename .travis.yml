@@ -1,53 +1,62 @@
-language: python
 sudo: true
 dist: xenial
-cache:
-- apt
-- pip
-services:
-- redis
+
+services: redis-server
 addons:
   apt:
     packages:
-    - chromium-chromedriver
-    - python3-enchant
-    - python-enchant
-    - graphviz
+      - chromium-chromedriver
+
+language: python
 python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
+  - 3.6
+  - 3.7
+cache: pip
 env:
   matrix:
-  - DJANGO=20
-  - DJANGO=21
-  - DJANGO=22
-  - DJANGO=master
-  - TOXENV=docs
+    - DJANGO=20
+    - DJANGO=21
+    - DJANGO=22
+    - DJANGO=master
 matrix:
   fast_finish: true
   allow_failures:
-  - env: DJANGO=master
-  exclude:
-    - python: "3.6"
-      env: TOXENV=docs
-    - python: "3.7"
-      env: TOXENV=docs
+    - env: DJANGO=master
 
+jobs:
+  include:
+    - stage: docs
+      addons:
+        apt:
+          packages:
+            - python3-enchant
+            - python-enchant
+            - graphviz
+      python: "3.5"
+      script: tox -e docs
+    - stage: qa
+      addons:
+      language: node_js
+      install: npm install
+      script: npm test
+      node_js: lts/*
+      cache: npm
+states:
+  - qa
+  - docs
+  - test
+  - deploy
 install:
 - pip install --upgrade pip tox
 - pip install -U codecov
 before_script:
 - ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
-- nvm install --lts
-- npm install -g standard
 - |
   if [[ -z $TOXENV ]]; then
     export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
   fi
 - echo $TOXENV
 script:
-- standard
 - tox -e $TOXENV
 after_success:
 - codecov
