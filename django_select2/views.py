@@ -54,7 +54,7 @@ class AutoResponseView(BaseListView):
             for form_field_name, model_field_name in self.widget.dependent_fields.items()
             if form_field_name in self.request.GET and self.request.GET.get(form_field_name, '') != ''
         }
-        return self.widget.filter_queryset(self.term, self.queryset, **kwargs)
+        return self.widget.filter_queryset(self.request, self.term, self.queryset, **kwargs)
 
     def get_paginate_by(self, queryset):
         """Paginate response by size of widget's `max_results` parameter."""

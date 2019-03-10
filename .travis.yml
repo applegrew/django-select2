@@ -14,27 +14,26 @@ addons:
     - python-enchant
     - graphviz
 python:
+  - "3.5"
   - "3.6"
   - "3.7"
 env:
   matrix:
-  - DJANGO=111
   - DJANGO=20
   - DJANGO=21
+  - DJANGO=22
   - DJANGO=master
-  - TOXENV=qa
   - TOXENV=docs
 matrix:
   fast_finish: true
   allow_failures:
   - env: DJANGO=master
   exclude:
-    - python: "3.7"
+    - python: "3.6"
       env: TOXENV=docs
     - python: "3.7"
-      env: DJANGO=111
-    - python: "3.6"
-      env: TOXENV=qa
+      env: TOXENV=docs
+
 install:
 - pip install --upgrade pip tox
 - pip install -U codecov

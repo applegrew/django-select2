@@ -1,13 +1,13 @@
-import collections
 import json
 import os
+from collections.abc import Iterable
 
 import pytest
 from django.core import signing
 from django.db.models import QuerySet
+from django.urls import reverse
 from django.utils import translation
 from django.utils.encoding import force_text
-from django.utils.six import text_type
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -25,13 +25,8 @@ from tests.testapp.forms import (
 )
 from tests.testapp.models import Artist, City, Country, Genre, Groupie
 
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
 
-
-class TestSelect2Mixin(object):
+class TestSelect2Mixin:
     url = reverse('select2_widget')
     form = forms.AlbumSelect2WidgetForm()
     multiple_form = forms.AlbumSelect2MultipleWidgetForm()
@@ -40,7 +35,7 @@ class TestSelect2Mixin(object):
     def test_initial_data(self, genres):
         genre = genres[0]
         form = self.form.__class__(initial={'primary_genre': genre.pk})
-        assert text_type(genre) in form.as_p()
+        assert str(genre) in form.as_p()
 
     def test_initial_form_class(self):
         widget = self.widget_cls(attrs={'class': 'my-class'})
@@ -147,7 +142,7 @@ class TestSelect2Mixin(object):
         )
 
 
-class TestSelect2MixinSettings(object):
+class TestSelect2MixinSettings:
     def test_default_media(self):
         sut = Select2Widget()
         result = sut.media.render()
@@ -240,12 +235,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
 
     def test_get_url(self):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
-        assert isinstance(widget.get_url(), text_type)
+        assert isinstance(widget.get_url(), str)
 
     def test_can_not_pickle(self):
         widget = self.widget_cls(data_view='heavy_data_1', attrs={'class': 'my-class'})
 
-        class NoPickle(object):
+        class NoPickle:
             pass
 
         widget.no_pickle = NoPickle()
@@ -260,7 +255,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     def test_initial_data(self, genres):
         genre = genres[0]
         form = self.form.__class__(initial={'primary_genre': genre.pk})
-        assert text_type(genre) in form.as_p()
+        assert str(genre) in form.as_p()
 
     def test_label_from_instance_initial(self, genres):
         genre = genres[0]
@@ -326,34 +321,34 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
             widget.get_search_fields()
 
         widget.search_fields = ['title__icontains']
-        assert isinstance(widget.get_search_fields(), collections.Iterable)
-        assert all(isinstance(x, text_type) for x in widget.get_search_fields())
+        assert isinstance(widget.get_search_fields(), Iterable)
+        assert all(isinstance(x, str) for x in widget.get_search_fields())
 
     def test_filter_queryset(self, genres):
         widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
-        assert widget.filter_queryset(genres[0].title[:3]).exists()
+        assert widget.filter_queryset(None, genres[0].title[:3]).exists()
 
         widget = TitleModelSelect2Widget(search_fields=['title__icontains'],
                                          queryset=Genre.objects.all())
-        qs = widget.filter_queryset(" ".join([genres[0].title[:3], genres[0].title[3:]]))
+        qs = widget.filter_queryset(None, " ".join([genres[0].title[:3], genres[0].title[3:]]))
         assert qs.exists()
 
     def test_model_kwarg(self):
         widget = ModelSelect2Widget(model=Genre, search_fields=['title__icontains'])
         genre = Genre.objects.last()
-        result = widget.filter_queryset(genre.title)
+        result = widget.filter_queryset(None, genre.title)
         assert result.exists()
 
     def test_queryset_kwarg(self):
         widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         genre = Genre.objects.last()
-        result = widget.filter_queryset(genre.title)
+        result = widget.filter_queryset(None, genre.title)
         assert result.exists()
 
     def test_ajax_view_registration(self, client):
         widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         widget.render('name', 'value')
-        url = reverse('django_select2-json')
+        url = reverse('django_select2:auto-json')
         genre = Genre.objects.last()
         response = client.get(url, data=dict(field_id=signing.dumps(id(widget)), term=genre.title))
         assert response.status_code == 200, response.content
@@ -366,14 +361,14 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.render('name', 'value')
         cached_widget = cache.get(widget._get_cache_key())
         assert cached_widget['max_results'] == widget.max_results
-        assert cached_widget['search_fields'] == widget.search_fields
+        assert cached_widget['search_fields'] == tuple(widget.search_fields)
         qs = widget.get_queryset()
         assert isinstance(cached_widget['queryset'][0], qs.__class__)
-        assert text_type(cached_widget['queryset'][1]) == text_type(qs.query)
+        assert str(cached_widget['queryset'][1]) == str(qs.query)
 
     def test_get_url(self):
         widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
-        assert isinstance(widget.get_url(), text_type)
+        assert isinstance(widget.get_url(), str)
 
     def test_custom_to_field_name(self):
         the_best_band_in_the_world = Artist.objects.create(title='Take That')
@@ -398,7 +393,7 @@ class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
         assert 'data-minimum-input-length="3"' in output
 
 
-class TestHeavySelect2MultipleWidget(object):
+class TestHeavySelect2MultipleWidget:
     url = reverse('heavy_select2_multiple_widget')
     form = forms.HeavySelect2MultipleWidgetForm()
     widget_cls = HeavySelect2MultipleWidget
@@ -428,7 +423,7 @@ class TestHeavySelect2MultipleWidget(object):
         assert result_title == 'One'
 
 
-class TestAddressChainedSelect2Widget(object):
+class TestAddressChainedSelect2Widget:
     url = reverse('model_chained_select2_widget')
     form = forms.AddressChainedSelect2WidgetForm()
 

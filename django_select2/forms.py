@@ -50,6 +50,7 @@ from itertools import chain
 from pickle import PicklingError  # nosec
 
 from django import forms
+from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.core import signing
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
@@ -60,7 +61,7 @@ from .cache import cache
 from .conf import settings
 
 
-class Select2Mixin(object):
+class Select2Mixin:
     """
     The base mixin of all Select2 widgets.
 
@@ -99,22 +100,12 @@ class Select2Mixin(object):
             https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
         lang = get_language()
-        i18n_name = None
         select2_js = (settings.SELECT2_JS,) if settings.SELECT2_JS else ()
         select2_css = (settings.SELECT2_CSS,) if settings.SELECT2_CSS else ()
 
-        try:
-            from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
-            i18n_name = SELECT2_TRANSLATIONS.get(lang)
-            if i18n_name not in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
-                i18n_name = None
-        except ImportError:
-            # TODO: select2 widget feature needs to be backported into Django 1.11
-            try:
-                i = [x.lower() for x in settings.SELECT2_I18N_AVAILABLE_LANGUAGES].index(lang)
-                i18n_name = settings.SELECT2_I18N_AVAILABLE_LANGUAGES[i]
-            except ValueError:
-                pass
+        i18n_name = SELECT2_TRANSLATIONS.get(lang)
+        if i18n_name not in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
+            i18n_name = None
 
         i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, i18n_name),) if i18n_name else ()
 
@@ -126,7 +117,7 @@ class Select2Mixin(object):
     media = property(_get_media)
 
 
-class Select2TagMixin(object):
+class Select2TagMixin:
     """Mixin to add select2 tag functionality."""
 
     def build_attrs(self, *args, **kwargs):
@@ -194,7 +185,7 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
     pass
 
 
-class HeavySelect2Mixin(object):
+class HeavySelect2Mixin:
     """Mixin that adds select2's AJAX options and registers itself on Django's cache."""
 
     dependent_fields = {}
@@ -317,7 +308,7 @@ class HeavySelect2TagWidget(HeavySelect2Mixin, Select2TagWidget):
 # Auto Heavy widgets
 
 
-class ModelSelect2Mixin(object):
+class ModelSelect2Mixin:
     """Widget mixin that provides attributes and methods for :class:`.AutoResponseView`."""
 
     model = None
@@ -352,7 +343,7 @@ class ModelSelect2Mixin(object):
         self.queryset = kwargs.pop('queryset', self.queryset)
         self.search_fields = kwargs.pop('search_fields', self.search_fields)
         self.max_results = kwargs.pop('max_results', self.max_results)
-        defaults = {'data_view': 'django_select2-json'}
+        defaults = {'data_view': 'django_select2:auto-json'}
         defaults.update(kwargs)
         super(ModelSelect2Mixin, self).__init__(*args, **defaults)
 
@@ -370,13 +361,13 @@ class ModelSelect2Mixin(object):
                     queryset.query,
                 ],
             'cls': self.__class__,
-            'search_fields': self.search_fields,
-            'max_results': self.max_results,
-            'url': self.get_url(),
-            'dependent_fields': self.dependent_fields,
+            'search_fields': tuple(self.search_fields),
+            'max_results': int(self.max_results),
+            'url': str(self.get_url()),
+            'dependent_fields': dict(self.dependent_fields),
         })
 
-    def filter_queryset(self, term, queryset=None, **dependent_fields):
+    def filter_queryset(self, request, term, queryset=None, **dependent_fields):
         """
         Return QuerySet filtered by search_fields matching the passed term.
 
