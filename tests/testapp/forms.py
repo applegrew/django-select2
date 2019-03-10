@@ -10,7 +10,7 @@ from tests.testapp import models
 from tests.testapp.models import Album, City, Country
 
 
-class TitleSearchFieldMixin(object):
+class TitleSearchFieldMixin:
     search_fields = [
         'title__icontains',
         'pk__startswith'
