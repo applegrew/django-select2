@@ -372,6 +372,8 @@ class ModelSelect2Mixin:
         Return QuerySet filtered by search_fields matching the passed term.
 
         Args:
+            request (django.http.request.HttpRequest): The request is being passed from
+                the JSON view and can be used to dynamically alter the response queryset.
             term (str): Search term
             queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
             **dependent_fields: Dependent fields and their values. If you want to inherit
