@@ -1,82 +1,78 @@
-sudo: true
+language: python
 dist: xenial
 
-services: redis-server
-addons:
-  apt:
-    packages:
-      - chromium-chromedriver
-
-language: python
 python:
-  - 3.6
-  - 3.7
-cache: pip
+  - "3.6"
+  - "3.7"
 env:
-  matrix:
-    - DJANGO=20
-    - DJANGO=21
-    - DJANGO=22
-    - DJANGO=master
+  - DJANGO=20
+  - DJANGO=21
+  - DJANGO=22
+  - DJANGO=master
+
 matrix:
   fast_finish: true
   allow_failures:
     - env: DJANGO=master
 
+addons:
+  apt:
+    packages:
+      - chromium-chromedriver
+
+install: pip install tox-travis codecov
+
+before_script:
+  - ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
+  - |
+    if [[ -z $TOXENV ]]; then
+      export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
+    fi
+  - echo $TOXENV
+
+script: tox
+
+after_success: codecov
+
 jobs:
   include:
-    - stage: docs
+    - python: "3.5"
+      env: TOXENV=docs
       addons:
         apt:
           packages:
             - python3-enchant
             - python-enchant
             - graphviz
-      python: "3.5"
-      script: tox -e docs
-    - stage: qa
-      addons:
-      language: node_js
+    - language: node_js
+      addons: {}
       install: npm install
       script: npm test
       node_js: lts/*
       cache: npm
-states:
-  - qa
-  - docs
-  - test
-  - deploy
-install:
-- pip install --upgrade pip tox
-- pip install -U codecov
-before_script:
-- ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
-- |
-  if [[ -z $TOXENV ]]; then
-    export TOXENV=py$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/\.//g')-dj$DJANGO
-  fi
-- echo $TOXENV
-script:
-- tox -e $TOXENV
-after_success:
-- codecov
-before_deploy:
-  - git stash --all
-  - ./set_version.py
-_deploy_provider: &_deploy_provider
-  skip_cleanup: true
-  on:
-    tags: true
-    repo: applegrew/django-select2
-deploy:
-  - <<: *_deploy_provider
-    provider: pypi
-    distributions: sdist bdist_wheel
-    user: codingjoe
-    password:
-      secure: fEP9K7y0ZF9fRvQEUN4kgPXQEZvi3Cx3ikUebG2UM/2uhcaUQm0+KpgZ2S+lvOTYcBnNgzPzFsVIZMcVcTxwIKuQDEMq9y2eop2hnisb9KXsIm9qPYSzOnRm74VuiOt4hNOZMe0qVBK2cO3vC9NDXuzdI8A0JynJhthfl4t+kFM=
-  - <<: *_deploy_provider
-    provider: npm
-    email: info@johanneshoppe.com
-    api_key:
-      secure: PV38cQx9qhEFkpSdytbM72UzIMCfhpjmRJ8dzT+bCAaOIs5rEcyKN+h1r5ranunCxWyuFsMW4A2iW/SCxnKCR/oPAguuwUbT5ogBXlsskqPFWUxuoTHYMrd+zB+SC6+bMgq+o5ul+kJCYtEkWP6cMlIEzKyTLab7m5PsnDXNVnI=
+    - stage: deploy
+      if: tag IS present
+      python: 3.7
+      install: skip
+      script: skip
+      after_success: skip
+      before_deploy:
+        - git stash --all
+        - ./set_version.py
+      _deploy_provider: &_deploy_provider
+        skip_cleanup: true
+        on:
+          tags: true
+          repo: applegrew/django-select2
+      deploy:
+        - <<: *_deploy_provider
+          provider: pypi
+          distributions: sdist bdist_wheel
+          user: codingjoe
+          password:
+            secure: fEP9K7y0ZF9fRvQEUN4kgPXQEZvi3Cx3ikUebG2UM/2uhcaUQm0+KpgZ2S+lvOTYcBnNgzPzFsVIZMcVcTxwIKuQDEMq9y2eop2hnisb9KXsIm9qPYSzOnRm74VuiOt4hNOZMe0qVBK2cO3vC9NDXuzdI8A0JynJhthfl4t+kFM=
+        - <<: *_deploy_provider
+          provider: npm
+          email: info@johanneshoppe.com
+          api_key:
+            secure: PV38cQx9qhEFkpSdytbM72UzIMCfhpjmRJ8dzT+bCAaOIs5rEcyKN+h1r5ranunCxWyuFsMW4A2iW/SCxnKCR/oPAguuwUbT5ogBXlsskqPFWUxuoTHYMrd+zB+SC6+bMgq+o5ul+kJCYtEkWP6cMlIEzKyTLab7m5PsnDXNVnI=

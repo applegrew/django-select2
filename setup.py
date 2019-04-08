@@ -2,7 +2,4 @@
 
 from setuptools import setup
 
-setup(
-    setup_requires=['pbr'],
-    pbr=True,
-)
+setup(version_format='{tag}')
