@@ -59,7 +59,7 @@ jobs:
       python: "3.7"
       install: skip
       script: skip
-      after_success: skip
+      after_success: true
       deploy:
           provider: pypi
           distributions: sdist bdist_wheel
@@ -72,7 +72,7 @@ jobs:
       python: "3.7"
       install: skip
       script: skip
-      after_success: skip
+      after_success: true
       skip_cleanup: true
       before_deploy:
         - ./set_version.py
