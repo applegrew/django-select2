@@ -1,6 +1,8 @@
 import os
 import sys
 
+from pkg_resources import get_distribution
+
 # This is needed since django_select2 requires django model modules
 # and those modules assume that django settings is configured and
 # have proper DB settings.
@@ -12,6 +14,11 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.testapp.settings")
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../tests.testapp'))
 sys.path.insert(0, os.path.abspath('..'))
+
+
+release = get_distribution('django_select2').version
+version = '.'.join(release.split('.')[:2])
+
 
 extensions = [
     'sphinx.ext.autodoc',
