@@ -63,6 +63,8 @@ jobs:
       deploy:
           provider: pypi
           distributions: sdist bdist_wheel
+          on:
+            tags: true
           user: codingjoe
           password:
             secure: fEP9K7y0ZF9fRvQEUN4kgPXQEZvi3Cx3ikUebG2UM/2uhcaUQm0+KpgZ2S+lvOTYcBnNgzPzFsVIZMcVcTxwIKuQDEMq9y2eop2hnisb9KXsIm9qPYSzOnRm74VuiOt4hNOZMe0qVBK2cO3vC9NDXuzdI8A0JynJhthfl4t+kFM=
@@ -76,7 +78,10 @@ jobs:
       skip_cleanup: true
       before_deploy:
         - ./set_version.py
-      provider: npm
-      email: info@johanneshoppe.com
-      api_key:
-        secure: PV38cQx9qhEFkpSdytbM72UzIMCfhpjmRJ8dzT+bCAaOIs5rEcyKN+h1r5ranunCxWyuFsMW4A2iW/SCxnKCR/oPAguuwUbT5ogBXlsskqPFWUxuoTHYMrd+zB+SC6+bMgq+o5ul+kJCYtEkWP6cMlIEzKyTLab7m5PsnDXNVnI=
+      deploy:
+        provider: npm
+        on:
+          tags: true
+        email: info@johanneshoppe.com
+        api_key:
+          secure: PV38cQx9qhEFkpSdytbM72UzIMCfhpjmRJ8dzT+bCAaOIs5rEcyKN+h1r5ranunCxWyuFsMW4A2iW/SCxnKCR/oPAguuwUbT5ogBXlsskqPFWUxuoTHYMrd+zB+SC6+bMgq+o5ul+kJCYtEkWP6cMlIEzKyTLab7m5PsnDXNVnI=
