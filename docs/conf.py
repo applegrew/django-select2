@@ -16,8 +16,13 @@ sys.path.insert(0, os.path.abspath('../tests.testapp'))
 sys.path.insert(0, os.path.abspath('..'))
 
 
+project = "Django-Select2"
+author = "Johannes Hoppe"
+copyright = "2017, Johannes Hoppe"
 release = get_distribution('django_select2').version
 version = '.'.join(release.split('.')[:2])
+
+
 master_doc = 'index'  # default in Sphinx v2
 
 
