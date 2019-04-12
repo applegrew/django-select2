@@ -1,0 +1,2 @@
+include django_select2/static/django_select2/django_select2.js
+prune tests

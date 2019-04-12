@@ -1,6 +1,7 @@
-import datetime
 import os
 import sys
+
+from pkg_resources import get_distribution
 
 # This is needed since django_select2 requires django model modules
 # and those modules assume that django settings is configured and
@@ -14,13 +15,24 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.testapp.settings")
 sys.path.insert(0, os.path.abspath('../tests.testapp'))
 sys.path.insert(0, os.path.abspath('..'))
 
+
+project = "Django-Select2"
+author = "Johannes Hoppe"
+copyright = "2017, Johannes Hoppe"
+release = get_distribution('django_select2').version
+version = '.'.join(release.split('.')[:2])
+
+
+master_doc = 'index'  # default in Sphinx v2
+
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.spelling',
+    'sphinx.ext.doctest',
 ]
 
 intersphinx_mapping = {
@@ -28,17 +40,6 @@ intersphinx_mapping = {
     'django': ('https://docs.djangoproject.com/en/stable/',
                'https://docs.djangoproject.com/en/stable/_objects/'),
 }
-
-# spell check
-spelling_word_list_filename = 'spelling_wordlist.txt'
-spelling_show_suggestions = True
-
-master_doc = 'index'
-
-# General information about the project.
-project = 'django-select2'
-year = datetime.datetime.now().strftime("%Y")
-copyright = '%s, Johannes Hoppe' % year
 
 autodoc_default_flags = ['members', 'show-inheritance']
 autodoc_member_order = 'bysource'
@@ -49,5 +50,3 @@ inheritance_node_attrs = dict(shape='rect', fontsize=14, fillcolor='gray90',
                               color='gray30', style='filled')
 
 inheritance_edge_attrs = dict(penwidth=0.75)
-
-html_theme = 'sphinx_rtd_theme'
