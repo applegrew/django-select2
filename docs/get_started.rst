@@ -8,6 +8,17 @@ Overview
 .. automodule:: django_select2
     :members:
 
+Assumptions
+-----------
+
+* You have a Django project, possibly with models linked by foreign key fields,
+* are using Python3,
+* set up a virtual environment with ``python3 -m venv <location>``,
+* activated the virtual environment,
+* installed ``django`` using ``pip``,
+* are already using Django forms,
+* and your select lists are too long, or they look ugly to you.
+       
 Installation
 ------------
 
@@ -17,11 +28,12 @@ Installation
 
 2. Add ``django_select2`` to your ``INSTALLED_APPS`` in your project settings.
 
+3. Add ``django_select`` to your ``urlconf``::
 
-3. Add ``django_select`` to your ``urlconf`` **if** you use any
-:class:`ModelWidgets <.django_select2.forms.ModelSelect2Mixin>`::
+        path('select2/', include('django_select2.urls')),
 
-        url(r'^select2/', include('django_select2.urls')),
+   You can safely skip this one if you do not use any
+   :class:`ModelWidgets <.django_select2.forms.ModelSelect2Mixin>`
 
 Quick Start
 -----------
@@ -31,13 +43,13 @@ Here is a quick example to get you started:
 0. Follow the installation instructions above.
 
 1. Add a select2 widget to the form. For example if you wanted Select2 with multi-select you would use
-``Select2MultipleWidget``
-Replacing::
+   :class:`Select2MultipleWidget <.django_select2.forms.Select2MultipleWidget>`, 
+   replacing::
 
         class MyForm(forms.Form):
             things = ModelMultipleChoiceField(queryset=Thing.objects.all())
 
-with::
+   with::
 
         from django_select2.forms import Select2MultipleWidget
         
