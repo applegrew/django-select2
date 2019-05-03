@@ -42,8 +42,8 @@ Here is a quick example to get you started:
 
 0. Follow the installation instructions above.
 
-1. Replace native Django forms widgets with one of the several ``django_select2`` form widgets.
-   Start by importing them into your forms.py::
+1. Replace native Django forms widgets with one of the several ``django_select2.form`` widgets.
+   Start by importing them into your forms.py, right next to django own ones::
 
      from django import forms
      from django_select2 import forms as s2forms
@@ -55,7 +55,7 @@ Here is a quick example to get you started:
         widgets = {
             'category': s2forms.Select2Widget,
             'author': s2forms.ModelSelect2Widget(model=auth.get_user_model(),
-                                                 search_fields=['first_name', 'last_name', 'username', 'email']),
+                                                 search_fields=['first_name', 'last_name']),
             'attending': s2forms.ModelSelect2MultipleWidget …
         }
 
