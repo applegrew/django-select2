@@ -42,19 +42,22 @@ Here is a quick example to get you started:
 
 0. Follow the installation instructions above.
 
-1. Add a select2 widget to the form. For example if you wanted Select2 with multi-select you would use
-   :class:`Select2MultipleWidget <.django_select2.forms.Select2MultipleWidget>`, 
-   replacing::
+1. Replace native Django forms widgets with one of the several ``django_select2`` form widgets.
+   Start by importing them into your forms.py::
 
-        class MyForm(forms.Form):
-            things = ModelMultipleChoiceField(queryset=Thing.objects.all())
+     from django import forms
+     from django_select2 import forms as s2forms
 
-   with::
+   Then let's assume you have a model with a Choice, a ForeignKey, and a
+   ManyToMany field, you would add this information to your Form Meta
+   class::
 
-        from django_select2.forms import Select2MultipleWidget
-        
-        class MyForm(forms.Form):
-            things = ModelMultipleChoiceField(queryset=Thing.objects.all(), widget=Select2MultipleWidget)
+        widgets = {
+            'category': s2forms.Select2Widget,
+            'author': s2forms.ModelSelect2Widget(model=auth.get_user_model(),
+                                                 search_fields=['first_name', 'last_name', 'username', 'email']),
+            'attending': s2forms.ModelSelect2MultipleWidget …
+        }
 
 2. Add the CSS to the ``head`` of your Django template::
 
