@@ -55,7 +55,7 @@ Here is a quick example to get you started:
         widgets = {
             'category': s2forms.Select2Widget,
             'author': s2forms.ModelSelect2Widget(model=auth.get_user_model(),
-                                                 search_fields=['first_name', 'last_name']),
+                                                 search_fields=['first_name__istartswith', 'last_name__icontains']),
             'attending': s2forms.ModelSelect2MultipleWidget …
         }
 
