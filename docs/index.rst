@@ -15,6 +15,7 @@ Contents:
    get_started
    django_select2
    extra
+   developers
 
 Indices and tables
 ==================
