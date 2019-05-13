@@ -20,10 +20,11 @@ Widgets are generally of two types:
     drop-in-replacement for Django's default
     select widgets.
 
-    2. **Heavy** --
+    2(a). **Heavy** --
     They are suited for scenarios when the number of options
     are large and need complex queries (from maybe different
     sources) to get the options.
+
     This dynamic fetching of options undoubtedly requires
     Ajax communication with the server. Django-Select2 includes
     a helper JS file which is included automatically,
@@ -31,15 +32,15 @@ Widgets are generally of two types:
     Although on the server side you do need to create a view
     specifically to respond to the queries.
 
-    3. **Model** --
+    2(b). **Model** --
     Model-widgets are a further specialized versions of Heavies.
     These do not require views to serve Ajax requests.
     When they are instantiated, they register themselves
     with one central view which handles Ajax requests for them.
 
-Heavy widgets have the word 'Heavy' in their name.
-Light widgets are normally named, i.e. there is no
-'Light' word in their names.
+Heavy and Model widgets have respectively the word 'Heavy' and 'Model' in
+their name.  Light widgets are normally named, i.e. there is no 'Light' word
+in their names.
 
 .. inheritance-diagram:: django_select2.forms
     :parts: 1
