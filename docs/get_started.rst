@@ -11,7 +11,7 @@ Overview
 Assumptions
 -----------
 
-* You have a Django project, possibly with models linked by foreign key fields,
+* You have a running Django project, possibly with models linked by foreign key fields,
 * are using Python3,
 * set up a virtual environment with ``python3 -m venv <location>``,
 * activated the virtual environment,
