@@ -43,13 +43,13 @@ Here is a quick example to get you started:
 0. Follow the installation instructions above.
 
 1. Replace native Django forms widgets with one of the several ``django_select2.form`` widgets.
-   Start by importing them into your forms.py, right next to django own ones::
+   Start by importing them into your ``forms.py``, right next to Django own ones::
 
      from django import forms
      from django_select2 import forms as s2forms
 
-   Then let's assume you have a model with a Choice, a ForeignKey, and a
-   ManyToMany field, you would add this information to your Form Meta
+   Then let's assume you have a model with a choice, a :class:`.ForeignKey`, and a
+   :class:`.ManyToManyField`, you would add this information to your Form Meta
    class::
 
         widgets = {
