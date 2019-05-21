@@ -315,12 +315,32 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.queryset = Genre.objects.all()
         assert isinstance(widget.get_queryset(), QuerySet)
 
-    def test_tag_attrs(self):
+    def test_tag_attrs_Select2Widget(self):
+        widget = Select2Widget()
+        output = widget.render('name', 'value')
+        assert 'data-minimum-input-length="0"' in output
+
+    def test_custom_tag_attrs_Select2Widget(self):
+        widget = Select2Widget(attrs={'data-minimum-input-length': '3'})
+        output = widget.render('name', 'value')
+        assert 'data-minimum-input-length="3"' in output
+
+    def test_tag_attrs_ModelSelect2Widget(self):
         widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         output = widget.render('name', 'value')
         assert 'data-minimum-input-length="2"' in output
 
-    def test_custom_tag_attrs(self):
+    def test_tag_attrs_ModelSelect2TagWidget(self):
+        widget = ModelSelect2TagWidget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
+        output = widget.render('name', 'value')
+        assert 'data-minimum-input-length="1"' in output
+
+    def test_tag_attrs_HeavySelect2Widget(self):
+        widget = HeavySelect2Widget(data_url='/foo/bar/')
+        output = widget.render('name', 'value')
+        assert 'data-minimum-input-length="2"' in output
+
+    def test_custom_tag_attrs_ModelSelect2Widget(self):
         widget = ModelSelect2Widget(
             queryset=Genre.objects.all(), search_fields=['title__icontains'], attrs={'data-minimum-input-length': '3'})
         output = widget.render('name', 'value')
