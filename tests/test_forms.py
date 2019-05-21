@@ -315,6 +315,17 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.queryset = Genre.objects.all()
         assert isinstance(widget.get_queryset(), QuerySet)
 
+    def test_tag_attrs(self):
+        widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
+        output = widget.render('name', 'value')
+        assert 'data-minimum-input-length="2"' in output
+
+    def test_custom_tag_attrs(self):
+        widget = ModelSelect2Widget(
+            queryset=Genre.objects.all(), search_fields=['title__icontains'], attrs={'data-minimum-input-length': '3'})
+        output = widget.render('name', 'value')
+        assert 'data-minimum-input-length="3"' in output
+
     def test_get_search_fields(self):
         widget = ModelSelect2Widget()
         with pytest.raises(NotImplementedError):
