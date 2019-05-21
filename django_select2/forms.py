@@ -79,7 +79,10 @@ class Select2Mixin:
             attrs.setdefault('data-allow-clear', 'true')
             attrs.setdefault('data-placeholder', '')
 
-        attrs.setdefault('data-minimum-input-length', 0)
+        # print('data-minimum-input-length was {} and {} when setting to 0'
+        #       .format(attrs.get('data-minimum-input-length'), self.attrs.get('data-minimum-input-length')))
+        if 'data-minimum-input-length' not in self.attrs:
+            attrs['data-minimum-input-length'] = 0
         if 'class' in attrs:
             attrs['class'] += ' django-select2'
         else:
@@ -237,7 +240,10 @@ class HeavySelect2Mixin:
         attrs.setdefault('data-ajax--url', self.get_url())
         attrs.setdefault('data-ajax--cache', "true")
         attrs.setdefault('data-ajax--type', "GET")
-        attrs.setdefault('data-minimum-input-length', 2)
+        # print('data-minimum-input-length was {} and {} when setting to 2'
+        #       .format(attrs.get('data-minimum-input-length'), self.attrs.get('data-minimum-input-length')))
+        if 'data-minimum-input-length' not in self.attrs:
+            attrs['data-minimum-input-length'] = 2
         if self.dependent_fields:
             attrs.setdefault('data-select2-dependent-fields', " ".join(self.dependent_fields))
 
