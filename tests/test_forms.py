@@ -217,11 +217,14 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
             driver.find_element_by_css_selector('.select2-results')
 
         elem1, elem2 = driver.find_elements_by_css_selector('.select2-selection')
-        elem1.click()
 
+        elem1.send_keys('fo')
+        elem1.click()
         result1 = WebDriverWait(driver, 60).until(
             expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:first-child'))
         ).text
+
+        elem2.send_keys('fo')
         elem2.click()
         result2 = WebDriverWait(driver, 60).until(
             expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:first-child'))
