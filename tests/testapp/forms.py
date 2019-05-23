@@ -149,11 +149,19 @@ class HeavySelect2WidgetForm(forms.Form):
 class HeavySelect2MultipleWidgetForm(forms.Form):
     title = forms.CharField(max_length=50)
     genres = forms.MultipleChoiceField(
-        widget=HeavySelect2MultipleWidget(data_view='heavy_data_1', choices=NUMBER_CHOICES),
+        widget=HeavySelect2MultipleWidget(
+            data_view='heavy_data_1',
+            choices=NUMBER_CHOICES,
+            attrs={'data-minimum-input-length': 0},
+        ),
         choices=NUMBER_CHOICES
     )
     featured_artists = forms.MultipleChoiceField(
-        widget=HeavySelect2MultipleWidget(data_view='heavy_data_2', choices=NUMBER_CHOICES),
+        widget=HeavySelect2MultipleWidget(
+            data_view='heavy_data_2',
+            choices=NUMBER_CHOICES,
+            attrs={'data-minimum-input-length': 0},
+        ),
         choices=NUMBER_CHOICES,
         required=False
     )
@@ -182,6 +190,7 @@ class AddressChainedSelect2WidgetForm(forms.Form):
             search_fields=['name__icontains'],
             max_results=500,
             dependent_fields={'city': 'cities'},
+            attrs={'data-minimum-input-length': 0},
         )
     )
 
@@ -193,6 +202,7 @@ class AddressChainedSelect2WidgetForm(forms.Form):
             search_fields=['name__icontains'],
             dependent_fields={'country': 'country'},
             max_results=500,
+            attrs={'data-minimum-input-length': 0},
         )
     )
 
