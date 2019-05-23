@@ -418,7 +418,7 @@ class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
     def test_tag_attrs(self):
         widget = ModelSelect2TagWidget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
         output = widget.render('name', 'value')
-        assert 'data-minimum-input-length="2' in output
+        assert 'data-minimum-input-length="2"' in output
         assert 'data-tags="true"' in output
         assert 'data-token-separators' in output
 
