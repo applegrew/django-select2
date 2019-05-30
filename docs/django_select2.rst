@@ -81,6 +81,6 @@ want to be accessible to the general public. Doing so is easy::
             kwargs['data_view'] = 'user-select2-view'
             super(UserSelect2WidgetMixin, self).__init__(*args, **kwargs)
 
-    class MySecretWidget(UserSelect2WidgetMixin, Select2ModelWidget):
+    class MySecretWidget(UserSelect2WidgetMixin, ModelSelect2Widget):
         model = MySecretModel
         search_fields = ['title__icontains']
