@@ -70,16 +70,18 @@ class Select2Mixin:
     form media.
     """
 
-    def build_attrs(self, *args, **kwargs):
+    def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
-        attrs = super(Select2Mixin, self).build_attrs(*args, **kwargs)
+        default_attrs = {'data-minimum-input-length': 0}
         if self.is_required:
-            attrs.setdefault('data-allow-clear', 'false')
+            default_attrs['data-allow-clear'] = 'false'
         else:
-            attrs.setdefault('data-allow-clear', 'true')
-            attrs.setdefault('data-placeholder', '')
+            default_attrs['data-allow-clear'] = 'true'
+            default_attrs['data-placeholder'] = ''
 
-        attrs.setdefault('data-minimum-input-length', 0)
+        default_attrs.update(base_attrs)
+        attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
+
         if 'class' in attrs:
             attrs['class'] += ' django-select2'
         else:
@@ -120,12 +122,15 @@ class Select2Mixin:
 class Select2TagMixin:
     """Mixin to add select2 tag functionality."""
 
-    def build_attrs(self, *args, **kwargs):
+    def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2's tag attributes."""
-        self.attrs.setdefault('data-minimum-input-length', 1)
-        self.attrs.setdefault('data-tags', 'true')
-        self.attrs.setdefault('data-token-separators', '[",", " "]')
-        return super(Select2TagMixin, self).build_attrs(*args, **kwargs)
+        default_attrs = {
+            'data-minimum-input-length': 1,
+            'data-tags': 'true',
+            'data-token-separators': '[",", " "]'
+        }
+        default_attrs.update(base_attrs)
+        return super().build_attrs(default_attrs, extra_attrs=extra_attrs)
 
 
 class Select2Widget(Select2Mixin, forms.Select):
@@ -226,20 +231,27 @@ class HeavySelect2Mixin:
             return self.data_url
         return reverse(self.data_view)
 
-    def build_attrs(self, *args, **kwargs):
+    def build_attrs(self, base_attrs, extra_attrs=None):
         """Set select2's AJAX attributes."""
-        attrs = super(HeavySelect2Mixin, self).build_attrs(*args, **kwargs)
+
+        default_attrs = {
+            'data-ajax--url': self.get_url(),
+            'data-ajax--cache': "true",
+            'data-ajax--type': "GET",
+            'data-minimum-input-length': 2,
+        }
+
+        if self.dependent_fields:
+            default_attrs['data-select2-dependent-fields'] = " ".join(self.dependent_fields)
+
+        default_attrs.update(base_attrs)
+
+        attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
 
         # encrypt instance Id
         self.widget_id = signing.dumps(id(self))
 
         attrs['data-field_id'] = self.widget_id
-        attrs.setdefault('data-ajax--url', self.get_url())
-        attrs.setdefault('data-ajax--cache', "true")
-        attrs.setdefault('data-ajax--type', "GET")
-        attrs.setdefault('data-minimum-input-length', 2)
-        if self.dependent_fields:
-            attrs.setdefault('data-select2-dependent-fields', " ".join(self.dependent_fields))
 
         attrs['class'] += ' django-select2-heavy'
         return attrs
