@@ -1,2 +1,6 @@
 include django_select2/static/django_select2/django_select2.js
 prune tests
+prune .github
+exclude .fussyfox.yml
+exclude .travis.yml
+exclude .gitignore
