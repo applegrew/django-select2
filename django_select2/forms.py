@@ -391,7 +391,7 @@ class ModelSelect2Mixin:
         term = term.replace('\t', ' ')
         term = term.replace('\n', ' ')
         for t in [t for t in term.split(' ') if not t == '']:
-            select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields,
+            select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields[1:],
                              Q(**{search_fields[0]: t}))
         if dependent_fields:
             select &= Q(**dependent_fields)
