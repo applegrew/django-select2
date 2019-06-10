@@ -233,7 +233,6 @@ class HeavySelect2Mixin:
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Set select2's AJAX attributes."""
-
         default_attrs = {
             'data-ajax--url': self.get_url(),
             'data-ajax--cache': "true",
