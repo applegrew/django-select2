@@ -167,7 +167,7 @@ class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
     pass
 
 
-class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
+class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.Select):
     """
     Select2 drop in widget for for tagging.
 
@@ -188,6 +188,30 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
     """
 
     pass
+
+
+class Select2MultipleTagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
+    """
+    Select2 drop in widget for for tagging.
+
+    Example for :class:`.django.contrib.postgres.fields.ArrayField`::
+
+        class MyWidget(Select2TagWidget):
+
+            def value_from_datadict(self, data, files, name):
+                values = super(MyWidget, self).value_from_datadict(data, files, name):
+                return ",".join(values)
+
+            def optgroups(self, name, value, attrs=None):
+                values = value[0].split(',') if value[0] else []
+                selected = set(values)
+                subgroup = [self.create_option(name, v, v, selected, i) for i, v in enumerate(values)]
+                return [(None, subgroup, 0)]
+
+    """
+
+    pass
+
 
 
 class HeavySelect2Mixin:
