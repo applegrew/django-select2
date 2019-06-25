@@ -2,7 +2,6 @@ import random
 import string
 
 import pytest
-from django.utils.encoding import force_text
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 
@@ -22,11 +21,11 @@ def random_name(n):
 @pytest.yield_fixture(scope='session')
 def driver():
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.headless = True
+    chrome_options.headless = False
     try:
         b = webdriver.Chrome(options=chrome_options)
     except WebDriverException as e:
-        pytest.skip(force_text(e))
+        pytest.skip(str(e))
     else:
         yield b
         b.quit()
