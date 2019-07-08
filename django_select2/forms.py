@@ -555,7 +555,7 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
                 '''Create objects for given non-pimary-key values. Return list of all primary keys.'''
                 values = set(super().value_from_datadict(data, files, name))
                 # This may only work for MyModel, if MyModel has title field.
-                # You need to implement this method yourlself, to ensure proper object creation.
+                # You need to implement this method yourself, to ensure proper object creation.
                 pks = self.queryset.filter(**{'pk__in': list(values)}).values_list('pk', flat=True)
                 pks = set(map(str, pks))
                 cleaned_values = list(values)
