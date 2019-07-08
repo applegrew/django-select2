@@ -552,14 +552,15 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
             queryset = MyModel.objects.all()
 
             def value_from_datadict(self, data, files, name):
-                values = super().value_from_datadict(self, data, files, name)
-                qs = self.queryset.filter(**{'pk__in': list(values)})
-                pks = set(str(getattr(o, pk)) for o in qs)
-                cleaned_values = []
-                for val in value:
-                    if str(val) not in pks:
-                        val = queryset.create(title=val).pk
-                    cleaned_values.append(val)
+                '''Create objects for given non-pimary-key values. Return list of all primary keys.'''
+                values = set(super().value_from_datadict(data, files, name))
+                # This may only work for MyModel, if MyModel has title field.
+                # You need to implement this method yourlself, to ensure proper object creation.
+                pks = self.queryset.filter(**{'pk__in': list(values)}).values_list('pk', flat=True)
+                pks = set(map(str, pks))
+                cleaned_values = list(values)
+                for val in values - pks:
+                    cleaned_values.append(self.queryset.create(title=val).pk)
                 return cleaned_values
 
     """
