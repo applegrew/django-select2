@@ -186,7 +186,6 @@ class AddressChainedSelect2WidgetForm(forms.Form):
         queryset=Country.objects.all(),
         label='Country',
         widget=ModelSelect2Widget(
-            model=Country,
             search_fields=['name__icontains'],
             max_results=500,
             dependent_fields={'city': 'cities'},
@@ -198,7 +197,6 @@ class AddressChainedSelect2WidgetForm(forms.Form):
         queryset=City.objects.all(),
         label='City',
         widget=ModelSelect2Widget(
-            model=City,
             search_fields=['name__icontains'],
             dependent_fields={'country': 'country'},
             max_results=500,
