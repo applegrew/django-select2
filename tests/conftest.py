@@ -21,7 +21,7 @@ def random_name(n):
 @pytest.yield_fixture(scope='session')
 def driver():
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.headless = False
+    chrome_options.headless = True
     try:
         b = webdriver.Chrome(options=chrome_options)
     except WebDriverException as e:
