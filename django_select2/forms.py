@@ -70,6 +70,8 @@ class Select2Mixin:
     form media.
     """
 
+    empty_label = ''
+
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
         default_attrs = {'data-minimum-input-length': 0}
@@ -77,7 +79,7 @@ class Select2Mixin:
             default_attrs['data-allow-clear'] = 'false'
         else:
             default_attrs['data-allow-clear'] = 'true'
-            default_attrs['data-placeholder'] = ''
+            default_attrs['data-placeholder'] = self.empty_label
 
         default_attrs.update(base_attrs)
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
@@ -208,6 +210,7 @@ class HeavySelect2Mixin:
                 widget could be dependent on a country.
                 Key is a name of a field in a form.
                 Value is a name of a field in a model (used in `queryset`).
+
         """
         self.choices = choices
         if attrs is not None:
@@ -338,6 +341,12 @@ class ModelSelect2Mixin:
 
     max_results = 25
     """Maximal results returned by :class:`.AutoResponseView`."""
+
+    @property
+    def empty_label(self):
+        if isinstance(self.choices, ModelChoiceIterator):
+            return self.choices.field.empty_label
+        return ''
 
     def __init__(self, *args, **kwargs):
         """
