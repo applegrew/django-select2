@@ -59,7 +59,7 @@ External Dependencies
 
 * jQuery (version >=2)
     jQuery is not included in the package since it is expected
-    that in most scenarios is is already loaded.
+    that in most scenarios jQuery is already loaded.
 
 Example Application
 -------------------
