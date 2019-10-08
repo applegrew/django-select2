@@ -57,9 +57,9 @@ with::
 External Dependencies
 ---------------------
 
-* jQuery version 2
-    This is not included in the package since it is expected
-    that in most scenarios this would already be available.
+* jQuery (version >=2)
+    jQuery is not included in the package since it is expected
+    that in most scenarios is is already loaded.
 
 Example Application
 -------------------
