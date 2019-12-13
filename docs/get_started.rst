@@ -8,6 +8,12 @@ Overview
 .. automodule:: django_select2
     :members:
 
+Assumptions
+-----------
+
+* You have a running Django up and running.
+* You have form fully working without Django-Select2.
+
 Installation
 ------------
 
@@ -17,11 +23,12 @@ Installation
 
 2. Add ``django_select2`` to your ``INSTALLED_APPS`` in your project settings.
 
+3. Add ``django_select`` to your ``urlconf``::
 
-3. Add ``django_select`` to your ``urlconf`` **if** you use any
-:class:`ModelWidgets <.django_select2.forms.ModelSelect2Mixin>`::
+        path('select2/', include('django_select2.urls')),
 
-        url(r'^select2/', include('django_select2.urls')),
+   You can safely skip this one if you do not use any
+   :class:`ModelWidgets <.django_select2.forms.ModelSelect2Mixin>`
 
 Quick Start
 -----------
@@ -30,19 +37,22 @@ Here is a quick example to get you started:
 
 0. Follow the installation instructions above.
 
-1. Add a select2 widget to the form. For example if you wanted Select2 with multi-select you would use
-``Select2MultipleWidget``
-Replacing::
+1. Replace native Django forms widgets with one of the several ``django_select2.form`` widgets.
+   Start by importing them into your ``forms.py``, right next to Django own ones::
 
-        class MyForm(forms.Form):
-            things = ModelMultipleChoiceField(queryset=Thing.objects.all())
+     from django import forms
+     from django_select2 import forms as s2forms
 
-with::
+   Then let's assume you have a model with a choice, a :class:`.ForeignKey`, and a
+   :class:`.ManyToManyField`, you would add this information to your Form Meta
+   class::
 
-        from django_select2.forms import Select2MultipleWidget
-        
-        class MyForm(forms.Form):
-            things = ModelMultipleChoiceField(queryset=Thing.objects.all(), widget=Select2MultipleWidget)
+        widgets = {
+            'category': s2forms.Select2Widget,
+            'author': s2forms.ModelSelect2Widget(model=auth.get_user_model(),
+                                                 search_fields=['first_name__istartswith', 'last_name__icontains']),
+            'attending': s2forms.ModelSelect2MultipleWidget …
+        }
 
 2. Add the CSS to the ``head`` of your Django template::
 
