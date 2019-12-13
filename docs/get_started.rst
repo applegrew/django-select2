@@ -11,14 +11,9 @@ Overview
 Assumptions
 -----------
 
-* You have a running Django project, possibly with models linked by foreign key fields,
-* are using Python3,
-* set up a virtual environment with ``python3 -m venv <location>``,
-* activated the virtual environment,
-* installed ``django`` using ``pip``,
-* are already using Django forms,
-* and your select lists are too long, or they look ugly to you.
-       
+* You have a running Django up and running.
+* You have form fully working without Django-Select2.
+
 Installation
 ------------
 
