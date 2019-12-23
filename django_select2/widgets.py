@@ -10,9 +10,9 @@ import re
 from itertools import chain
 
 from django import forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.validators import EMPTY_VALUES
-from django.utils.datastructures import MergeDict, MultiValueDict
+from django.utils.datastructures import MultiValueDict
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.six import text_type
@@ -301,7 +301,7 @@ class MultipleSelect2HiddenInput(forms.TextInput):
         return mark_safe(s)
 
     def value_from_datadict(self, data, files, name):
-        if isinstance(data, (MultiValueDict, MergeDict)):
+        if isinstance(data, (MultiValueDict, )):
             return data.getlist(name)
         return data.get(name, None)
 

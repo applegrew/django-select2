@@ -2,7 +2,7 @@
 from __future__ import print_function, unicode_literals
 
 import pytest
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from selenium.common.exceptions import NoSuchElementException
 
 
