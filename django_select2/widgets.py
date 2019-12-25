@@ -289,7 +289,7 @@ class MultipleSelect2HiddenInput(forms.TextInput):
     """
 
     def render(self, name, value, attrs=None, choices=()):
-        attrs = self.build_attrs(attrs, multiple='multiple')
+        attrs = self.build_attrs(attrs, {'multiple': 'multiple'})
         s = text_type(super(MultipleSelect2HiddenInput, self).render(name, "", attrs))
         id_ = attrs.get('id', None)
         if id_:
