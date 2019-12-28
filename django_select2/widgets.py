@@ -190,7 +190,7 @@ class Select2Mixin(object):
         js += '$(hashedSelector).select2(%s);' % (options)
         return js
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None):
         """
         Renders this widget. HTML and JS code blocks all are rendered by this.
 
@@ -198,15 +198,11 @@ class Select2Mixin(object):
         :rtype: :py:obj:`unicode`
         """
 
-        args = [name, value, attrs]
-        if choices:
-            args.append(choices)
-
-        s = text_type(super(Select2Mixin, self).render(*args))  # Thanks to @ouhouhsami Issue#1
+        s = text_type(super(Select2Mixin, self).render(*[name, value, attrs, renderer]))  # Thanks to @ouhouhsami Issue#1
         s += self.media.render()
         final_attrs = self.build_attrs(attrs)
         id_ = final_attrs.get('id', None)
-        s += self.render_js_code(id_, name, value, attrs, choices)
+        s += self.render_js_code(id_, name, value, attrs)
 
         return mark_safe(s)
 
@@ -288,9 +284,9 @@ class MultipleSelect2HiddenInput(forms.TextInput):
     would be available as list.
     """
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None):
         attrs = self.build_attrs(attrs, {'multiple': 'multiple'})
-        s = text_type(super(MultipleSelect2HiddenInput, self).render(name, "", attrs))
+        s = text_type(super(MultipleSelect2HiddenInput, self).render(name, "", attrs, renderer))
         id_ = attrs.get('id', None)
         if id_:
             jscode = ''
