@@ -119,3 +119,77 @@ Furthermore you may want to filter options on two or more select2 selections (so
             )
         )
 
+
+GenericForeignKey select2
+-----------------------
+There is some requirements to use django select2 for GenericForeignKey
+
+
+Models
+``````
+Suppose we have a Model Article that has GenericForeignKey relation
+
+.. code-block:: python
+
+    class Article(MediaMixin, models.Model):
+    ...
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to=(
+            models.Q(app_label='users', model='user'),
+            ...
+        ),
+    )
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey(
+        'content_type',
+        'object_id'
+    )
+
+
+
+
+You need to add list called SELECT2_SEARCH_FIELDS to all models that can be selected as Content type
+
+.. code-block:: python
+    :emphasize-lines: 3
+
+    class User(models.Model):
+        ...
+        SELECT2_SEARCH_FIELDS=['email__icontains']
+
+
+
+Form
+``````
+
+In the form you must make dependent_fields={'content_type': 'content_type_gfk'},
+The value `content_type_gfk` will make django-select2 able to understand that this field is GenericForeignKey
+
+.. code-block:: python
+    :emphasize-lines: 6
+
+    class ArticleForm(forms.ModelForm):
+        object_id = forms.ModelChoiceField(
+            queryset=ContentType.objects.none(),
+            label=u"Related Position",
+            widget=ModelSelect2Widget(
+                dependent_fields={'content_type': 'content_type_gfk'},
+                max_results=20,
+                attrs={'data-placeholder': 'Search for related position object', 'data-width': '30em'},
+            )
+        )
+
+
+Admin
+``````
+
+Example using GFK in admin
+
+.. code-block:: python
+
+    class ArticleAdmin(admin.ModelAdmin):
+        form = ArticleForm
+
+    admin.site.register(Article, ArticleAdmin)
