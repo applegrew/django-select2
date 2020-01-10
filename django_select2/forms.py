@@ -50,8 +50,12 @@ from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
 
+import django
+
+django.setup()
 from django import forms
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
+from django.contrib.contenttypes.models import ContentType
 from django.core import signing
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
@@ -388,7 +392,7 @@ class ModelSelect2Mixin:
             'dependent_fields': dict(self.dependent_fields),
         })
 
-    def filter_queryset(self, request, term, queryset=None, **dependent_fields):
+    def filter_queryset(self, request, term, queryset=None, content_type_gfk=None, **dependent_fields):
         """
         Return QuerySet filtered by search_fields matching the passed term.
 
@@ -397,6 +401,7 @@ class ModelSelect2Mixin:
                 the JSON view and can be used to dynamically alter the response queryset.
             term (str): Search term
             queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
+            content_type_gfk (int): Content Type id for generic foreign key relation it is one if dependent_fields
             **dependent_fields: Dependent fields and their values. If you want to inherit
                 from ModelSelect2Mixin and later call to this method, be sure to pop
                 everything from keyword arguments that is not a dependent field.
@@ -405,9 +410,17 @@ class ModelSelect2Mixin:
             QuerySet: Filtered QuerySet
 
         """
+        search_fields = None
+        if content_type_gfk is not None:
+            ct = ContentType.objects.get(pk=content_type_gfk)
+            model_class = ct.model_class()
+            search_fields = model_class.SELECT2_SEARCH_FIELDS
+            queryset = model_class._default_manager.all()
+
         if queryset is None:
             queryset = self.get_queryset()
-        search_fields = self.get_search_fields()
+        if search_fields is None:
+            search_fields = self.get_search_fields()
         select = Q()
         term = term.replace('\t', ' ')
         term = term.replace('\n', ' ')
