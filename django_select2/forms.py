@@ -49,10 +49,6 @@ in their names.
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
-
-import django
-
-django.setup()
 from django import forms
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.contrib.contenttypes.models import ContentType
