@@ -345,7 +345,7 @@ class ModelSelect2Mixin:
 
     @property
     def empty_label(self):
-        if isinstance(self.choices, ModelChoiceIterator):
+        if isinstance(self.choices, ModelChoiceIterator) and self.choices.field.empty_label:
             return self.choices.field.empty_label
         return ''
 
