@@ -412,6 +412,14 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         form = forms.GroupieForm(instance=groupie)
         assert '<option value="Take That" selected>TAKE THAT</option>' in form.as_p()
 
+    def test_empty_label(self, db):
+        # Empty options is only required for single selects
+        # https://select2.github.io/options.html#allowClear
+        single_select = self.form.fields['primary_genre']
+        single_select.empty_label = 'Hello World'
+        assert single_select.required is False
+        assert 'data-placeholder="Hello World"' in single_select.widget.render('primary_genre', None)
+
 
 class TestHeavySelect2TagWidget(TestHeavySelect2Mixin):
 

@@ -20,10 +20,11 @@ Widgets are generally of two types:
     drop-in-replacement for Django's default
     select widgets.
 
-    2. **Heavy** --
+    2(a). **Heavy** --
     They are suited for scenarios when the number of options
     are large and need complex queries (from maybe different
     sources) to get the options.
+
     This dynamic fetching of options undoubtedly requires
     Ajax communication with the server. Django-Select2 includes
     a helper JS file which is included automatically,
@@ -31,15 +32,15 @@ Widgets are generally of two types:
     Although on the server side you do need to create a view
     specifically to respond to the queries.
 
-    3. **Model** --
+    2(b). **Model** --
     Model-widgets are a further specialized versions of Heavies.
     These do not require views to serve Ajax requests.
     When they are instantiated, they register themselves
     with one central view which handles Ajax requests for them.
 
-Heavy widgets have the word 'Heavy' in their name.
-Light widgets are normally named, i.e. there is no
-'Light' word in their names.
+Heavy and Model widgets have respectively the word 'Heavy' and 'Model' in
+their name.  Light widgets are normally named, i.e. there is no 'Light' word
+in their names.
 
 .. inheritance-diagram:: django_select2.forms
     :parts: 1
@@ -70,6 +71,8 @@ class Select2Mixin:
     form media.
     """
 
+    empty_label = ''
+
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
         default_attrs = {'data-minimum-input-length': 0}
@@ -77,7 +80,7 @@ class Select2Mixin:
             default_attrs['data-allow-clear'] = 'false'
         else:
             default_attrs['data-allow-clear'] = 'true'
-            default_attrs['data-placeholder'] = ''
+            default_attrs['data-placeholder'] = self.empty_label
 
         default_attrs.update(base_attrs)
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
@@ -208,6 +211,7 @@ class HeavySelect2Mixin:
                 widget could be dependent on a country.
                 Key is a name of a field in a form.
                 Value is a name of a field in a model (used in `queryset`).
+
         """
         self.choices = choices
         if attrs is not None:
@@ -338,6 +342,12 @@ class ModelSelect2Mixin:
 
     max_results = 25
     """Maximal results returned by :class:`.AutoResponseView`."""
+
+    @property
+    def empty_label(self):
+        if isinstance(self.choices, ModelChoiceIterator):
+            return self.choices.field.empty_label
+        return ''
 
     def __init__(self, *args, **kwargs):
         """
@@ -554,14 +564,15 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
             queryset = MyModel.objects.all()
 
             def value_from_datadict(self, data, files, name):
-                values = super().value_from_datadict(self, data, files, name)
-                qs = self.queryset.filter(**{'pk__in': list(values)})
-                pks = set(str(getattr(o, pk)) for o in qs)
-                cleaned_values = []
-                for val in value:
-                    if str(val) not in pks:
-                        val = queryset.create(title=val).pk
-                    cleaned_values.append(val)
+                '''Create objects for given non-pimary-key values. Return list of all primary keys.'''
+                values = set(super().value_from_datadict(data, files, name))
+                # This may only work for MyModel, if MyModel has title field.
+                # You need to implement this method yourself, to ensure proper object creation.
+                pks = self.queryset.filter(**{'pk__in': list(values)}).values_list('pk', flat=True)
+                pks = set(map(str, pks))
+                cleaned_values = list(values)
+                for val in values - pks:
+                    cleaned_values.append(self.queryset.create(title=val).pk)
                 return cleaned_values
 
     """
