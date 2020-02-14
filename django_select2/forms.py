@@ -80,7 +80,7 @@ class Select2Mixin:
             default_attrs['data-allow-clear'] = 'false'
         else:
             default_attrs['data-allow-clear'] = 'true'
-            default_attrs['data-placeholder'] = self.empty_label
+            default_attrs['data-placeholder'] = self.empty_label or ""
 
         default_attrs.update(base_attrs)
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
@@ -345,7 +345,7 @@ class ModelSelect2Mixin:
 
     @property
     def empty_label(self):
-        if isinstance(self.choices, ModelChoiceIterator) and self.choices.field.empty_label:
+        if isinstance(self.choices, ModelChoiceIterator):
             return self.choices.field.empty_label
         return ''
 
