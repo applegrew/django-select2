@@ -95,7 +95,9 @@ class TestSelect2Mixin:
         multiple_select = self.multiple_form.fields['featured_artists']
         assert multiple_select.required is False
         assert multiple_select.widget.allow_multiple_selected
-        assert '<option value=""></option>' not in multiple_select.widget.render('featured_artists', None)
+        output = multiple_select.widget.render('featured_artists', None)
+        assert '<option value=""></option>' not in output
+        assert 'data-placeholder=""' in output
 
     def test_i18n(self):
         translation.activate('de')
