@@ -80,7 +80,7 @@ class Select2Mixin:
             default_attrs['data-allow-clear'] = 'false'
         else:
             default_attrs['data-allow-clear'] = 'true'
-            default_attrs['data-placeholder'] = self.empty_label
+            default_attrs['data-placeholder'] = self.empty_label or ""
 
         default_attrs.update(base_attrs)
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
