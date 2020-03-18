@@ -204,6 +204,17 @@ class AddressChainedSelect2WidgetForm(forms.Form):
         )
     )
 
+    city2 = forms.ModelChoiceField(
+        queryset=City.objects.all(),
+        label='City not Interdependent',
+        widget=ModelSelect2Widget(
+            search_fields=['name__icontains'],
+            dependent_fields={'country': 'country'},
+            max_results=500,
+            attrs={'data-minimum-input-length': 0},
+        )
+    )
+
 
 class GroupieForm(forms.ModelForm):
     class Meta:
