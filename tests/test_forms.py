@@ -479,7 +479,7 @@ class TestAddressChainedSelect2Widget:
         WebDriverWait(driver, 60).until(
             expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-selection--single'))
         )
-        country_container, city_container = driver.find_elements_by_css_selector('.select2-selection--single')
+        country_container, city_container, city2_container = driver.find_elements_by_css_selector('.select2-selection--single')
 
         # clicking city select2 lists all available cities
         city_container.click()
@@ -529,3 +529,44 @@ class TestAddressChainedSelect2Widget:
         country_names_from_db = {City.objects.get(name=city_name).country.name}
         assert len(country_names_from_browser) != Country.objects.count()
         assert country_names_from_browser == country_names_from_db
+
+    def test_dependent_fields_clear_after_change_parent(self, db, live_server, driver, countries, cities):
+        driver.get(live_server + self.url)
+        country_container, city_container, city2_container = driver.find_elements_by_css_selector('.select2-selection--single')
+
+        # selecting a country really does it
+        country_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:nth-child(2)'))
+        )
+        country_option = driver.find_element_by_css_selector('.select2-results li:nth-child(2)')
+        country_name = country_option.text
+        country_option.click()
+        assert country_name == country_container.text
+
+        # selecting a city2
+        city2_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li'))
+        )
+        city2_option = driver.find_element_by_css_selector('.select2-results li:nth-child(2)')
+        city2_name = city2_option.text
+        city2_option.click()
+        assert city2_name == city2_container.text
+
+        # change a country
+        country_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li:nth-child(3)'))
+        )
+        country_option = driver.find_element_by_css_selector('.select2-results li:nth-child(3)')
+        country_name = country_option.text
+        country_option.click()
+        assert country_name == country_container.text
+
+        # check the value in city2
+        city2_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located((By.CSS_SELECTOR, '.select2-results li'))
+        )
+        assert city2_container.text == ""
