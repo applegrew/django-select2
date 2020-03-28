@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import formsets
 from django.utils.encoding import force_text
 
 from django_select2.forms import (
@@ -223,3 +224,7 @@ class GroupieForm(forms.ModelForm):
         widgets = {
             'obsession': ArtistCustomTitleWidget
         }
+
+
+AddressChainedSelect2Formset = formsets.formset_factory(AddressChainedSelect2WidgetForm, extra=1, min_num=2, max_num=10)
+

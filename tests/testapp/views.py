@@ -8,6 +8,10 @@ class TemplateFormView(FormView):
     template_name = 'form.html'
 
 
+class TemplateFormsetView(FormView):
+    template_name = 'formset.html'
+
+
 def heavy_data_1(request):
     term = request.GET.get("term", "")
     numbers = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five']

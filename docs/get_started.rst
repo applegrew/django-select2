@@ -76,3 +76,9 @@ Example Application
 Please see ``tests/testapp`` application.
 This application is used to manually test the functionalities of this package.
 This also serves as a good example.
+
+        # Enter into virtual environment and then
+        pip install -e .
+        python tests/testapp/manage.py migrate
+        python tests/testapp/manage.py loaddata tests/testapp/fixtures.json
+        python tests/testapp/manage.py runserver

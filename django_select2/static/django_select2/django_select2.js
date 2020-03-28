@@ -28,7 +28,8 @@
           if (dependentFields) {
             dependentFields = dependentFields.trim().split(/\s+/)
             $.each(dependentFields, function (i, dependentField) {
-              result[dependentField] = $('[name=' + dependentField + ']', $element.closest('form')).val()
+              // Select inputs whose name attribute value ends with dependentField name (formset use case), it tries to limit the lookup first by row 
+              result[dependentField] = $('[name$=' + dependentField + ']', $element.closest('.row'), $element.closest('form')).val() || $('[name$=' + dependentField + ']', $element.closest('form')).val()
             })
           }
 

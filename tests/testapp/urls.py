@@ -3,9 +3,9 @@ from django.urls import include, path
 from .forms import (
     AddressChainedSelect2WidgetForm, AlbumModelSelect2WidgetForm,
     HeavySelect2MultipleWidgetForm, HeavySelect2WidgetForm,
-    ModelSelect2TagWidgetForm, Select2WidgetForm
+    ModelSelect2TagWidgetForm, Select2WidgetForm, AddressChainedSelect2Formset
 )
-from .views import TemplateFormView, heavy_data_1, heavy_data_2
+from .views import TemplateFormView, TemplateFormsetView, heavy_data_1, heavy_data_2
 
 urlpatterns = [
     path('select2_widget',
@@ -32,4 +32,8 @@ urlpatterns = [
     path('heavy_data_2', heavy_data_2, name='heavy_data_2'),
 
     path('select2/', include('django_select2.urls')),
+
+    path('modelformset_chained_select2_widget',
+         TemplateFormsetView.as_view(form_class=AddressChainedSelect2Formset),
+         name='modelformset_chained_select2_widget'),
 ]
