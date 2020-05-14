@@ -3,7 +3,6 @@ import os
 from collections.abc import Iterable
 
 import pytest
-from django.core import signing
 from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils import translation
@@ -384,11 +383,13 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         assert result.exists()
 
     def test_ajax_view_registration(self, client):
-        widget = ModelSelect2Widget(queryset=Genre.objects.all(), search_fields=['title__icontains'])
+        widget = ModelSelect2Widget(queryset=Genre.objects.all(),
+                                    search_fields=['title__icontains'])
         widget.render('name', 'value')
         url = reverse('django_select2:auto-json')
         genre = Genre.objects.last()
-        response = client.get(url, data=dict(field_id=signing.dumps(id(widget)), term=genre.title))
+        response = client.get(url, data=dict(field_id=widget.widget_id,
+                                             term=genre.title))
         assert response.status_code == 200, response.content
         data = json.loads(response.content.decode('utf-8'))
         assert data['results']
