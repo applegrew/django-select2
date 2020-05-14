@@ -46,6 +46,7 @@ in their names.
     :parts: 1
 
 """
+import uuid
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
@@ -219,6 +220,7 @@ class HeavySelect2Mixin:
         else:
             self.attrs = {}
 
+        self.uuid = str(uuid.uuid4())
         self.data_view = kwargs.pop('data_view', None)
         self.data_url = kwargs.pop('data_url', None)
 
@@ -251,8 +253,7 @@ class HeavySelect2Mixin:
 
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
 
-        # encrypt instance Id
-        self.widget_id = signing.dumps(id(self))
+        self.widget_id = signing.dumps(self.uuid)
 
         attrs['data-field_id'] = self.widget_id
 
@@ -261,12 +262,12 @@ class HeavySelect2Mixin:
 
     def render(self, *args, **kwargs):
         """Render widget and register it in Django's cache."""
-        output = super(HeavySelect2Mixin, self).render(*args, **kwargs)
+        output = super().render(*args, **kwargs)
         self.set_to_cache()
         return output
 
     def _get_cache_key(self):
-        return "%s%s" % (settings.SELECT2_CACHE_PREFIX, id(self))
+        return "%s%s" % (settings.SELECT2_CACHE_PREFIX, self.uuid)
 
     def set_to_cache(self):
         """

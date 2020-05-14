@@ -1,6 +1,5 @@
 import json
 
-from django.core import signing
 from django.utils.encoding import smart_str
 
 from django_select2.cache import cache
@@ -21,7 +20,7 @@ class TestAutoResponseView:
         artist = artists[0]
         form = AlbumModelSelect2WidgetForm()
         assert form.as_p()
-        field_id = signing.dumps(id(form.fields['artist'].widget))
+        field_id = form.fields['artist'].widget.widget_id
         url = reverse('django_select2:auto-json')
         response = client.get(url, {'field_id': field_id, 'term': artist.title})
         assert response.status_code == 200
@@ -43,7 +42,7 @@ class TestAutoResponseView:
 
     def test_field_id_not_found(self, client, artists):
         artist = artists[0]
-        field_id = signing.dumps(123456789)
+        field_id = 'not-exists'
         url = reverse('django_select2:auto-json')
         response = client.get(url, {'field_id': field_id, 'term': artist.title})
         assert response.status_code == 404
@@ -56,7 +55,7 @@ class TestAutoResponseView:
             search_fields=['title__icontains']
         )
         widget.render('name', None)
-        field_id = signing.dumps(id(widget))
+        field_id = widget.widget_id
 
         response = client.get(url, {'field_id': field_id, 'term': ''})
         assert response.status_code == 200
@@ -77,7 +76,7 @@ class TestAutoResponseView:
         form = AlbumModelSelect2WidgetForm()
         form.fields['artist'].widget = ArtistCustomTitleWidget()
         assert form.as_p()
-        field_id = signing.dumps(id(form.fields['artist'].widget))
+        field_id = form.fields['artist'].widget.widget_id
 
         artist = artists[0]
         response = client.get(url, {'field_id': field_id, 'term': artist.title})
@@ -91,7 +90,7 @@ class TestAutoResponseView:
         artist = artists[0]
         form = AlbumModelSelect2WidgetForm()
         assert form.as_p()
-        field_id = signing.dumps(id(form.fields['artist'].widget))
+        field_id = form.fields['artist'].widget.widget_id
         cache_key = form.fields['artist'].widget._get_cache_key()
         widget_dict = cache.get(cache_key)
         widget_dict['url'] = 'yet/another/url'
