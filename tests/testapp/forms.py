@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
@@ -39,7 +39,7 @@ class ArtistCustomTitleWidget(ModelSelect2Widget):
     ]
 
     def label_from_instance(self, obj):
-        return force_text(obj.title).upper()
+        return force_str(obj.title).upper()
 
 
 class GenreCustomTitleWidget(ModelSelect2Widget):
@@ -49,7 +49,7 @@ class GenreCustomTitleWidget(ModelSelect2Widget):
     ]
 
     def label_from_instance(self, obj):
-        return force_text(obj.title).upper()
+        return force_str(obj.title).upper()
 
 
 class AlbumSelect2WidgetForm(forms.ModelForm):

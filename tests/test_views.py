@@ -1,7 +1,7 @@
 import json
 
 from django.core import signing
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 
 from django_select2.cache import cache
 from django_select2.forms import ModelSelect2Widget
@@ -27,7 +27,7 @@ class TestAutoResponseView:
         assert response.status_code == 200
         data = json.loads(response.content.decode('utf-8'))
         assert data['results']
-        assert {'id': artist.pk, 'text': smart_text(artist)} in data['results']
+        assert {'id': artist.pk, 'text': smart_str(artist)} in data['results']
 
     def test_no_field_id(self, client, artists):
         artist = artists[0]
@@ -85,7 +85,7 @@ class TestAutoResponseView:
 
         data = json.loads(response.content.decode('utf-8'))
         assert data['results']
-        assert {'id': artist.pk, 'text': smart_text(artist.title.upper())} in data['results']
+        assert {'id': artist.pk, 'text': smart_str(artist.title.upper())} in data['results']
 
     def test_url_check(self, client, artists):
         artist = artists[0]

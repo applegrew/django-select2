@@ -7,7 +7,7 @@ from django.core import signing
 from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils import translation
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -285,11 +285,11 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget_output = not_required_field.widget.render(
             'primary_genre', genre.pk)
         selected_option = '<option value="{pk}" selected="selected">{value}</option>'.format(
-            pk=genre.pk, value=force_text(genre))
+            pk=genre.pk, value=force_str(genre))
         selected_option_a = '<option value="{pk}" selected>{value}</option>'.format(
-            pk=genre.pk, value=force_text(genre))
+            pk=genre.pk, value=force_str(genre))
         unselected_option = '<option value="{pk}">{value}</option>'.format(
-            pk=genre2.pk, value=force_text(genre2))
+            pk=genre2.pk, value=force_str(genre2))
 
         assert selected_option in widget_output or selected_option_a in widget_output, widget_output
         assert unselected_option not in widget_output
@@ -304,8 +304,8 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
 
         def get_selected_options(genre):
             return '<option value="{pk}" selected="selected">{value}</option>'.format(
-                pk=genre.pk, value=force_text(genre)), '<option value="{pk}" selected>{value}</option>'.format(
-                pk=genre.pk, value=force_text(genre))
+                pk=genre.pk, value=force_str(genre)), '<option value="{pk}" selected>{value}</option>'.format(
+                pk=genre.pk, value=force_str(genre))
 
         assert all(o not in widget_output for o in get_selected_options(genre))
         genre.title = genre.title.upper()
