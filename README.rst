@@ -46,6 +46,15 @@ Example Application
 Please see ``tests/testapp`` application. This application is used to
 manually test the functionalities of this package. This also serves as a
 good example.
+To run the test application, you could do:
+
+.. code:: bash
+
+    virtualenv --python=python3.7 py37
+    source py37/bin/activate
+    pip install -e .
+    tests/testapp/manage.py migrate
+    tests/testapp/manage.py runserver
 
 Changelog
 ---------
