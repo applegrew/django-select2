@@ -54,7 +54,7 @@ See `Github releases`_
 
 
 .. _Django: https://www.djangoproject.com/
-.. _Select2: http://ivaynberg.github.com/select2/
+.. _Select2: https://select2.org/
 .. _autocomplete_fields: https://docs.djangoproject.com/en/stable/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields
 .. _CHANGELOG.md: CHANGELOG.md
 .. _Github releases: https://github.com/applegrew/django-select2/releases
