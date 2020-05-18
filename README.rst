@@ -32,7 +32,7 @@ Installation
 Documentation
 -------------
 
-Documentation available at http://django-select2.readthedocs.io/.
+Documentation available at https://django-select2.readthedocs.io/.
 
 External Dependencies
 ---------------------
