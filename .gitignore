@@ -22,4 +22,5 @@ ghostdriver.log
 .coverage
 
 coverage.xml
+db.sqlite3
 .eggs/
