@@ -16,7 +16,7 @@ Installation
 
 1. Install ``django_select2``
 
-.. code:: python
+.. code:: bash
 
     pip install django_select2
 
