@@ -1,7 +1,10 @@
 import os
+import pathlib
 import sys
 
 from pkg_resources import get_distribution
+
+BASE_DIR = pathlib.Path(__file__).resolve(strict=True).parent.parent
 
 # This is needed since django_select2 requires django model modules
 # and those modules assume that django settings is configured and
@@ -12,13 +15,13 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.testapp.settings")
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath("../tests.testapp"))
-sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, str(BASE_DIR / "tests" / "testapp"))
+sys.path.insert(0, str(BASE_DIR))
 
 
 project = "Django-Select2"
 author = "Johannes Hoppe"
-copyright = "2017, Johannes Hoppe"
+copyright = "2017-2020, Johannes Hoppe"
 release = get_distribution("django_select2").version
 version = ".".join(release.split(".")[:2])
 
