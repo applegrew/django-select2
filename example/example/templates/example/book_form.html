@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create Book</title>
+    {{ form.media.css }}
+    <style>
+        input, select {width: 100%}
+    </style>
+</head>
+<body>
+    <h1>Create a new Book</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{ form.media.js }}
+</body>
+</html>
