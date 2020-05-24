@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/applegrew/django-select2.git"
+    "url": "git://github.com/codingjoe/django-select2.git"
   },
   "keywords": [
     "django",
@@ -24,9 +24,9 @@
   "author": "Johannes Hoppe",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/applegrew/django-select2/issues"
+    "url": "https://github.com/codingjoe/django-select2/issues"
   },
-  "homepage": "https://github.com/applegrew/django-select2#readme",
+  "homepage": "https://github.com/codingjoe/django-select2#readme",
   "peerDependencies": {
     "select2": "*",
     "jquery": ">= 1.2"

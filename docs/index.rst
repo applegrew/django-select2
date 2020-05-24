@@ -183,7 +183,7 @@ Changelog
 
 See `Github releases`_.
 
-.. _Github releases: https://github.com/applegrew/django-select2/releases
+.. _Github releases: https://github.com/codingjoe/django-select2/releases
 
 All Contents
 ============

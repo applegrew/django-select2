@@ -24,7 +24,7 @@ Documentation available at https://django-select2.readthedocs.io/.
 
 .. |version| image:: https://img.shields.io/pypi/v/Django-Select2.svg
    :target: https://pypi.python.org/pypi/Django-Select2/
-.. |coverage| image:: https://codecov.io/gh/applegrew/django-select2/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/applegrew/django-select2
+.. |coverage| image:: https://codecov.io/gh/codingjoe/django-select2/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/codingjoe/django-select2
 .. |license| image:: https://img.shields.io/badge/license-APL2-blue.svg
-   :target: https://raw.githubusercontent.com/applegrew/django-select2/master/LICENSE.txt
+   :target: https://raw.githubusercontent.com/codingjoe/django-select2/master/LICENSE.txt
