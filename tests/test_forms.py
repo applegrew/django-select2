@@ -388,7 +388,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.render('name', 'value')
         url = reverse('django_select2:auto-json')
         genre = Genre.objects.last()
-        response = client.get(url, data=dict(field_id=widget.widget_id,
+        response = client.get(url, data=dict(field_id=widget.field_id,
                                              term=genre.title))
         assert response.status_code == 200, response.content
         data = json.loads(response.content.decode('utf-8'))
