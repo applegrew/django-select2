@@ -72,31 +72,31 @@ class Select2Mixin:
     form media.
     """
 
-    empty_label = ''
+    empty_label = ""
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
-        default_attrs = {'data-minimum-input-length': 0}
+        default_attrs = {"data-minimum-input-length": 0}
         if self.is_required:
-            default_attrs['data-allow-clear'] = 'false'
+            default_attrs["data-allow-clear"] = "false"
         else:
-            default_attrs['data-allow-clear'] = 'true'
-            default_attrs['data-placeholder'] = self.empty_label or ""
+            default_attrs["data-allow-clear"] = "true"
+            default_attrs["data-placeholder"] = self.empty_label or ""
 
         default_attrs.update(base_attrs)
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
 
-        if 'class' in attrs:
-            attrs['class'] += ' django-select2'
+        if "class" in attrs:
+            attrs["class"] += " django-select2"
         else:
-            attrs['class'] = 'django-select2'
+            attrs["class"] = "django-select2"
         return attrs
 
     def optgroups(self, name, value, attrs=None):
         """Add empty option for clearable selects."""
         if not self.is_required and not self.allow_multiple_selected:
-            self.choices = list(chain([('', '')], self.choices))
-        return super(Select2Mixin, self).optgroups(name, value, attrs=attrs)
+            self.choices = list(chain([("", "")], self.choices))
+        return super().optgroups(name, value, attrs=attrs)
 
     def _get_media(self):
         """
@@ -113,11 +113,13 @@ class Select2Mixin:
         if i18n_name not in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
             i18n_name = None
 
-        i18n_file = ('%s/%s.js' % (settings.SELECT2_I18N_PATH, i18n_name),) if i18n_name else ()
+        i18n_file = (
+            ("%s/%s.js" % (settings.SELECT2_I18N_PATH, i18n_name),) if i18n_name else ()
+        )
 
         return forms.Media(
-            js=select2_js + i18n_file + ('django_select2/django_select2.js',),
-            css={'screen': select2_css}
+            js=select2_js + i18n_file + ("django_select2/django_select2.js",),
+            css={"screen": select2_css},
         )
 
     media = property(_get_media)
@@ -129,9 +131,9 @@ class Select2TagMixin:
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2's tag attributes."""
         default_attrs = {
-            'data-minimum-input-length': 1,
-            'data-tags': 'true',
-            'data-token-separators': '[",", " "]'
+            "data-minimum-input-length": 1,
+            "data-tags": "true",
+            "data-token-separators": '[",", " "]',
         }
         default_attrs.update(base_attrs)
         return super().build_attrs(default_attrs, extra_attrs=extra_attrs)
@@ -158,8 +160,6 @@ class Select2Widget(Select2Mixin, forms.Select):
 
     """
 
-    pass
-
 
 class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
     """
@@ -167,8 +167,6 @@ class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
 
     Works just like :class:`.Select2Widget` but for multi select.
     """
-
-    pass
 
 
 class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
@@ -180,7 +178,7 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
         class MyWidget(Select2TagWidget):
 
             def value_from_datadict(self, data, files, name):
-                values = super(MyWidget, self).value_from_datadict(data, files, name):
+                values = super().value_from_datadict(data, files, name):
                 return ",".join(values)
 
             def optgroups(self, name, value, attrs=None):
@@ -190,8 +188,6 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
                 return [(None, subgroup, 0)]
 
     """
-
-    pass
 
 
 class HeavySelect2Mixin:
@@ -222,15 +218,15 @@ class HeavySelect2Mixin:
 
         self.uuid = str(uuid.uuid4())
         self.field_id = signing.dumps(self.uuid)
-        self.data_view = kwargs.pop('data_view', None)
-        self.data_url = kwargs.pop('data_url', None)
+        self.data_view = kwargs.pop("data_view", None)
+        self.data_url = kwargs.pop("data_url", None)
 
-        dependent_fields = kwargs.pop('dependent_fields', None)
+        dependent_fields = kwargs.pop("dependent_fields", None)
         if dependent_fields is not None:
             self.dependent_fields = dict(dependent_fields)
         if not (self.data_view or self.data_url):
             raise ValueError('You must ether specify "data_view" or "data_url".')
-        self.userGetValTextFuncName = kwargs.pop('userGetValTextFuncName', 'null')
+        self.userGetValTextFuncName = kwargs.pop("userGetValTextFuncName", "null")
 
     def get_url(self):
         """Return URL from instance or by reversing :attr:`.data_view`."""
@@ -241,22 +237,24 @@ class HeavySelect2Mixin:
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Set select2's AJAX attributes."""
         default_attrs = {
-            'data-ajax--url': self.get_url(),
-            'data-ajax--cache': "true",
-            'data-ajax--type': "GET",
-            'data-minimum-input-length': 2,
+            "data-ajax--url": self.get_url(),
+            "data-ajax--cache": "true",
+            "data-ajax--type": "GET",
+            "data-minimum-input-length": 2,
         }
 
         if self.dependent_fields:
-            default_attrs['data-select2-dependent-fields'] = " ".join(self.dependent_fields)
+            default_attrs["data-select2-dependent-fields"] = " ".join(
+                self.dependent_fields
+            )
 
         default_attrs.update(base_attrs)
 
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
 
-        attrs['data-field_id'] = self.field_id
+        attrs["data-field_id"] = self.field_id
 
-        attrs['class'] += ' django-select2-heavy'
+        attrs["class"] += " django-select2-heavy"
         return attrs
 
     def render(self, *args, **kwargs):
@@ -276,12 +274,9 @@ class HeavySelect2Mixin:
         that is required to serve your JSON response view.
         """
         try:
-            cache.set(self._get_cache_key(), {
-                'widget': self,
-                'url': self.get_url(),
-            })
+            cache.set(self._get_cache_key(), {"widget": self, "url": self.get_url()})
         except (PicklingError, AttributeError):
-            msg = "You need to overwrite \"set_to_cache\" or ensure that %s is serialisable."
+            msg = 'You need to overwrite "set_to_cache" or ensure that %s is serialisable.'
             raise NotImplementedError(msg % self.__class__.__name__)
 
 
@@ -305,19 +300,13 @@ class HeavySelect2Widget(HeavySelect2Mixin, Select2Widget):
 
     """
 
-    pass
-
 
 class HeavySelect2MultipleWidget(HeavySelect2Mixin, Select2MultipleWidget):
     """Select2 multi select widget similar to :class:`.HeavySelect2Widget`."""
 
-    pass
-
 
 class HeavySelect2TagWidget(HeavySelect2Mixin, Select2TagWidget):
     """Select2 tag widget."""
-
-    pass
 
 
 # Auto Heavy widgets
@@ -347,7 +336,7 @@ class ModelSelect2Mixin:
     def empty_label(self):
         if isinstance(self.choices, ModelChoiceIterator):
             return self.choices.field.empty_label
-        return ''
+        return ""
 
     def __init__(self, *args, **kwargs):
         """
@@ -360,13 +349,13 @@ class ModelSelect2Mixin:
             max_results (int): Max. JsonResponse view page size.
 
         """
-        self.model = kwargs.pop('model', self.model)
-        self.queryset = kwargs.pop('queryset', self.queryset)
-        self.search_fields = kwargs.pop('search_fields', self.search_fields)
-        self.max_results = kwargs.pop('max_results', self.max_results)
-        defaults = {'data_view': 'django_select2:auto-json'}
+        self.model = kwargs.pop("model", self.model)
+        self.queryset = kwargs.pop("queryset", self.queryset)
+        self.search_fields = kwargs.pop("search_fields", self.search_fields)
+        self.max_results = kwargs.pop("max_results", self.max_results)
+        defaults = {"data_view": "django_select2:auto-json"}
         defaults.update(kwargs)
-        super(ModelSelect2Mixin, self).__init__(*args, **defaults)
+        super().__init__(*args, **defaults)
 
     def set_to_cache(self):
         """
@@ -375,18 +364,17 @@ class ModelSelect2Mixin:
         Split the QuerySet, to not pickle the result set.
         """
         queryset = self.get_queryset()
-        cache.set(self._get_cache_key(), {
-            'queryset':
-                [
-                    queryset.none(),
-                    queryset.query,
-                ],
-            'cls': self.__class__,
-            'search_fields': tuple(self.search_fields),
-            'max_results': int(self.max_results),
-            'url': str(self.get_url()),
-            'dependent_fields': dict(self.dependent_fields),
-        })
+        cache.set(
+            self._get_cache_key(),
+            {
+                "queryset": [queryset.none(), queryset.query],
+                "cls": self.__class__,
+                "search_fields": tuple(self.search_fields),
+                "max_results": int(self.max_results),
+                "url": str(self.get_url()),
+                "dependent_fields": dict(self.dependent_fields),
+            },
+        )
 
     def filter_queryset(self, request, term, queryset=None, **dependent_fields):
         """
@@ -409,11 +397,14 @@ class ModelSelect2Mixin:
             queryset = self.get_queryset()
         search_fields = self.get_search_fields()
         select = Q()
-        term = term.replace('\t', ' ')
-        term = term.replace('\n', ' ')
-        for t in [t for t in term.split(' ') if not t == '']:
-            select &= reduce(lambda x, y: x | Q(**{y: t}), search_fields[1:],
-                             Q(**{search_fields[0]: t}))
+        term = term.replace("\t", " ")
+        term = term.replace("\n", " ")
+        for t in [t for t in term.split(" ") if not t == ""]:
+            select &= reduce(
+                lambda x, y: x | Q(**{y: t}),
+                search_fields[1:],
+                Q(**{search_fields[0]: t}),
+            )
         if dependent_fields:
             select &= Q(**dependent_fields)
 
@@ -429,7 +420,7 @@ class ModelSelect2Mixin:
         """
         if self.queryset is not None:
             queryset = self.queryset
-        elif hasattr(self.choices, 'queryset'):
+        elif hasattr(self.choices, "queryset"):
             queryset = self.choices.queryset
         elif self.model is not None:
             queryset = self.model._default_manager.all()
@@ -437,9 +428,7 @@ class ModelSelect2Mixin:
             raise NotImplementedError(
                 "%(cls)s is missing a QuerySet. Define "
                 "%(cls)s.model, %(cls)s.queryset, or override "
-                "%(cls)s.get_queryset()." % {
-                    'cls': self.__class__.__name__
-                }
+                "%(cls)s.get_queryset()." % {"cls": self.__class__.__name__}
             )
         return queryset
 
@@ -447,7 +436,9 @@ class ModelSelect2Mixin:
         """Return list of lookup names."""
         if self.search_fields:
             return self.search_fields
-        raise NotImplementedError('%s, must implement "search_fields".' % self.__class__.__name__)
+        raise NotImplementedError(
+            '%s, must implement "search_fields".' % self.__class__.__name__
+        )
 
     def optgroups(self, name, value, attrs=None):
         """Return only selected options and set QuerySet from `ModelChoicesIterator`."""
@@ -456,28 +447,30 @@ class ModelSelect2Mixin:
         has_selected = False
         selected_choices = {str(v) for v in value}
         if not self.is_required and not self.allow_multiple_selected:
-            default[1].append(self.create_option(name, '', '', False, 0))
+            default[1].append(self.create_option(name, "", "", False, 0))
         if not isinstance(self.choices, ModelChoiceIterator):
-            return super(ModelSelect2Mixin, self).optgroups(name, value, attrs=attrs)
+            return super().optgroups(name, value, attrs=attrs)
         selected_choices = {
-            c for c in selected_choices
-            if c not in self.choices.field.empty_values
+            c for c in selected_choices if c not in self.choices.field.empty_values
         }
-        field_name = self.choices.field.to_field_name or 'pk'
-        query = Q(**{'%s__in' % field_name: selected_choices})
+        field_name = self.choices.field.to_field_name or "pk"
+        query = Q(**{"%s__in" % field_name: selected_choices})
         for obj in self.choices.queryset.filter(query):
             option_value = self.choices.choice(obj)[0]
             option_label = self.label_from_instance(obj)
 
-            selected = (
-                str(option_value) in value and
-                (has_selected is False or self.allow_multiple_selected)
+            selected = str(option_value) in value and (
+                has_selected is False or self.allow_multiple_selected
             )
             if selected is True and has_selected is False:
                 has_selected = True
             index = len(default[1])
             subgroup = default[1]
-            subgroup.append(self.create_option(name, option_value, option_label, selected_choices, index))
+            subgroup.append(
+                self.create_option(
+                    name, option_value, option_label, selected_choices, index
+                )
+            )
         return groups
 
     def label_from_instance(self, obj):
@@ -537,8 +530,6 @@ class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
         if you just drop in the widget for a ForeignKey field.
     """
 
-    pass
-
 
 class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
     """
@@ -546,8 +537,6 @@ class ModelSelect2MultipleWidget(ModelSelect2Mixin, HeavySelect2MultipleWidget):
 
     Works just like :class:`.ModelSelect2Widget` but for multi select.
     """
-
-    pass
 
 
 class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
@@ -576,5 +565,3 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
                 return cleaned_values
 
     """
-
-    pass

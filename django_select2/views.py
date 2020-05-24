@@ -33,28 +33,30 @@ class AutoResponseView(BaseListView):
 
         """
         self.widget = self.get_widget_or_404()
-        self.term = kwargs.get('term', request.GET.get('term', ''))
+        self.term = kwargs.get("term", request.GET.get("term", ""))
         self.object_list = self.get_queryset()
         context = self.get_context_data()
-        return JsonResponse({
-            'results': [
-                {
-                    'text': self.widget.label_from_instance(obj),
-                    'id': obj.pk,
-                }
-                for obj in context['object_list']
+        return JsonResponse(
+            {
+                "results": [
+                    {"text": self.widget.label_from_instance(obj), "id": obj.pk}
+                    for obj in context["object_list"]
                 ],
-            'more': context['page_obj'].has_next()
-        })
+                "more": context["page_obj"].has_next(),
+            }
+        )
 
     def get_queryset(self):
         """Get QuerySet from cached widget."""
         kwargs = {
             model_field_name: self.request.GET.get(form_field_name)
             for form_field_name, model_field_name in self.widget.dependent_fields.items()
-            if form_field_name in self.request.GET and self.request.GET.get(form_field_name, '') != ''
+            if form_field_name in self.request.GET
+            and self.request.GET.get(form_field_name, "") != ""
         }
-        return self.widget.filter_queryset(self.request, self.term, self.queryset, **kwargs)
+        return self.widget.filter_queryset(
+            self.request, self.term, self.queryset, **kwargs
+        )
 
     def get_paginate_by(self, queryset):
         """Paginate response by size of widget's `max_results` parameter."""
@@ -71,7 +73,7 @@ class AutoResponseView(BaseListView):
             ModelSelect2Mixin: Widget from cache.
 
         """
-        field_id = self.kwargs.get('field_id', self.request.GET.get('field_id', None))
+        field_id = self.kwargs.get("field_id", self.request.GET.get("field_id", None))
         if not field_id:
             raise Http404('No "field_id" provided.')
         try:
@@ -79,14 +81,14 @@ class AutoResponseView(BaseListView):
         except BadSignature:
             raise Http404('Invalid "field_id".')
         else:
-            cache_key = '%s%s' % (settings.SELECT2_CACHE_PREFIX, key)
+            cache_key = "%s%s" % (settings.SELECT2_CACHE_PREFIX, key)
             widget_dict = cache.get(cache_key)
             if widget_dict is None:
-                raise Http404('field_id not found')
-            if widget_dict.pop('url') != self.request.path:
-                raise Http404('field_id was issued for the view.')
-        qs, qs.query = widget_dict.pop('queryset')
+                raise Http404("field_id not found")
+            if widget_dict.pop("url") != self.request.path:
+                raise Http404("field_id was issued for the view.")
+        qs, qs.query = widget_dict.pop("queryset")
         self.queryset = qs.all()
-        widget_dict['queryset'] = self.queryset
-        widget_cls = widget_dict.pop('cls')
+        widget_dict["queryset"] = self.queryset
+        widget_cls = widget_dict.pop("cls")
         return widget_cls(**widget_dict)

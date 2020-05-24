@@ -15,6 +15,6 @@ from django.core.cache import caches
 
 from .conf import settings
 
-__all__ = ('cache', )
+__all__ = ("cache",)
 
 cache = caches[settings.SELECT2_CACHE_BACKEND]

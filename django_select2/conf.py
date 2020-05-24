@@ -2,16 +2,16 @@
 from appconf import AppConf
 from django.conf import settings  # NOQA
 
-__all__ = ('settings', 'Select2Conf')
+__all__ = ("settings", "Select2Conf")
 
 
 class Select2Conf(AppConf):
     """Settings for Django-Select2."""
 
-    LIB_VERSION = '4.0.12'
+    LIB_VERSION = "4.0.12"
     """Version of the Select2 library."""
 
-    CACHE_BACKEND = 'default'
+    CACHE_BACKEND = "default"
     """
     Django-Select2 uses Django's cache to sure a consistent state across multiple machines.
 
@@ -49,14 +49,16 @@ class Select2Conf(AppConf):
         how long a browser session can last.
         Once widget is dropped from the cache the json response view will return a 404.
     """
-    CACHE_PREFIX = 'select2_'
+    CACHE_PREFIX = "select2_"
     """
     If you caching backend does not support multiple databases
     you can isolate select2 using the cache prefix setting.
     It has set `select2_` as a default value, which you can change if needed.
     """
 
-    JS = 'https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/select2.min.js'.format(version=LIB_VERSION)
+    JS = "https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/select2.min.js".format(
+        version=LIB_VERSION
+    )
     """
     The URI for the Select2 JS file. By default this points to the Cloudflare CDN.
 
@@ -74,7 +76,9 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    CSS = 'https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/css/select2.min.css'.format(version=LIB_VERSION)
+    CSS = "https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/css/select2.min.css".format(
+        version=LIB_VERSION
+    )
     """
     The URI for the Select2 CSS file. By default this points to the Cloudflare CDN.
 
@@ -92,7 +96,9 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    I18N_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/i18n'.format(version=LIB_VERSION)
+    I18N_PATH = "https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/i18n".format(
+        version=LIB_VERSION
+    )
     """
     The base URI for the Select2 i18n files. By default this points to the Cloudflare CDN.
 
@@ -106,53 +112,53 @@ class Select2Conf(AppConf):
     """
 
     I18N_AVAILABLE_LANGUAGES = [
-        'ar',
-        'az',
-        'bg',
-        'ca',
-        'cs',
-        'da',
-        'de',
-        'el',
-        'en',
-        'es',
-        'et',
-        'eu',
-        'fa',
-        'fi',
-        'fr',
-        'gl',
-        'he',
-        'hi',
-        'hr',
-        'hu',
-        'id',
-        'is',
-        'it',
-        'ja',
-        'km',
-        'ko',
-        'lt',
-        'lv',
-        'mk',
-        'ms',
-        'nb',
-        'nl',
-        'pl',
-        'pt-BR',
-        'pt',
-        'ro',
-        'ru',
-        'sk',
-        'sr-Cyrl',
-        'sr',
-        'sv',
-        'th',
-        'tr',
-        'uk',
-        'vi',
-        'zh-CN',
-        'zh-TW',
+        "ar",
+        "az",
+        "bg",
+        "ca",
+        "cs",
+        "da",
+        "de",
+        "el",
+        "en",
+        "es",
+        "et",
+        "eu",
+        "fa",
+        "fi",
+        "fr",
+        "gl",
+        "he",
+        "hi",
+        "hr",
+        "hu",
+        "id",
+        "is",
+        "it",
+        "ja",
+        "km",
+        "ko",
+        "lt",
+        "lv",
+        "mk",
+        "ms",
+        "nb",
+        "nl",
+        "pl",
+        "pt-BR",
+        "pt",
+        "ro",
+        "ru",
+        "sk",
+        "sr-Cyrl",
+        "sr",
+        "sv",
+        "th",
+        "tr",
+        "uk",
+        "vi",
+        "zh-CN",
+        "zh-TW",
     ]
     """
     List of available translations.
@@ -177,4 +183,4 @@ class Select2Conf(AppConf):
     class Meta:
         """Prefix for all Django-Select2 settings."""
 
-        prefix = 'SELECT2'
+        prefix = "SELECT2"

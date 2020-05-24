@@ -7,29 +7,13 @@ on:
 
 jobs:
 
-  flake8:
+  black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-python@v1
-      - uses: actions/checkout@v1
-      - run: python -m pip install flake8
-      - run: flake8
-
-  isort:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-python@v1
-      - uses: actions/checkout@v1
-      - run: python -m pip install isort
-      - run: isort --check-only --diff --recursive .
-
-  pydocstyle:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-python@v1
-      - uses: actions/checkout@v1
-      - run: python -m pip install pydocstyle
-      - run: pydocstyle .
+      - uses: actions/checkout@v2
+      - run: python -m pip install black
+      - run: black --check --diff .
 
   dist:
     runs-on: ubuntu-latest
@@ -61,10 +45,8 @@ jobs:
 
   pytest:
     needs:
-      - isort
-      - pydocstyle
       - standardjs
-      - flake8
+      - black
     strategy:
       matrix:
         python-version:
