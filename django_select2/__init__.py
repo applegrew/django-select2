@@ -7,4 +7,4 @@ The application includes Select2 driven Django Widgets and Form Fields.
 .. _Select2: https://select2.org/
 
 """
-default_app_config = 'django_select2.apps.Select2AppConfig'
+default_app_config = "django_select2.apps.Select2AppConfig"
