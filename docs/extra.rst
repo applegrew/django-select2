@@ -53,6 +53,11 @@ Lets link two widgets via *dependent_fields*.
             )
         )
 
+.. caution::
+    Be aware that for this functionality to work, dependent field cannot be a MultipleChoice field.
+    For example, here, if the "country" field allowed multiple countries to be selected, then adding "country" to dependent field in "city"'s widget would have no effect.
+    To enable such a functionality, refer to: https://github.com/applegrew/django-select2/issues/403
+
 
 Interdependent select2
 ----------------------
